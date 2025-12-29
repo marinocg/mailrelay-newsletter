@@ -1,0 +1,10 @@
+diff --git a/uninstall.php b/uninstall.php
+--- a/uninstall.php
++++ b/uninstall.php
+@@
+  * @package UVE_Mailrelay_Newsletter
+  */
++
+ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+ 	exit;
+ }
