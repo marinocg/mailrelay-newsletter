@@ -4,6 +4,7 @@
  *
  * @package UVE_Mailrelay_Newsletter
  */
+
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }

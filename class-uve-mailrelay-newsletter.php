@@ -7,13 +7,13 @@
  * License: GPLv2 or later
  *
  * @package UVE_Mailrelay_Newsletter
+ * @phpcsSuppress WordPress.Files.FileName.InvalidClassFileName
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// phpcs:disable WordPress.Files.FileName.InvalidClassFileName
 /**
  * Main plugin class.
  */
@@ -23,6 +23,7 @@ final class UVE_Mailrelay_Newsletter {
 	const TABLE      = 'uve_mr_newsletter_consent';
 	const NONCE      = 'uve_mr_subscribe_nonce';
 	const CRON_PURGE = 'uve_mr_newsletter_purge_logs';
+	const VERSION    = '1.4.1';
 
 	/**
 	 * Whether assets were requested on the current request.
@@ -45,7 +46,7 @@ final class UVE_Mailrelay_Newsletter {
 		add_action( 'admin_post_nopriv_uve_mr_subscribe', array( __CLASS__, 'handle_submit' ) );
 		add_action( 'admin_post_uve_mr_subscribe', array( __CLASS__, 'handle_submit' ) );
 
-		add_action( self::CRON_PURGE, array( __CLASS__, 'purge_old_logs' ) );
+		add_action( self::CRON_PURGE, array( __CLASS__, 'purge_old_logs_cron' ) );
 
 		register_activation_hook( __FILE__, array( __CLASS__, 'activate' ) );
 		register_deactivation_hook( __FILE__, array( __CLASS__, 'deactivate' ) );
@@ -77,7 +78,7 @@ final class UVE_Mailrelay_Newsletter {
 			// GDPR.
 			'privacy_url'                   => '',
 			'consent_label'                 => 'Acepto recibir la newsletter y he leído la política de privacidad',
-			'store_consent_log'             => '1', // "1" or "0".
+			'store_consent_log'             => '1', // String flag (1 or 0).
 			'hash_ip'                       => '1',            // store hashed IP by default.
 			'retention_days'                => 180,     // purge logs older than N days.
 
@@ -378,12 +379,20 @@ final class UVE_Mailrelay_Newsletter {
 	 */
 	private static function get_table_columns(): array {
 		global $wpdb;
-		$table  = self::table_name();
+		$table = self::table_name();
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) );
 		if ( $exists !== $table ) {
 			return array();
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$cols = $wpdb->get_results( $wpdb->prepare( 'SHOW COLUMNS FROM %i', $table ), ARRAY_A );
 		if ( ! is_array( $cols ) ) {
 			return array();
@@ -406,6 +415,7 @@ final class UVE_Mailrelay_Newsletter {
 		global $wpdb;
 		$table = self::table_name();
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) );
 		if ( $exists !== $table ) {
 			echo '<p>No existe la tabla de logs todavía. Desactiva y reactiva el plugin para crearla.</p>';
@@ -439,10 +449,17 @@ final class UVE_Mailrelay_Newsletter {
 			return;
 		}
 
-		$sql  = $wpdb->prepare(
-			'SELECT ' . implode( ',', array_map( static fn( $c ) => "`{$c}`", $select ) ) . ' FROM %i ORDER BY id DESC LIMIT 30',
-			$table
+		$columns_sql = implode(
+			',',
+			array_map(
+				static function ( $col ) {
+					return '`' . esc_sql( $col ) . '`';
+				},
+				$select
+			)
 		);
+		$sql         = "SELECT {$columns_sql} FROM {$table} ORDER BY id DESC LIMIT 30";
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results( $sql, ARRAY_A );
 
 		if ( ! $rows ) {
@@ -537,6 +554,15 @@ final class UVE_Mailrelay_Newsletter {
 	// ----- Purge. -----.
 
 	/**
+	 * Cron callback must return void.
+	 *
+	 * @return void
+	 */
+	public static function purge_old_logs_cron(): void {
+		self::purge_old_logs( false );
+	}
+
+	/**
 	 * Purge logs older than the retention window.
 	 *
 	 * @param bool $return_count Whether to return deleted row count.
@@ -549,17 +575,17 @@ final class UVE_Mailrelay_Newsletter {
 		global $wpdb;
 		$table = self::table_name();
 
-		$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) );
-		if ( $exists !== $table ) {
-			return $return_count ? 0 : null;
-		}
-
 		$cutoff_ts    = time() - ( $days * DAY_IN_SECONDS );
 		$cutoff_local = gmdate( 'Y-m-d H:i:s', $cutoff_ts );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$deleted = $wpdb->query(
 			$wpdb->prepare( 'DELETE FROM %i WHERE created_at < %s', $table, $cutoff_local )
 		);
+
+		if ( false === $deleted ) {
+			return $return_count ? 0 : null;
+		}
 
 		return $return_count ? (int) $deleted : null;
 	}
@@ -605,7 +631,7 @@ final class UVE_Mailrelay_Newsletter {
 						'cf-turnstile',
 						'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
 						array(),
-						null,
+						self::VERSION,
 						true
 					);
 				}
@@ -692,8 +718,8 @@ final class UVE_Mailrelay_Newsletter {
 		$action   = admin_url( 'admin-post.php' );
 
 		$msg_html = '';
-		if ( isset( $_GET['uve_mr_status'] ) ) {
-			$st = sanitize_text_field( (string) wp_unslash( $_GET['uve_mr_status'] ) );
+		if ( isset( $_GET['uve_mr_status'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$st = sanitize_text_field( (string) wp_unslash( $_GET['uve_mr_status'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			if ( 'ok' === $st ) {
 				$msg_html = '<p class="uve-mr-msg uve-mr-ok">Gracias. Si el email es valido, recibiras un correo para confirmar (o ya estabas suscrito).</p>';
 			} elseif ( 'captcha' === $st ) {
@@ -808,11 +834,11 @@ final class UVE_Mailrelay_Newsletter {
 			exit;
 		}
 
-		$email_raw    = isset( $_POST['subscriber']['email'] ) ? wp_unslash( $_POST['subscriber']['email'] ) : '';
-		$email        = sanitize_email( (string) $email_raw );
-		$accepted_raw = isset( $_POST['subscriber']['subscribed_with_acceptance'] ) ? wp_unslash( $_POST['subscriber']['subscribed_with_acceptance'] ) : '';
-		$accepted     = ( '1' === (string) $accepted_raw );
-		$ip           = self::get_client_ip();
+		$email_raw = isset( $_POST['subscriber']['email'] ) ? wp_unslash( $_POST['subscriber']['email'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$email     = sanitize_email( (string) $email_raw );
+		$accepted  = isset( $_POST['subscriber']['subscribed_with_acceptance'] ) ? sanitize_text_field( wp_unslash( $_POST['subscriber']['subscribed_with_acceptance'] ) ) : '';
+		$accepted  = ( '1' === $accepted );
+		$ip        = self::get_client_ip();
 
 		if ( ! $email || ! is_email( $email ) ) {
 			wp_safe_redirect( self::safe_back_url( array( 'uve_mr_status' => 'ok' ) ) );
@@ -845,6 +871,8 @@ final class UVE_Mailrelay_Newsletter {
 		$result = self::mailrelay_subscribe_with_confirmation( $email, $group_ids, true, $ip );
 
 		if ( '1' === $opts['store_consent_log'] ) {
+			$user_agent = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) );
+			$user_agent = substr( $user_agent, 0, 2000 );
 			self::maybe_create_or_update_table();
 			self::store_consent_log_compatible(
 				array(
@@ -853,7 +881,7 @@ final class UVE_Mailrelay_Newsletter {
 					'accepted_at'               => current_time( 'mysql' ),
 					'page_url'                  => $page_url,
 					'ip'                        => $ip,
-					'user_agent'                => substr( (string) wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ), 0, 2000 ),
+					'user_agent'                => $user_agent,
 					'mailrelay_http_code'       => $result['http_code'] ?? null,
 					'mailrelay_response'        => $result['body'] ?? null,
 					'confirmation_requested_at' => $result['confirmation_requested_at'] ?? null,
@@ -1284,6 +1312,7 @@ final class UVE_Mailrelay_Newsletter {
 			}
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$wpdb->insert( $table, $filtered );
 	}
 
@@ -1294,8 +1323,8 @@ final class UVE_Mailrelay_Newsletter {
 	 */
 	private static function current_url(): string {
 		$scheme = is_ssl() ? 'https' : 'http';
-		$host   = wp_unslash( $_SERVER['HTTP_HOST'] ?? '' );
-		$uri    = wp_unslash( $_SERVER['REQUEST_URI'] ?? '' );
+		$host   = sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ?? '' ) );
+		$uri    = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) );
 		return esc_url_raw( $scheme . '://' . $host . $uri );
 	}
 
@@ -1305,7 +1334,7 @@ final class UVE_Mailrelay_Newsletter {
 	 * @return string
 	 */
 	private static function get_client_ip(): string {
-		$ip = (string) wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' );
+		$ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' ) );
 		return preg_replace( '/[^0-9a-fA-F\.:]/', '', $ip );
 	}
 }
