@@ -5,3 +5,5 @@ parameters:
   excludePaths:
     - vendor
   treatPhpDocTypesAsCertain: false
+  stubFiles:
+    - stubs/elementor.php

@@ -60,9 +60,9 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          # Plugin main file: update "Version: x.y.z"
-          sed -i -E "s/^\\s*Version:\\s*.*/Version: ${VERSION}/" class-uve-mailrelay-newsletter.php
-          sed -i -E "s/^\\s*const VERSION\\s*=\\s*'[^']*';/const VERSION    = '${VERSION}';/" class-uve-mailrelay-newsletter.php
+          # Plugin main file: update "Version: x.y.z" and const VERSION.
+          sed -i -E "s/^([[:space:]]*\\*?[[:space:]]*)Version:[[:space:]]*.*/\\1Version: ${VERSION}/" class-uve-mailrelay-newsletter.php
+          sed -i -E "s/^([[:space:]]*)const VERSION[[:space:]]*=[[:space:]]*'[^']*';/\\1const VERSION    = '${VERSION}';/" class-uve-mailrelay-newsletter.php
 
           # WP readme stable tag
           if [ -f readme.txt ]; then
