@@ -1,8 +1,16 @@
 <?php
-if (!defined('WP_UNINSTALL_PLUGIN')) exit;
+/**
+ * Plugin uninstall cleanup.
+ *
+ * @package UVE_Mailrelay_Newsletter
+ */
 
-// Borra opciones
-delete_option('uve_mr_newsletter_options');
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+	exit;
+}
 
-// Nota: NO borramos la tabla de logs por defecto.
-// Si quieres borrarla, hazlo manualmente o añade un flag explícito de "delete data on uninstall".
+// Borra opciones.
+delete_option( 'uve_mr_newsletter_options' );
+
+// Nota: no borramos la tabla de logs por defecto.
+// Si quieres borrarla, hazlo manualmente o anade un flag explicito de "delete data on uninstall".

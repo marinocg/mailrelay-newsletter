@@ -4,13 +4,15 @@
   "type": "project",
   "license": "GPL-2.0-or-later",
   "require": {
-    "php": ">=7.4"
+    "php": ">=8.1"
   },
   "require-dev": {
-    "phpstan/phpstan": "^1.11",
+    "phpstan/phpstan": "^2",
     "squizlabs/php_codesniffer": "^3.10",
     "wp-coding-standards/wpcs": "^3.1",
-    "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "phpstan/extension-installer": "^1.4",
+    "szepeviktor/phpstan-wordpress": "^2.0"
   },
   "scripts": {
     "lint": "php -l uve-mailrelay-newsletter.php && find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
@@ -19,7 +21,8 @@
   },
   "config": {
     "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
     }
   }
 }

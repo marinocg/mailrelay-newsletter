@@ -2,16 +2,20 @@
 <ruleset name="UVE WP Plugin">
   <description>PHPCS rules for the plugin.</description>
 
+  <!-- Importante: define qué paths analizar para evitar:
+       "You must supply at least one file or directory to process." -->
+  <file>.</file>
+
   <arg name="basepath" value="."/>
   <arg name="extensions" value="php"/>
   <arg name="colors"/>
 
   <exclude-pattern>vendor/*</exclude-pattern>
+  <exclude-pattern>.github/*</exclude-pattern>
 
   <rule ref="WordPress"/>
   <rule ref="WordPress-Extra"/>
   <rule ref="WordPress-Docs"/>
 
-  <!-- Ajustes típicos -->
   <config name="minimum_supported_wp_version" value="6.0"/>
 </ruleset>

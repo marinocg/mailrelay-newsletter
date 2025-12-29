@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+set -e
+
+echo "Running PHPCBF (auto-fix)..."
+php vendor/bin/phpcbf || true
+
+echo "Running PHPCS..."
+php vendor/bin/phpcs
+
+echo "Running PHPStan..."
+php vendor/bin/phpstan analyse
+
+echo "OK"
