@@ -1,0 +1,174 @@
+name: Release (GitFlow)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (e.g. 1.4.2)"
+        required: true
+      release_notes:
+        description: "Optional release notes"
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout develop (full history)
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Composer install (dev tools)
+        run: |
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php --quiet
+          php -r "unlink('composer-setup.php');"
+          php composer.phar install --no-interaction --no-progress
+
+      - name: Lint + PHPCS + PHPStan (gate)
+        run: |
+          find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
+          php vendor/bin/phpcs
+          php vendor/bin/phpstan analyse
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create release branch
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          BRANCH="release/v${VERSION}"
+          git checkout -b "$BRANCH"
+
+      - name: Bump versions (plugin header + readme.txt)
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          # Plugin main file: update "Version: x.y.z"
+          sed -i -E "s/^\\s*Version:\\s*.*/Version: ${VERSION}/" uve-mailrelay-newsletter.php
+
+          # WP readme stable tag
+          if [ -f readme.txt ]; then
+            sed -i -E "s/^Stable tag:\\s*.*/Stable tag: ${VERSION}/" readme.txt
+          fi
+
+          # Changelog: move Unreleased into version heading (simple)
+          if [ -f CHANGELOG.md ]; then
+            # Prepend a new section if not present
+            if ! grep -q "## ${VERSION}" CHANGELOG.md; then
+              awk -v ver="${VERSION}" '
+                BEGIN{added=0}
+                /^## Unreleased/ && added==0 {
+                  print;
+                  next
+                }
+                /^- / && added==0 {
+                  # first bullet under Unreleased -> insert version header before bullets
+                  print "";
+                  print "## " ver;
+                  added=1;
+                  print;
+                  next
+                }
+                {print}
+              ' CHANGELOG.md > CHANGELOG.tmp && mv CHANGELOG.tmp CHANGELOG.md
+            fi
+          fi
+
+      - name: Commit bump
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          git add uve-mailrelay-newsletter.php readme.txt CHANGELOG.md || true
+          git commit -m "chore(release): v${VERSION}" || echo "No changes to commit"
+
+      - name: Push release branch
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          BRANCH="release/v${VERSION}"
+          git push origin "$BRANCH"
+
+      - name: Create PR to main + PR back-merge to develop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          BRANCH="release/v${VERSION}"
+
+          # PR to main
+          PR_MAIN_URL=$(gh pr create \
+            --title "Release v${VERSION}" \
+            --body "${{ inputs.release_notes }}" \
+            --base main \
+            --head "$BRANCH" \
+            || true)
+
+          echo "PR to main: $PR_MAIN_URL"
+
+          # PR back to develop (optional but recommended)
+          PR_DEV_URL=$(gh pr create \
+            --title "Back-merge release v${VERSION} into develop" \
+            --body "GitFlow back-merge." \
+            --base develop \
+            --head "$BRANCH" \
+            || true)
+
+          echo "PR to develop: $PR_DEV_URL"
+
+      - name: Merge PR into main (requires repo permissions / branch rules)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          # Find PR number for release branch -> main
+          PR_NUMBER=$(gh pr list --state open --head "release/v${VERSION}" --base main --json number -q '.[0].number')
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No open PR to main found. Aborting."
+            exit 1
+          fi
+
+          # Merge (can fail if branch protection blocks)
+          gh pr merge "$PR_NUMBER" --merge --delete-branch
+
+      - name: Tag main
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          git fetch origin main
+          git checkout main
+          git pull origin main
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
+
+      - name: Build ZIP (git archive) from tag
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          mkdir -p dist
+          # Build a plugin folder inside zip with correct slug name
+          git archive --format=zip --prefix=uve-mailrelay-newsletter/ "v${VERSION}" -o "dist/uve-mailrelay-newsletter-v${VERSION}.zip"
+
+      - name: Create GitHub Release + upload ZIP
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}
+          name: v${{ inputs.version }}
+          body: ${{ inputs.release_notes }}
+          files: dist/uve-mailrelay-newsletter-v${{ inputs.version }}.zip

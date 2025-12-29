@@ -1,0 +1,7 @@
+# Changelog
+
+## Unreleased
+- Initial scaffolding.
+
+## 1.4.1
+- Fix dbDelta schema updates and safe column introspection.

@@ -1,0 +1,25 @@
+{
+  "name": "uve/uve-mailrelay-newsletter",
+  "description": "Uve Mailrelay Newsletter plugin (dev tooling)",
+  "type": "project",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.11",
+    "squizlabs/php_codesniffer": "^3.10",
+    "wp-coding-standards/wpcs": "^3.1",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+  },
+  "scripts": {
+    "lint": "php -l uve-mailrelay-newsletter.php && find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
+    "phpcs": "phpcs",
+    "phpstan": "phpstan analyse"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}
