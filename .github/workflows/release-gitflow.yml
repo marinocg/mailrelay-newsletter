@@ -56,12 +56,13 @@ jobs:
           BRANCH="release/v${VERSION}"
           git checkout -b "$BRANCH"
 
-      - name: Bump versions (plugin header + readme.txt)
+      - name: Bump versions (plugin header + constants + readme.txt)
         env:
           VERSION: ${{ inputs.version }}
         run: |
           # Plugin main file: update "Version: x.y.z"
-          sed -i -E "s/^\\s*Version:\\s*.*/Version: ${VERSION}/" uve-mailrelay-newsletter.php
+          sed -i -E "s/^\\s*Version:\\s*.*/Version: ${VERSION}/" class-uve-mailrelay-newsletter.php
+          sed -i -E "s/^\\s*const VERSION\\s*=\\s*'[^']*';/const VERSION    = '${VERSION}';/" class-uve-mailrelay-newsletter.php
 
           # WP readme stable tag
           if [ -f readme.txt ]; then
@@ -95,7 +96,7 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          git add uve-mailrelay-newsletter.php readme.txt CHANGELOG.md || true
+          git add class-uve-mailrelay-newsletter.php readme.txt CHANGELOG.md || true
           git commit -m "chore(release): v${VERSION}" || echo "No changes to commit"
 
       - name: Push release branch
