@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Uve Mailrelay Newsletter (Turnstile + GDPR, Double Opt-in + Logs)
  * Description: Widget + shortcode newsletter with Cloudflare Turnstile and Mailrelay official API. Uses inactive + resend_confirmation_email for double opt-in. Neutral success message to prevent email enumeration. GDPR consent log with retention and confirmation-send logging.
@@ -9,7 +10,8 @@
 
 if (!defined('ABSPATH')) exit;
 
-final class UVE_Mailrelay_Newsletter {
+final class UVE_Mailrelay_Newsletter
+{
     const OPT_KEY = 'uve_mr_newsletter_options';
     const TABLE   = 'uve_mr_newsletter_consent';
     const NONCE   = 'uve_mr_subscribe_nonce';
@@ -17,7 +19,8 @@ final class UVE_Mailrelay_Newsletter {
 
     private static bool $assets_requested = false;
 
-    public static function init(): void {
+    public static function init(): void
+    {
         add_action('init', [__CLASS__, 'register_shortcode']);
         add_action('widgets_init', [__CLASS__, 'register_widget']);
         add_action('admin_menu', [__CLASS__, 'admin_menu']);
@@ -32,7 +35,8 @@ final class UVE_Mailrelay_Newsletter {
         register_deactivation_hook(__FILE__, [__CLASS__, 'deactivate']);
     }
 
-    public static function defaults(): array {
+    public static function defaults(): array
+    {
         return [
             // Mailrelay
             'api_base_url' => '', // e.g. https://YOURACCOUNT.ipzmarketing.com/api/v1
@@ -67,12 +71,14 @@ final class UVE_Mailrelay_Newsletter {
         ];
     }
 
-    public static function get_options(): array {
+    public static function get_options(): array
+    {
         $opts = get_option(self::OPT_KEY, []);
         return wp_parse_args(is_array($opts) ? $opts : [], self::defaults());
     }
 
-    public static function activate(): void {
+    public static function activate(): void
+    {
         self::maybe_create_or_update_table();
         if (!get_option(self::OPT_KEY)) add_option(self::OPT_KEY, self::defaults());
 
@@ -81,12 +87,14 @@ final class UVE_Mailrelay_Newsletter {
         }
     }
 
-    public static function deactivate(): void {
+    public static function deactivate(): void
+    {
         $ts = wp_next_scheduled(self::CRON_PURGE);
         if ($ts) wp_unschedule_event($ts, self::CRON_PURGE);
     }
 
-    public static function admin_menu(): void {
+    public static function admin_menu(): void
+    {
         add_options_page(
             'Uve Mailrelay Newsletter',
             'Uve Mailrelay Newsletter',
@@ -96,7 +104,8 @@ final class UVE_Mailrelay_Newsletter {
         );
     }
 
-    public static function admin_init(): void {
+    public static function admin_init(): void
+    {
         register_setting('uve_mr_newsletter', self::OPT_KEY, [
             'type' => 'array',
             'sanitize_callback' => [__CLASS__, 'sanitize_options'],
@@ -104,7 +113,8 @@ final class UVE_Mailrelay_Newsletter {
         ]);
     }
 
-    public static function sanitize_options($raw): array {
+    public static function sanitize_options($raw): array
+    {
         $raw = is_array($raw) ? $raw : [];
         $def = self::defaults();
 
@@ -140,7 +150,8 @@ final class UVE_Mailrelay_Newsletter {
         return $out;
     }
 
-    public static function render_settings_page(): void {
+    public static function render_settings_page(): void
+    {
         if (!current_user_can('manage_options')) return;
 
         // Ensure schema is up-to-date before rendering (safe + idempotent)
@@ -152,7 +163,7 @@ final class UVE_Mailrelay_Newsletter {
         }
 
         $opts = self::get_options();
-        ?>
+?>
         <div class="wrap">
             <h1>Uve Mailrelay Newsletter</h1>
 
@@ -163,20 +174,20 @@ final class UVE_Mailrelay_Newsletter {
                         <th scope="row">Mailrelay API base URL</th>
                         <td>
                             <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[api_base_url]"
-                                   value="<?php echo esc_attr($opts['api_base_url']); ?>"
-                                   placeholder="https://YOURACCOUNT.ipzmarketing.com/api/v1" />
+                                value="<?php echo esc_attr($opts['api_base_url']); ?>"
+                                placeholder="https://YOURACCOUNT.ipzmarketing.com/api/v1" />
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">Mailrelay API token</th>
                         <td><input type="password" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[api_token]"
-                                   value="<?php echo esc_attr($opts['api_token']); ?>" /></td>
+                                value="<?php echo esc_attr($opts['api_token']); ?>" /></td>
                     </tr>
                     <tr>
                         <th scope="row">Group IDs</th>
                         <td>
                             <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[group_ids]"
-                                   value="<?php echo esc_attr($opts['group_ids']); ?>" />
+                                value="<?php echo esc_attr($opts['group_ids']); ?>" />
                         </td>
                     </tr>
                     <tr>
@@ -189,46 +200,50 @@ final class UVE_Mailrelay_Newsletter {
                         </td>
                     </tr>
 
-                    <tr><th scope="row">Turnstile Site Key</th>
+                    <tr>
+                        <th scope="row">Turnstile Site Key</th>
                         <td>
                             <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[turnstile_site_key]"
-                                   value="<?php echo esc_attr($opts['turnstile_site_key']); ?>" />
+                                value="<?php echo esc_attr($opts['turnstile_site_key']); ?>" />
                         </td>
                     </tr>
-                    <tr><th scope="row">Turnstile Secret Key</th>
+                    <tr>
+                        <th scope="row">Turnstile Secret Key</th>
                         <td>
                             <input type="password" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[turnstile_secret_key]"
-                                   value="<?php echo esc_attr($opts['turnstile_secret_key']); ?>" />
+                                value="<?php echo esc_attr($opts['turnstile_secret_key']); ?>" />
                         </td>
                     </tr>
 
-                    <tr><th scope="row">Textos</th>
+                    <tr>
+                        <th scope="row">Textos</th>
                         <td>
                             <p><label>Título<br>
-                                <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[title]" value="<?php echo esc_attr($opts['title']); ?>">
-                            </label></p>
+                                    <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[title]" value="<?php echo esc_attr($opts['title']); ?>">
+                                </label></p>
                             <p><label>Descripción<br>
-                                <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[description]" value="<?php echo esc_attr($opts['description']); ?>">
-                            </label></p>
+                                    <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[description]" value="<?php echo esc_attr($opts['description']); ?>">
+                                </label></p>
                             <p><label>Placeholder email<br>
-                                <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[email_placeholder]" value="<?php echo esc_attr($opts['email_placeholder']); ?>">
-                            </label></p>
+                                    <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[email_placeholder]" value="<?php echo esc_attr($opts['email_placeholder']); ?>">
+                                </label></p>
                             <p><label>Texto botón<br>
-                                <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[submit_label]" value="<?php echo esc_attr($opts['submit_label']); ?>">
-                            </label></p>
+                                    <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[submit_label]" value="<?php echo esc_attr($opts['submit_label']); ?>">
+                                </label></p>
                         </td>
                     </tr>
 
-                    <tr><th scope="row">RGPD + Logs</th>
+                    <tr>
+                        <th scope="row">RGPD + Logs</th>
                         <td>
                             <p><label>URL política de privacidad<br>
-                                <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[privacy_url]"
-                                       value="<?php echo esc_attr($opts['privacy_url']); ?>">
-                            </label></p>
+                                    <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[privacy_url]"
+                                        value="<?php echo esc_attr($opts['privacy_url']); ?>">
+                                </label></p>
                             <p><label>Texto del checkbox<br>
-                                <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[consent_label]"
-                                       value="<?php echo esc_attr($opts['consent_label']); ?>">
-                            </label></p>
+                                    <input type="text" class="regular-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[consent_label]"
+                                        value="<?php echo esc_attr($opts['consent_label']); ?>">
+                                </label></p>
                             <p>
                                 <label><input type="checkbox" name="<?php echo esc_attr(self::OPT_KEY); ?>[store_consent_log]" value="1" <?php checked($opts['store_consent_log'], '1'); ?>>
                                     Guardar log en BD</label><br>
@@ -236,32 +251,33 @@ final class UVE_Mailrelay_Newsletter {
                                     Guardar IP como hash</label><br>
                                 <label>Retención (días)<br>
                                     <input type="number" min="1" class="small-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[retention_days]"
-                                           value="<?php echo esc_attr((string)$opts['retention_days']); ?>">
+                                        value="<?php echo esc_attr((string)$opts['retention_days']); ?>">
                                 </label>
                             </p>
                         </td>
                     </tr>
 
-                    <tr><th scope="row">Rate limit</th>
+                    <tr>
+                        <th scope="row">Rate limit</th>
                         <td>
                             <p><label>Máx intentos por IP+email<br>
-                                <input type="number" min="1" class="small-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[rate_limit_max]"
-                                       value="<?php echo esc_attr((string)$opts['rate_limit_max']); ?>">
-                            </label></p>
+                                    <input type="number" min="1" class="small-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[rate_limit_max]"
+                                        value="<?php echo esc_attr((string)$opts['rate_limit_max']); ?>">
+                                </label></p>
                             <p><label>Ventana (segundos)<br>
-                                <input type="number" min="60" class="small-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[rate_limit_window_seconds]"
-                                       value="<?php echo esc_attr((string)$opts['rate_limit_window_seconds']); ?>">
-                            </label></p>
+                                    <input type="number" min="60" class="small-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[rate_limit_window_seconds]"
+                                        value="<?php echo esc_attr((string)$opts['rate_limit_window_seconds']); ?>">
+                                </label></p>
 
                             <hr>
                             <p><label>Máx reenvíos confirmación por IP+email (0 = desactivar)<br>
-                                <input type="number" min="0" class="small-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[confirm_resend_max]"
-                                       value="<?php echo esc_attr((string)$opts['confirm_resend_max']); ?>">
-                            </label></p>
+                                    <input type="number" min="0" class="small-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[confirm_resend_max]"
+                                        value="<?php echo esc_attr((string)$opts['confirm_resend_max']); ?>">
+                                </label></p>
                             <p><label>Ventana confirmación (segundos)<br>
-                                <input type="number" min="60" class="small-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[confirm_resend_window_seconds]"
-                                       value="<?php echo esc_attr((string)$opts['confirm_resend_window_seconds']); ?>">
-                            </label></p>
+                                    <input type="number" min="60" class="small-text" name="<?php echo esc_attr(self::OPT_KEY); ?>[confirm_resend_window_seconds]"
+                                        value="<?php echo esc_attr((string)$opts['confirm_resend_window_seconds']); ?>">
+                                </label></p>
                         </td>
                     </tr>
                 </table>
@@ -286,12 +302,14 @@ final class UVE_Mailrelay_Newsletter {
 
     // --- LOGS TABLE rendering with schema introspection ---
 
-    private static function table_name(): string {
+    private static function table_name(): string
+    {
         global $wpdb;
         return $wpdb->prefix . self::TABLE;
     }
 
-    private static function get_table_columns(): array {
+    private static function get_table_columns(): array
+    {
         global $wpdb;
         $table = self::table_name();
         $exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table));
@@ -306,7 +324,8 @@ final class UVE_Mailrelay_Newsletter {
         return $names;
     }
 
-    private static function render_logs_table_safe(): void {
+    private static function render_logs_table_safe(): void
+    {
         global $wpdb;
         $table = self::table_name();
 
@@ -320,9 +339,16 @@ final class UVE_Mailrelay_Newsletter {
 
         // Build SELECT dynamically based on actual columns
         $want = [
-            'id','created_at','email','accepted','ip_hash','ip_raw','page_url',
+            'id',
+            'created_at',
+            'email',
+            'accepted',
+            'ip_hash',
+            'ip_raw',
+            'page_url',
             'mailrelay_http_code',
-            'confirmation_requested_at','confirmation_http_code'
+            'confirmation_requested_at',
+            'confirmation_http_code'
         ];
         $select = [];
         foreach ($want as $c) {
@@ -334,7 +360,7 @@ final class UVE_Mailrelay_Newsletter {
             return;
         }
 
-        $sql = "SELECT " . implode(',', array_map(fn($c)=>"`{$c}`", $select)) . " FROM {$table} ORDER BY id DESC LIMIT 30";
+        $sql = "SELECT " . implode(',', array_map(fn($c) => "`{$c}`", $select)) . " FROM {$table} ORDER BY id DESC LIMIT 30";
         $rows = $wpdb->get_results($sql, ARRAY_A);
 
         if (!$rows) {
@@ -383,7 +409,8 @@ final class UVE_Mailrelay_Newsletter {
 
     // ----- DB schema (create OR update with dbDelta always) -----
 
-    private static function maybe_create_or_update_table(): void {
+    private static function maybe_create_or_update_table(): void
+    {
         global $wpdb;
         $table = self::table_name();
         $charset = $wpdb->get_charset_collate();
@@ -415,7 +442,8 @@ final class UVE_Mailrelay_Newsletter {
 
     // ----- Purge -----
 
-    public static function purge_old_logs(bool $return_count = false) {
+    public static function purge_old_logs(bool $return_count = false)
+    {
         $opts = self::get_options();
         $days = max(1, (int)$opts['retention_days']);
 
@@ -437,17 +465,20 @@ final class UVE_Mailrelay_Newsletter {
 
     // ----- Public hooks -----
 
-    public static function register_widget(): void {
+    public static function register_widget(): void
+    {
         register_widget('UVE_MR_Newsletter_Widget');
     }
 
-    public static function register_shortcode(): void {
+    public static function register_shortcode(): void
+    {
         add_shortcode('uve_mailrelay_newsletter', [__CLASS__, 'shortcode']);
     }
 
     // ----- Assets & render -----
 
-    private static function ensure_assets(): void {
+    private static function ensure_assets(): void
+    {
         if (self::$assets_requested) return;
         self::$assets_requested = true;
 
@@ -466,15 +497,19 @@ final class UVE_Mailrelay_Newsletter {
         add_action('wp_footer', function () {
             $site_key = self::get_turnstile_site_key();
             if (!$site_key) return;
-            ?>
+        ?>
             <script>
-                (function(){
-                    function renderAll(){
+                (function() {
+                    function renderAll() {
                         if (!window.turnstile) return;
-                        document.querySelectorAll('.uve-mr-turnstile[data-sitekey]').forEach(function(el){
+                        document.querySelectorAll('.uve-mr-turnstile[data-sitekey]').forEach(function(el) {
                             if (el.getAttribute('data-rendered') === '1') return;
-                            el.setAttribute('data-rendered','1');
-                            try { window.turnstile.render(el, { sitekey: el.getAttribute('data-sitekey') }); } catch(e) {}
+                            el.setAttribute('data-rendered', '1');
+                            try {
+                                window.turnstile.render(el, {
+                                    sitekey: el.getAttribute('data-sitekey')
+                                });
+                            } catch (e) {}
                         });
                     }
                     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderAll);
@@ -482,11 +517,12 @@ final class UVE_Mailrelay_Newsletter {
                     window.__uveMrRenderTurnstile = renderAll;
                 })();
             </script>
-            <?php
+        <?php
         }, 50);
     }
 
-    public static function shortcode($atts = []): string {
+    public static function shortcode($atts = []): string
+    {
         $opts = self::get_options();
         $atts = shortcode_atts([
             'title' => $opts['title'],
@@ -501,7 +537,8 @@ final class UVE_Mailrelay_Newsletter {
         return self::render_form($atts);
     }
 
-    private static function render_form(array $args): string {
+    private static function render_form(array $args): string
+    {
         self::ensure_assets();
 
         $email_placeholder = $args['email_placeholder'] ?? 'Email...';
@@ -534,7 +571,8 @@ final class UVE_Mailrelay_Newsletter {
         ?>
         <div class="uve-mr-newsletter <?php echo esc_attr($class); ?>">
             <?php if ($title): ?><h2 class="widgettitle"><?php echo esc_html($title); ?></h2><?php endif; ?>
-            <?php echo $msg_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+            <?php echo $msg_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+            ?>
 
             <form class="simple_form form form-vertical uve-mr-form" method="post" action="<?php echo $action; ?>" accept-charset="UTF-8">
                 <input type="hidden" name="action" value="uve_mr_subscribe">
@@ -570,7 +608,9 @@ final class UVE_Mailrelay_Newsletter {
 
                     <?php if ($site_key): ?>
                         <div class="uve-mr-turnstile" data-sitekey="<?php echo esc_attr($site_key); ?>"></div>
-                        <noscript><p>Activa JavaScript para poder suscribirte.</p></noscript>
+                        <noscript>
+                            <p>Activa JavaScript para poder suscribirte.</p>
+                        </noscript>
                     <?php else: ?>
                         <p class="uve-mr-msg uve-mr-err">Falta configurar Turnstile (Site Key).</p>
                     <?php endif; ?>
@@ -582,27 +622,40 @@ final class UVE_Mailrelay_Newsletter {
             </form>
 
             <style>
-                .uve-mr-msg { margin: 0 0 10px; padding: 10px 12px; border-radius: 6px; }
-                .uve-mr-ok  { background: rgba(0,128,0,.08); }
-                .uve-mr-err { background: rgba(200,0,0,.08); }
+                .uve-mr-msg {
+                    margin: 0 0 10px;
+                    padding: 10px 12px;
+                    border-radius: 6px;
+                }
+
+                .uve-mr-ok {
+                    background: rgba(0, 128, 0, .08);
+                }
+
+                .uve-mr-err {
+                    background: rgba(200, 0, 0, .08);
+                }
             </style>
         </div>
-        <?php
+    <?php
         return (string)ob_get_clean();
     }
 
     // ----- Submit handler -----
 
-    public static function handle_submit(): void {
+    public static function handle_submit(): void
+    {
         $opts = self::get_options();
 
         if (!isset($_POST['_wpnonce']) || !wp_verify_nonce((string)$_POST['_wpnonce'], self::NONCE)) {
-            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'ok'])); exit;
+            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'ok']));
+            exit;
         }
 
         $hp = isset($_POST['uve_mr_hp']) ? (string)$_POST['uve_mr_hp'] : '';
         if ($hp !== '') {
-            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'ok'])); exit;
+            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'ok']));
+            exit;
         }
 
         $email = isset($_POST['subscriber']['email']) ? sanitize_email((string)$_POST['subscriber']['email']) : '';
@@ -610,23 +663,27 @@ final class UVE_Mailrelay_Newsletter {
         $ip = self::get_client_ip();
 
         if (!$email || !is_email($email)) {
-            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'ok'])); exit;
+            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'ok']));
+            exit;
         }
 
         if (!$accepted) {
-            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'consent'])); exit;
+            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'consent']));
+            exit;
         }
 
         $rl_key = 'uve_mr_rl_' . md5($ip . '|' . strtolower($email));
         $count = (int) get_transient($rl_key);
         if ($count >= (int)$opts['rate_limit_max']) {
-            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'ok'])); exit;
+            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'ok']));
+            exit;
         }
         set_transient($rl_key, $count + 1, (int)$opts['rate_limit_window_seconds']);
 
         $token = sanitize_text_field((string)($_POST['cf-turnstile-response'] ?? ''));
         if (!self::verify_turnstile($token, $ip)) {
-            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'captcha'])); exit;
+            wp_safe_redirect(self::safe_back_url(['uve_mr_status' => 'captcha']));
+            exit;
         }
 
         $group_ids_raw = sanitize_text_field((string)($_POST['uve_mr_group_ids'] ?? $opts['group_ids']));
@@ -656,14 +713,16 @@ final class UVE_Mailrelay_Newsletter {
         exit;
     }
 
-    private static function safe_back_url(array $add_query): string {
+    private static function safe_back_url(array $add_query): string
+    {
         $ref = wp_get_referer();
         if (!$ref) $ref = home_url('/');
         $url = remove_query_arg(array_keys($add_query), $ref);
         return add_query_arg($add_query, $url);
     }
 
-    private static function parse_group_ids(string $raw): array {
+    private static function parse_group_ids(string $raw): array
+    {
         $parts = array_filter(array_map('trim', explode(',', $raw)));
         $ids = [];
         foreach ($parts as $p) $ids[] = (int)$p;
@@ -671,19 +730,22 @@ final class UVE_Mailrelay_Newsletter {
         return array_values(array_unique($ids));
     }
 
-    private static function get_turnstile_site_key(): string {
+    private static function get_turnstile_site_key(): string
+    {
         if (defined('CF_TURNSTILE_SITE_KEY') && CF_TURNSTILE_SITE_KEY) return (string)CF_TURNSTILE_SITE_KEY;
         $opts = self::get_options();
         return (string)($opts['turnstile_site_key'] ?? '');
     }
 
-    private static function get_turnstile_secret_key(): string {
+    private static function get_turnstile_secret_key(): string
+    {
         if (defined('CF_TURNSTILE_SECRET_KEY') && CF_TURNSTILE_SECRET_KEY) return (string)CF_TURNSTILE_SECRET_KEY;
         $opts = self::get_options();
         return (string)($opts['turnstile_secret_key'] ?? '');
     }
 
-    private static function verify_turnstile(string $token, string $ip): bool {
+    private static function verify_turnstile(string $token, string $ip): bool
+    {
         $secret = self::get_turnstile_secret_key();
         if (!$secret || !$token) return false;
 
@@ -709,7 +771,8 @@ final class UVE_Mailrelay_Newsletter {
 
     // ----- Mailrelay API -----
 
-    private static function mailrelay_subscribe_with_confirmation(string $email, array $group_ids, bool $accepted, string $ip): array {
+    private static function mailrelay_subscribe_with_confirmation(string $email, array $group_ids, bool $accepted, string $ip): array
+    {
         $opts = self::get_options();
         $base = rtrim((string)$opts['api_base_url'], '/');
         $token = (string)$opts['api_token'];
@@ -760,7 +823,8 @@ final class UVE_Mailrelay_Newsletter {
         return $out;
     }
 
-    private static function mailrelay_resend_confirmation(string $base, string $token, int $subscriber_id): array {
+    private static function mailrelay_resend_confirmation(string $base, string $token, int $subscriber_id): array
+    {
         $url = $base . '/subscribers/' . $subscriber_id . '/resend_confirmation_email';
         $resp = wp_remote_post($url, [
             'timeout' => 15,
@@ -778,7 +842,8 @@ final class UVE_Mailrelay_Newsletter {
         return ['ok' => ($code >= 200 && $code < 300), 'http_code' => $code, 'body' => $body];
     }
 
-    private static function extract_subscriber_id_from_body(string $body): ?int {
+    private static function extract_subscriber_id_from_body(string $body): ?int
+    {
         if (!$body) return null;
         $data = json_decode($body, true);
         if (!is_array($data)) return null;
@@ -794,7 +859,8 @@ final class UVE_Mailrelay_Newsletter {
         return null;
     }
 
-    private static function find_subscriber_id_by_email_best_effort(string $base, string $token, string $email): ?int {
+    private static function find_subscriber_id_by_email_best_effort(string $base, string $token, string $email): ?int
+    {
         $variants = [
             $base . '/subscribers?email=' . rawurlencode($email),
             $base . '/subscribers?search=' . rawurlencode($email),
@@ -836,7 +902,8 @@ final class UVE_Mailrelay_Newsletter {
         return null;
     }
 
-    private static function mailrelay_post_json(string $url, string $token, array $payload): array {
+    private static function mailrelay_post_json(string $url, string $token, array $payload): array
+    {
         $resp = wp_remote_post($url, [
             'timeout' => 15,
             'headers' => [
@@ -868,7 +935,8 @@ final class UVE_Mailrelay_Newsletter {
 
     // ----- Insert with backward-compatible columns -----
 
-    private static function store_consent_log_compatible(array $row): void {
+    private static function store_consent_log_compatible(array $row): void
+    {
         global $wpdb;
         $opts = self::get_options();
         $table = self::table_name();
@@ -905,21 +973,25 @@ final class UVE_Mailrelay_Newsletter {
         $wpdb->insert($table, $filtered);
     }
 
-    private static function current_url(): string {
+    private static function current_url(): string
+    {
         $scheme = is_ssl() ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'] ?? '';
         $uri  = $_SERVER['REQUEST_URI'] ?? '';
         return esc_url_raw($scheme . '://' . $host . $uri);
     }
 
-    private static function get_client_ip(): string {
+    private static function get_client_ip(): string
+    {
         $ip = (string)($_SERVER['REMOTE_ADDR'] ?? '');
         return preg_replace('/[^0-9a-fA-F\.:]/', '', $ip);
     }
 }
 
-class UVE_MR_Newsletter_Widget extends WP_Widget {
-    public function __construct() {
+class UVE_MR_Newsletter_Widget extends WP_Widget
+{
+    public function __construct()
+    {
         parent::__construct(
             'uve_mr_newsletter_widget',
             'Uve Mailrelay Newsletter',
@@ -927,7 +999,8 @@ class UVE_MR_Newsletter_Widget extends WP_Widget {
         );
     }
 
-    public function widget($args, $instance) {
+    public function widget($args, $instance)
+    {
         echo $args['before_widget'] ?? '';
         $opts = UVE_Mailrelay_Newsletter::get_options();
 
@@ -946,7 +1019,8 @@ class UVE_MR_Newsletter_Widget extends WP_Widget {
         echo $args['after_widget'] ?? '';
     }
 
-    public function form($instance) {
+    public function form($instance)
+    {
         $opts = UVE_Mailrelay_Newsletter::get_options();
         $title = esc_attr($instance['title'] ?? $opts['title']);
         $description = esc_attr($instance['description'] ?? $opts['description']);
@@ -956,35 +1030,36 @@ class UVE_MR_Newsletter_Widget extends WP_Widget {
         $privacy_url = esc_attr($instance['privacy_url'] ?? $opts['privacy_url']);
         $consent_label = esc_attr($instance['consent_label'] ?? $opts['consent_label']);
         $class = esc_attr($instance['class'] ?? '');
-        ?>
+    ?>
         <p><label>Título
-            <input class="widefat" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>">
-        </label></p>
+                <input class="widefat" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>">
+            </label></p>
         <p><label>Descripción
-            <input class="widefat" name="<?php echo $this->get_field_name('description'); ?>" type="text" value="<?php echo $description; ?>">
-        </label></p>
+                <input class="widefat" name="<?php echo $this->get_field_name('description'); ?>" type="text" value="<?php echo $description; ?>">
+            </label></p>
         <p><label>Placeholder email
-            <input class="widefat" name="<?php echo $this->get_field_name('email_placeholder'); ?>" type="text" value="<?php echo $email_placeholder; ?>">
-        </label></p>
+                <input class="widefat" name="<?php echo $this->get_field_name('email_placeholder'); ?>" type="text" value="<?php echo $email_placeholder; ?>">
+            </label></p>
         <p><label>Texto botón
-            <input class="widefat" name="<?php echo $this->get_field_name('submit_label'); ?>" type="text" value="<?php echo $submit_label; ?>">
-        </label></p>
+                <input class="widefat" name="<?php echo $this->get_field_name('submit_label'); ?>" type="text" value="<?php echo $submit_label; ?>">
+            </label></p>
         <p><label>Group IDs
-            <input class="widefat" name="<?php echo $this->get_field_name('group_ids'); ?>" type="text" value="<?php echo $group_ids; ?>">
-        </label></p>
+                <input class="widefat" name="<?php echo $this->get_field_name('group_ids'); ?>" type="text" value="<?php echo $group_ids; ?>">
+            </label></p>
         <p><label>URL privacidad
-            <input class="widefat" name="<?php echo $this->get_field_name('privacy_url'); ?>" type="text" value="<?php echo $privacy_url; ?>">
-        </label></p>
+                <input class="widefat" name="<?php echo $this->get_field_name('privacy_url'); ?>" type="text" value="<?php echo $privacy_url; ?>">
+            </label></p>
         <p><label>Texto consentimiento
-            <input class="widefat" name="<?php echo $this->get_field_name('consent_label'); ?>" type="text" value="<?php echo $consent_label; ?>">
-        </label></p>
+                <input class="widefat" name="<?php echo $this->get_field_name('consent_label'); ?>" type="text" value="<?php echo $consent_label; ?>">
+            </label></p>
         <p><label>Clase CSS extra (opcional)
-            <input class="widefat" name="<?php echo $this->get_field_name('class'); ?>" type="text" value="<?php echo $class; ?>">
-        </label></p>
-        <?php
+                <input class="widefat" name="<?php echo $this->get_field_name('class'); ?>" type="text" value="<?php echo $class; ?>">
+            </label></p>
+<?php
     }
 
-    public function update($new_instance, $old_instance) {
+    public function update($new_instance, $old_instance)
+    {
         $instance = [];
         $instance['title'] = sanitize_text_field($new_instance['title'] ?? '');
         $instance['description'] = sanitize_text_field($new_instance['description'] ?? '');
