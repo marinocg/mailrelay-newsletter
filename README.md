@@ -61,6 +61,11 @@ Install dev tools:
 composer install
 ```
 
+Create local PHPUnit config:
+```
+cp phpunit.xml.dist phpunit.xml
+```
+
 Run checks:
 ```
 composer run phpcs

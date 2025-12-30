@@ -43,7 +43,7 @@ jobs:
           find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
           php vendor/bin/phpcs
           php vendor/bin/phpstan analyse
-          php vendor/bin/phpunit
+          php vendor/bin/phpunit --configuration phpunit.xml.dist
 
       - name: Configure git
         run: |
