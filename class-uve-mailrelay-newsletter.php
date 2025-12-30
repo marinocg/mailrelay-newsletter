@@ -36,7 +36,7 @@ final class UVE_Mailrelay_Newsletter {
 	const TABLE       = 'uve_mr_newsletter_consent';
 	const NONCE       = 'uve_mr_subscribe_nonce';
 	const CRON_PURGE  = 'uve_mr_newsletter_purge_logs';
-	const VERSION    = '1.6.1';
+	const VERSION     = '1.6.1';
 	const TEXT_DOMAIN = 'uve-mailrelay-newsletter';
 
 	/**
