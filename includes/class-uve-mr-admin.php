@@ -71,6 +71,7 @@ final class UVE_MR_Admin {
 		$out['description']       = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['description'] ?? $def['description'] ) ) );
 		$out['email_placeholder'] = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['email_placeholder'] ?? $def['email_placeholder'] ) ) );
 		$out['submit_label']      = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['submit_label'] ?? $def['submit_label'] ) ) );
+		$out['ajax_mode']         = ! empty( $raw['ajax_mode'] ) ? '1' : '0';
 
 		$out['privacy_url']   = esc_url_raw( trim( (string) ( $raw['privacy_url'] ?? $def['privacy_url'] ) ) );
 		$out['consent_label'] = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['consent_label'] ?? $def['consent_label'] ) ) );
@@ -175,6 +176,10 @@ final class UVE_MR_Admin {
 							<p><label><?php echo esc_html__( 'Button text', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="text" class="regular-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[submit_label]" value="<?php echo esc_attr( $opts['submit_label'] ); ?>">
 								</label></p>
+							<p>
+								<label><input type="checkbox" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[ajax_mode]" value="1" <?php checked( $opts['ajax_mode'] ?? '0', '1' ); ?>>
+									<?php echo esc_html__( 'Enable AJAX submissions', 'uve-mailrelay-newsletter' ); ?></label>
+							</p>
 						</td>
 					</tr>
 

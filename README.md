@@ -47,6 +47,7 @@ Open Settings -> MR4WP and set:
 - Turnstile site and secret keys.
 - Text labels and GDPR consent text.
 - Log retention and rate limits.
+- Enable AJAX submissions (optional).
 
 ## Logs and GDPR
 Logs are stored in a dedicated table. You can:

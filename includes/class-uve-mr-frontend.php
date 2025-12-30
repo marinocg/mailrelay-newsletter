@@ -22,6 +22,13 @@ final class UVE_MR_Frontend {
 	private static bool $assets_requested = false;
 
 	/**
+	 * Whether AJAX assets were requested on the current request.
+	 *
+	 * @var bool
+	 */
+	private static bool $ajax_requested = false;
+
+	/**
 	 * Register the shortcode.
 	 *
 	 * @return void
@@ -48,6 +55,7 @@ final class UVE_MR_Frontend {
 				'privacy_url'       => $opts['privacy_url'],
 				'consent_label'     => $opts['consent_label'],
 				'class'             => '',
+				'ajax'              => $opts['ajax_mode'] ?? '0',
 			),
 			is_array( $atts ) ? $atts : array()
 		);
@@ -112,6 +120,48 @@ final class UVE_MR_Frontend {
 			},
 			50
 		);
+
+		add_action(
+			'wp_footer',
+			function () {
+				if ( ! self::$ajax_requested ) {
+					return;
+				}
+				?>
+			<script>
+				(function() {
+					function submitForm(form) {
+						var url = form.getAttribute('data-ajax-url');
+						if (!url) return;
+						var data = new FormData(form);
+						data.set('action', 'uve_mr_subscribe_ajax');
+
+						fetch(url, { method: 'POST', body: data, credentials: 'same-origin' })
+							.then(function(resp) { return resp.json(); })
+							.then(function(payload) {
+								var target = form.closest('.uve-mr-newsletter').querySelector('.uve-mr-response');
+								if (!target || !payload || !payload.data) return;
+								var status = payload.data.status || 'error';
+								var message = payload.data.message || '';
+								var cls = (status === 'ok') ? 'uve-mr-ok' : 'uve-mr-err';
+								target.innerHTML = '<p class="uve-mr-msg ' + cls + '">' + message + '</p>';
+							})
+							.catch(function() {});
+					}
+
+					document.addEventListener('submit', function(ev) {
+						var form = ev.target;
+						if (!form || !form.classList.contains('uve-mr-form')) return;
+						if (form.getAttribute('data-ajax') !== '1') return;
+						ev.preventDefault();
+						submitForm(form);
+					});
+				})();
+			</script>
+				<?php
+			},
+			60
+		);
 	}
 
 	/**
@@ -131,9 +181,11 @@ final class UVE_MR_Frontend {
 		$privacy_url       = $args['privacy_url'] ?? '';
 		$consent_label     = $args['consent_label'] ?? __( 'I accept the privacy policy', 'uve-mailrelay-newsletter' );
 		$class             = $args['class'] ?? '';
+		$ajax_enabled      = '1' === (string) ( $args['ajax'] ?? '0' );
 
 		$site_key = UVE_MR_Turnstile::get_site_key();
 		$action   = admin_url( 'admin-post.php' );
+		$ajax_url = admin_url( 'admin-ajax.php' );
 
 		$msg_html = '';
 		if ( isset( $_GET['uve_mr_status'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -162,7 +214,10 @@ final class UVE_MR_Frontend {
 		}
 
 		$template_path = self::resolve_template_path();
-		$context       = array(
+		if ( $ajax_enabled ) {
+			self::$ajax_requested = true;
+		}
+		$context = array(
 			'email_placeholder' => $email_placeholder,
 			'title'             => $title,
 			'desc'              => $desc,
@@ -174,6 +229,8 @@ final class UVE_MR_Frontend {
 			'site_key'          => $site_key,
 			'action'            => $action,
 			'msg_html'          => $msg_html,
+			'ajax_enabled'      => $ajax_enabled,
+			'ajax_url'          => $ajax_url,
 		);
 
 		ob_start();
@@ -188,6 +245,8 @@ final class UVE_MR_Frontend {
 		$site_key          = $context['site_key'];
 		$action            = $context['action'];
 		$msg_html          = $context['msg_html'];
+		$ajax_enabled      = $context['ajax_enabled'];
+		$ajax_url          = $context['ajax_url'];
 		require $template_path;
 		return (string) ob_get_clean();
 	}

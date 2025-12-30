@@ -56,6 +56,8 @@ final class UVE_Mailrelay_Newsletter {
 
 		add_action( 'admin_post_nopriv_uve_mr_subscribe', array( 'UVE_MR_Submit', 'handle_submit' ) );
 		add_action( 'admin_post_uve_mr_subscribe', array( 'UVE_MR_Submit', 'handle_submit' ) );
+		add_action( 'wp_ajax_nopriv_uve_mr_subscribe_ajax', array( 'UVE_MR_Submit', 'handle_submit_ajax' ) );
+		add_action( 'wp_ajax_uve_mr_subscribe_ajax', array( 'UVE_MR_Submit', 'handle_submit_ajax' ) );
 
 		add_action( self::CRON_PURGE, array( 'UVE_MR_Logs', 'purge_old_logs_cron' ) );
 
@@ -85,6 +87,7 @@ final class UVE_Mailrelay_Newsletter {
 			'description'                   => __( 'Subscribe and stay up to date with our news', 'uve-mailrelay-newsletter' ),
 			'email_placeholder'             => __( 'Email...', 'uve-mailrelay-newsletter' ),
 			'submit_label'                  => __( 'Subscribe', 'uve-mailrelay-newsletter' ),
+			'ajax_mode'                     => '0',
 
 			// GDPR.
 			'privacy_url'                   => '',

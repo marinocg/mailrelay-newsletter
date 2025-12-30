@@ -122,6 +122,7 @@ function add_options_page( string $page_title, string $menu_title, string $capab
 function register_setting( string $group, string $name, array $args = array() ): void {}
 function register_activation_hook( string $file, $callback ): void {}
 function register_deactivation_hook( string $file, $callback ): void {}
+function wp_verify_nonce( string $nonce, string $action ): bool { return true; }
 function wp_next_scheduled( string $hook ) {
 	return false;
 }
@@ -233,6 +234,14 @@ function is_wp_error( $thing ): bool {
 
 function wp_json_encode( $value ): string {
 	return json_encode( $value );
+}
+
+function wp_send_json_success( array $data ): void {
+	echo wp_json_encode( array( 'success' => true, 'data' => $data ) );
+}
+
+function wp_send_json_error( array $data ): void {
+	echo wp_json_encode( array( 'success' => false, 'data' => $data ) );
 }
 
 function get_transient( string $key ) {

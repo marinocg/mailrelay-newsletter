@@ -28,4 +28,5 @@ class Controls_Manager {
 	public const TEXT        = 'text';
 	public const TEXTAREA    = 'textarea';
 	public const URL         = 'url';
+	public const SWITCHER    = 'switcher';
 }
