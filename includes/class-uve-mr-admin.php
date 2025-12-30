@@ -67,13 +67,13 @@ final class UVE_MR_Admin {
 		$out['turnstile_site_key']   = sanitize_text_field( (string) ( $raw['turnstile_site_key'] ?? $def['turnstile_site_key'] ) );
 		$out['turnstile_secret_key'] = sanitize_text_field( (string) ( $raw['turnstile_secret_key'] ?? $def['turnstile_secret_key'] ) );
 
-		$out['title']             = sanitize_text_field( (string) ( $raw['title'] ?? $def['title'] ) );
-		$out['description']       = sanitize_text_field( (string) ( $raw['description'] ?? $def['description'] ) );
-		$out['email_placeholder'] = sanitize_text_field( (string) ( $raw['email_placeholder'] ?? $def['email_placeholder'] ) );
-		$out['submit_label']      = sanitize_text_field( (string) ( $raw['submit_label'] ?? $def['submit_label'] ) );
+		$out['title']             = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['title'] ?? $def['title'] ) ) );
+		$out['description']       = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['description'] ?? $def['description'] ) ) );
+		$out['email_placeholder'] = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['email_placeholder'] ?? $def['email_placeholder'] ) ) );
+		$out['submit_label']      = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['submit_label'] ?? $def['submit_label'] ) ) );
 
 		$out['privacy_url']   = esc_url_raw( trim( (string) ( $raw['privacy_url'] ?? $def['privacy_url'] ) ) );
-		$out['consent_label'] = sanitize_text_field( (string) ( $raw['consent_label'] ?? $def['consent_label'] ) );
+		$out['consent_label'] = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['consent_label'] ?? $def['consent_label'] ) ) );
 
 		$out['store_consent_log'] = ! empty( $raw['store_consent_log'] ) ? '1' : '0';
 		$out['hash_ip']           = ! empty( $raw['hash_ip'] ) ? '1' : '0';
