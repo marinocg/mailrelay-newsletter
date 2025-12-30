@@ -150,11 +150,47 @@ final class UVE_Mailrelay_Newsletter {
 	 * @return void
 	 */
 	public static function load_textdomain(): void {
-		load_plugin_textdomain(
-			'uve-mailrelay-newsletter',
-			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages'
-		);
+		$domain   = 'uve-mailrelay-newsletter';
+		$lang_dir = __DIR__ . '/languages';
+
+		if ( function_exists( 'determine_locale' ) ) {
+			$locale = determine_locale();
+		} elseif ( function_exists( 'get_locale' ) ) {
+			$locale = get_locale();
+		} else {
+			$locale = 'en_US';
+		}
+
+		$mo_file = $lang_dir . '/' . $domain . '-' . $locale . '.mo';
+		$po_file = $lang_dir . '/' . $domain . '-' . $locale . '.po';
+
+		if ( ! file_exists( $mo_file ) && file_exists( $po_file ) ) {
+			$pomo_dir = defined( 'WPINC' ) ? ABSPATH . WPINC . '/pomo' : ABSPATH . 'wp-includes/pomo';
+			$po_path  = $pomo_dir . '/po.php';
+			$mo_path  = $pomo_dir . '/mo.php';
+
+			if ( file_exists( $po_path ) && file_exists( $mo_path ) ) {
+				require_once $po_path;
+				require_once $mo_path;
+
+				if ( class_exists( 'PO' ) && class_exists( 'MO' ) ) {
+					$po = new PO();
+					if ( $po->import_from_file( $po_file ) ) {
+						$mo          = new MO();
+						$mo->entries = $po->entries;
+						$mo->headers = $po->headers;
+
+						$mo->export_to_file( $mo_file );
+					}
+				}
+			}
+		}
+
+		load_plugin_textdomain( $domain, false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+
+		if ( file_exists( $mo_file ) && function_exists( 'load_textdomain' ) ) {
+			load_textdomain( $domain, $mo_file );
+		}
 	}
 
 	/**

@@ -5,6 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/../' );
 }
 
+if ( ! defined( 'WPINC' ) ) {
+	define( 'WPINC', 'wp-includes' );
+}
+
 if ( ! defined( 'HOUR_IN_SECONDS' ) ) {
 	define( 'HOUR_IN_SECONDS', 3600 );
 }
@@ -122,6 +126,10 @@ function add_options_page( string $page_title, string $menu_title, string $capab
 function register_setting( string $group, string $name, array $args = array() ): void {}
 function register_activation_hook( string $file, $callback ): void {}
 function register_deactivation_hook( string $file, $callback ): void {}
+function load_textdomain( string $domain, string $mofile ): bool { return true; }
+function load_plugin_textdomain( string $domain, bool $deprecated = false, string $plugin_rel_path = '' ): bool { return true; }
+function determine_locale(): string { return 'en_US'; }
+function get_locale(): string { return 'en_US'; }
 function wp_verify_nonce( string $nonce, string $action ): bool { return true; }
 function wp_next_scheduled( string $hook ) {
 	return false;
