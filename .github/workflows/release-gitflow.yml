@@ -38,11 +38,12 @@ jobs:
           php -r "unlink('composer-setup.php');"
           php composer.phar install --no-interaction --no-progress
 
-      - name: Lint + PHPCS + PHPStan (gate)
+      - name: Lint + PHPCS + PHPStan + PHPUnit (gate)
         run: |
           find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
           php vendor/bin/phpcs
           php vendor/bin/phpstan analyse
+          php vendor/bin/phpunit --configuration phpunit.xml.dist
 
       - name: Configure git
         run: |
@@ -60,13 +61,22 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          # Plugin main file: update "Version: x.y.z"
-          sed -i -E "s/^\\s*Version:\\s*.*/Version: ${VERSION}/" class-uve-mailrelay-newsletter.php
-          sed -i -E "s/^\\s*const VERSION\\s*=\\s*'[^']*';/const VERSION    = '${VERSION}';/" class-uve-mailrelay-newsletter.php
+          # Plugin main file: update "Version: x.y.z" and const VERSION.
+          sed -i -E "s/^([[:space:]]*\\*?[[:space:]]*)Version:[[:space:]]*.*/\\1Version: ${VERSION}/" class-uve-mailrelay-newsletter.php
+          sed -i -E "s/^([[:space:]]*)const VERSION[[:space:]]*=[[:space:]]*'[^']*';/\\1const VERSION    = '${VERSION}';/" class-uve-mailrelay-newsletter.php
 
           # WP readme stable tag
           if [ -f readme.txt ]; then
             sed -i -E "s/^Stable tag:\\s*.*/Stable tag: ${VERSION}/" readme.txt
+          fi
+
+          # Translation files project version
+          if [ -d languages ]; then
+            for file in languages/*.po languages/*.pot; do
+              if [ -f "$file" ]; then
+                sed -i -E "s/^\"Project-Id-Version: .*\"/\"Project-Id-Version: MR4WP ${VERSION}\"/" "$file"
+              fi
+            done
           fi
 
           # Changelog: move Unreleased into version heading (simple)
@@ -96,7 +106,7 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          git add class-uve-mailrelay-newsletter.php readme.txt CHANGELOG.md || true
+          git add class-uve-mailrelay-newsletter.php readme.txt CHANGELOG.md languages/*.po languages/*.pot || true
           git commit -m "chore(release): v${VERSION}" || echo "No changes to commit"
 
       - name: Push release branch

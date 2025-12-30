@@ -1,0 +1,208 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: MR4WP 1.6.0"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-01 00:00+0000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Newsletter"
+msgstr ""
+
+msgid "Subscribe and stay up to date with our news"
+msgstr ""
+
+msgid "Email..."
+msgstr ""
+
+msgid "Subscribe"
+msgstr ""
+
+msgid "I agree to receive the newsletter and have read the privacy policy"
+msgstr ""
+
+msgid "Purged %s records."
+msgstr ""
+
+msgid "MR4WP"
+msgstr ""
+
+msgid "Mailrelay API base URL"
+msgstr ""
+
+msgid "Mailrelay API token"
+msgstr ""
+
+msgid "Group IDs"
+msgstr ""
+
+msgid "Subscription mode"
+msgstr ""
+
+msgid "Double opt-in (inactive + confirmation)"
+msgstr ""
+
+msgid "Single opt-in (active)"
+msgstr ""
+
+msgid "Turnstile Site Key"
+msgstr ""
+
+msgid "Turnstile Secret Key"
+msgstr ""
+
+msgid "Texts"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Email placeholder"
+msgstr ""
+
+msgid "Button text"
+msgstr ""
+
+msgid "GDPR + Logs"
+msgstr ""
+
+msgid "Privacy policy URL"
+msgstr ""
+
+msgid "Checkbox text"
+msgstr ""
+
+msgid "Store log in database"
+msgstr ""
+
+msgid "Store IP as hash"
+msgstr ""
+
+msgid "Retention (days)"
+msgstr ""
+
+msgid "Rate limit"
+msgstr ""
+
+msgid "Max attempts per IP+email"
+msgstr ""
+
+msgid "Window (seconds)"
+msgstr ""
+
+msgid "Max confirmation resends per IP+email (0 = disable)"
+msgstr ""
+
+msgid "Confirmation window (seconds)"
+msgstr ""
+
+msgid "Shortcode"
+msgstr ""
+
+msgid "Recent logs"
+msgstr ""
+
+msgid "Purge now"
+msgstr ""
+
+msgid "The logs table does not exist yet. Deactivate and reactivate the plugin to create it."
+msgstr ""
+
+msgid "The table exists but columns could not be read."
+msgstr ""
+
+msgid "No records yet."
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Consent"
+msgstr ""
+
+msgid "IP"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Signup"
+msgstr ""
+
+msgid "Confirmation email"
+msgstr ""
+
+msgid "yes"
+msgstr ""
+
+msgid "no"
+msgstr ""
+
+msgid "Confirmation columns do not exist yet. The plugin should add them automatically on activation (dbDelta)."
+msgstr ""
+
+msgid "I accept the privacy policy"
+msgstr ""
+
+msgid "Thanks. If the email is valid, you will receive a confirmation email (or you were already subscribed)."
+msgstr ""
+
+msgid "Please verify you are human."
+msgstr ""
+
+msgid "You must accept the privacy policy."
+msgstr ""
+
+msgid "We could not complete the request. Please try again."
+msgstr ""
+
+msgid "Leave this field empty"
+msgstr ""
+
+msgid "view"
+msgstr ""
+
+msgid "You can unsubscribe at any time using the link in each email."
+msgstr ""
+
+msgid "Enable JavaScript to subscribe."
+msgstr ""
+
+msgid "Turnstile is not configured (Site Key)."
+msgstr ""
+
+msgid "Newsletter form with Turnstile + Mailrelay API + double opt-in (neutral message) and logs."
+msgstr ""
+
+msgid "Privacy URL"
+msgstr ""
+
+msgid "Consent text"
+msgstr ""
+
+msgid "Extra CSS class (optional)"
+msgstr ""
+
+msgid "Content"
+msgstr ""
+
+msgid "Extra CSS class"
+msgstr ""
+
+msgid "Uve Mailrelay"
+msgstr ""

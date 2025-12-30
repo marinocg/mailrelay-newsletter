@@ -1,10 +1,10 @@
-=== Uve Mailrelay Newsletter ===
+=== MR4WP ===
 Contributors: uve
 Tags: newsletter, mailrelay, turnstile, gdpr
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.5.0
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,7 +19,7 @@ Newsletter subscription with Mailrelay API + Cloudflare Turnstile + consent logg
 == Installation ==
 1. Upload the plugin ZIP.
 2. Activate it.
-3. Configure Settings → Uve Mailrelay Newsletter.
+3. Configure Settings → MR4WP.
 
 == Changelog ==
 = 1.4.1 =
