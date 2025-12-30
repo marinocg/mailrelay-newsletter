@@ -3,6 +3,10 @@
 ## Unreleased
 - Pending
 
+## 1.7.0
+-
+
+
 ## 1.6.2
 - Test release with new workflow (no changes)
 
