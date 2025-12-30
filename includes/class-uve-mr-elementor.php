@@ -28,7 +28,7 @@ final class UVE_MR_Elementor {
 		$elements_manager->add_category(
 			'uve-mailrelay',
 			array(
-				'title' => 'Uve Mailrelay',
+				'title' => __( 'Uve Mailrelay', 'uve-mailrelay-newsletter' ),
 				'icon'  => 'fa fa-envelope',
 			)
 		);

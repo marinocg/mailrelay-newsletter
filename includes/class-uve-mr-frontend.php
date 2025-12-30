@@ -123,13 +123,13 @@ final class UVE_MR_Frontend {
 	private static function render_form( array $args ): string {
 		self::ensure_assets();
 
-		$email_placeholder = $args['email_placeholder'] ?? 'Email...';
+		$email_placeholder = $args['email_placeholder'] ?? __( 'Email...', 'uve-mailrelay-newsletter' );
 		$title             = $args['title'] ?? '';
 		$desc              = $args['description'] ?? '';
-		$submit            = $args['submit_label'] ?? 'Suscribir';
+		$submit            = $args['submit_label'] ?? __( 'Suscribir', 'uve-mailrelay-newsletter' );
 		$group_ids         = $args['group_ids'] ?? '';
 		$privacy_url       = $args['privacy_url'] ?? '';
-		$consent_label     = $args['consent_label'] ?? 'Acepto la polA-tica de privacidad';
+		$consent_label     = $args['consent_label'] ?? __( 'Acepto la política de privacidad', 'uve-mailrelay-newsletter' );
 		$class             = $args['class'] ?? '';
 
 		$site_key = UVE_MR_Turnstile::get_site_key();
@@ -139,13 +139,25 @@ final class UVE_MR_Frontend {
 		if ( isset( $_GET['uve_mr_status'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$st = sanitize_text_field( (string) wp_unslash( $_GET['uve_mr_status'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			if ( 'ok' === $st ) {
-				$msg_html = '<p class="uve-mr-msg uve-mr-ok">Gracias. Si el email es valido, recibiras un correo para confirmar (o ya estabas suscrito).</p>';
+				$msg_html = sprintf(
+					'<p class="uve-mr-msg uve-mr-ok">%s</p>',
+					esc_html__( 'Gracias. Si el email es válido, recibirás un correo para confirmar (o ya estabas suscrito).', 'uve-mailrelay-newsletter' )
+				);
 			} elseif ( 'captcha' === $st ) {
-				$msg_html = '<p class="uve-mr-msg uve-mr-err">Por favor, verifica que eres humano.</p>';
+				$msg_html = sprintf(
+					'<p class="uve-mr-msg uve-mr-err">%s</p>',
+					esc_html__( 'Por favor, verifica que eres humano.', 'uve-mailrelay-newsletter' )
+				);
 			} elseif ( 'consent' === $st ) {
-				$msg_html = '<p class="uve-mr-msg uve-mr-err">Debes aceptar la politica de privacidad.</p>';
+				$msg_html = sprintf(
+					'<p class="uve-mr-msg uve-mr-err">%s</p>',
+					esc_html__( 'Debes aceptar la política de privacidad.', 'uve-mailrelay-newsletter' )
+				);
 			} else {
-				$msg_html = '<p class="uve-mr-msg uve-mr-err">No se pudo completar la solicitud. IntAcntalo de nuevo.</p>';
+				$msg_html = sprintf(
+					'<p class="uve-mr-msg uve-mr-err">%s</p>',
+					esc_html__( 'No se pudo completar la solicitud. Inténtalo de nuevo.', 'uve-mailrelay-newsletter' )
+				);
 			}
 		}
 
@@ -177,7 +189,7 @@ final class UVE_MR_Frontend {
 					</p>
 
 					<div style="position:absolute;left:-9999px;height:0;overflow:hidden;" aria-hidden="true">
-						<label>Deja este campo vacA-o</label>
+						<label><?php echo esc_html__( 'Deja este campo vacío', 'uve-mailrelay-newsletter' ); ?></label>
 						<input type="text" name="uve_mr_hp" tabindex="-1" autocomplete="off" value="">
 					</div>
 
@@ -188,9 +200,9 @@ final class UVE_MR_Frontend {
 							<span>
 								<?php echo esc_html( $consent_label ); ?>
 								<?php if ( $privacy_url ) : ?>
-									<a href="<?php echo esc_url( $privacy_url ); ?>" rel="noopener" target="_blank">(ver)</a>
+									<a href="<?php echo esc_url( $privacy_url ); ?>" rel="noopener" target="_blank">(<?php echo esc_html__( 'ver', 'uve-mailrelay-newsletter' ); ?>)</a>
 								<?php endif; ?>
-								<br><small>Puedes darte de baja en cualquier momento desde el enlace de cada email.</small>
+								<br><small><?php echo esc_html__( 'Puedes darte de baja en cualquier momento desde el enlace de cada email.', 'uve-mailrelay-newsletter' ); ?></small>
 							</span>
 						</label>
 					</p>
@@ -198,10 +210,10 @@ final class UVE_MR_Frontend {
 					<?php if ( $site_key ) : ?>
 						<div class="uve-mr-turnstile" data-sitekey="<?php echo esc_attr( $site_key ); ?>"></div>
 						<noscript>
-							<p>Activa JavaScript para poder suscribirte.</p>
+							<p><?php echo esc_html__( 'Activa JavaScript para poder suscribirte.', 'uve-mailrelay-newsletter' ); ?></p>
 						</noscript>
 					<?php else : ?>
-						<p class="uve-mr-msg uve-mr-err">Falta configurar Turnstile (Site Key).</p>
+						<p class="uve-mr-msg uve-mr-err"><?php echo esc_html__( 'Falta configurar Turnstile (Site Key).', 'uve-mailrelay-newsletter' ); ?></p>
 					<?php endif; ?>
 
 					<p class="msubmit" style="margin-top: 10px;">

@@ -5,6 +5,8 @@
  * Version: 1.5.0
  * Author: Uve / Custom
  * License: GPLv3 or later
+ * Text Domain: uve-mailrelay-newsletter
+ * Domain Path: /languages
  *
  * @package UVE_Mailrelay_Newsletter
  * @phpcsSuppress WordPress.Files.FileName.InvalidClassFileName
@@ -30,11 +32,12 @@ require_once __DIR__ . '/includes/class-uve-mr-newsletter-widget.php';
  */
 final class UVE_Mailrelay_Newsletter {
 
-	const OPT_KEY    = 'uve_mr_newsletter_options';
-	const TABLE      = 'uve_mr_newsletter_consent';
-	const NONCE      = 'uve_mr_subscribe_nonce';
-	const CRON_PURGE = 'uve_mr_newsletter_purge_logs';
-	const VERSION    = '1.5.0';
+	const OPT_KEY     = 'uve_mr_newsletter_options';
+	const TABLE       = 'uve_mr_newsletter_consent';
+	const NONCE       = 'uve_mr_subscribe_nonce';
+	const CRON_PURGE  = 'uve_mr_newsletter_purge_logs';
+	const VERSION     = '1.5.0';
+	const TEXT_DOMAIN = 'uve-mailrelay-newsletter';
 
 	/**
 	 * Register hooks and handlers.
@@ -42,6 +45,7 @@ final class UVE_Mailrelay_Newsletter {
 	 * @return void
 	 */
 	public static function init(): void {
+		add_action( 'plugins_loaded', array( __CLASS__, 'load_textdomain' ) );
 		add_action( 'init', array( 'UVE_MR_Frontend', 'register_shortcode' ) );
 		add_action( 'widgets_init', array( 'UVE_MR_Widgets', 'register_widget' ) );
 		add_action( 'elementor/widgets/register', array( 'UVE_MR_Elementor', 'register_elementor_widget' ) );
@@ -76,14 +80,14 @@ final class UVE_Mailrelay_Newsletter {
 			'turnstile_secret_key'          => '',
 
 			// UI texts.
-			'title'                         => 'Newsletter',
-			'description'                   => 'SuscrA-bete y estarA­s al tanto de nuestras novedades',
-			'email_placeholder'             => 'Email...',
-			'submit_label'                  => 'Suscribir',
+			'title'                         => __( 'Newsletter', 'uve-mailrelay-newsletter' ),
+			'description'                   => __( 'Suscríbete y estarás al tanto de nuestras novedades', 'uve-mailrelay-newsletter' ),
+			'email_placeholder'             => __( 'Email...', 'uve-mailrelay-newsletter' ),
+			'submit_label'                  => __( 'Suscribir', 'uve-mailrelay-newsletter' ),
 
 			// GDPR.
 			'privacy_url'                   => '',
-			'consent_label'                 => 'Acepto recibir la newsletter y he leA-do la polA-tica de privacidad',
+			'consent_label'                 => __( 'Acepto recibir la newsletter y he leído la política de privacidad', 'uve-mailrelay-newsletter' ),
 			'store_consent_log'             => '1', // String flag (1 or 0).
 			'hash_ip'                       => '1',            // store hashed IP by default.
 			'retention_days'                => 180,     // purge logs older than N days.
@@ -134,6 +138,19 @@ final class UVE_Mailrelay_Newsletter {
 		if ( $ts ) {
 			wp_unschedule_event( $ts, self::CRON_PURGE );
 		}
+	}
+
+	/**
+	 * Load plugin translations.
+	 *
+	 * @return void
+	 */
+	public static function load_textdomain(): void {
+		load_plugin_textdomain(
+			'uve-mailrelay-newsletter',
+			false,
+			dirname( plugin_basename( __FILE__ ) ) . '/languages'
+		);
 	}
 
 	/**

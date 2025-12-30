@@ -101,7 +101,7 @@ final class UVE_MR_Logs {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) );
 		if ( $exists !== $table ) {
-			echo '<p>No existe la tabla de logs todavA-a. Desactiva y reactiva el plugin para crearla.</p>';
+			echo '<p>' . esc_html__( 'No existe la tabla de logs todavía. Desactiva y reactiva el plugin para crearla.', 'uve-mailrelay-newsletter' ) . '</p>';
 			return;
 		}
 
@@ -128,7 +128,7 @@ final class UVE_MR_Logs {
 		}
 
 		if ( ! $select ) {
-			echo '<p>La tabla existe pero no se pudieron leer columnas.</p>';
+			echo '<p>' . esc_html__( 'La tabla existe pero no se pudieron leer columnas.', 'uve-mailrelay-newsletter' ) . '</p>';
 			return;
 		}
 
@@ -146,16 +146,22 @@ final class UVE_MR_Logs {
 		$rows = $wpdb->get_results( $sql, ARRAY_A );
 
 		if ( ! $rows ) {
-			echo '<p>Sin registros aA§n.</p>';
+			echo '<p>' . esc_html__( 'Sin registros aún.', 'uve-mailrelay-newsletter' ) . '</p>';
 			return;
 		}
 
 		$has_confirm = in_array( 'confirmation_requested_at', $select, true ) || in_array( 'confirmation_http_code', $select, true );
 
 		echo '<table class="widefat striped"><thead><tr>';
-		echo '<th>ID</th><th>Fecha</th><th>Email</th><th>Consent</th><th>IP</th><th>Origen</th><th>Create</th>';
+		echo '<th>' . esc_html__( 'ID', 'uve-mailrelay-newsletter' ) . '</th>';
+		echo '<th>' . esc_html__( 'Fecha', 'uve-mailrelay-newsletter' ) . '</th>';
+		echo '<th>' . esc_html__( 'Email', 'uve-mailrelay-newsletter' ) . '</th>';
+		echo '<th>' . esc_html__( 'Consentimiento', 'uve-mailrelay-newsletter' ) . '</th>';
+		echo '<th>' . esc_html__( 'IP', 'uve-mailrelay-newsletter' ) . '</th>';
+		echo '<th>' . esc_html__( 'Origen', 'uve-mailrelay-newsletter' ) . '</th>';
+		echo '<th>' . esc_html__( 'Alta', 'uve-mailrelay-newsletter' ) . '</th>';
 		if ( $has_confirm ) {
-			echo '<th>Confirm email</th>';
+			echo '<th>' . esc_html__( 'Confirmación email', 'uve-mailrelay-newsletter' ) . '</th>';
 		}
 		echo '</tr></thead><tbody>';
 
@@ -180,7 +186,7 @@ final class UVE_MR_Logs {
 			echo '<td>' . esc_html( (string) ( $r['id'] ?? '' ) ) . '</td>';
 			echo '<td>' . esc_html( (string) ( $r['created_at'] ?? '' ) ) . '</td>';
 			echo '<td>' . esc_html( (string) ( $r['email'] ?? '' ) ) . '</td>';
-			echo '<td>' . ( ( 1 === (int) ( $r['accepted'] ?? 0 ) ) ? 'si' : 'no' ) . '</td>';
+			echo '<td>' . esc_html( ( 1 === (int) ( $r['accepted'] ?? 0 ) ) ? __( 'sí', 'uve-mailrelay-newsletter' ) : __( 'no', 'uve-mailrelay-newsletter' ) ) . '</td>';
 			echo '<td><code>' . esc_html( (string) $ip ) . '</code></td>';
 			echo '<td>' . esc_html( (string) ( $r['page_url'] ?? '' ) ) . '</td>';
 			echo '<td>' . esc_html( $create ) . '</td>';
@@ -193,7 +199,7 @@ final class UVE_MR_Logs {
 		echo '</tbody></table>';
 
 		if ( ! $has_confirm ) {
-			echo '<p class="description">Aun no existen columnas de confirmacion. El plugin deberia anadirlas automaticamente al activarse (dbDelta).</p>';
+			echo '<p class="description">' . esc_html__( 'Aún no existen columnas de confirmación. El plugin debería añadirlas automáticamente al activarse (dbDelta).', 'uve-mailrelay-newsletter' ) . '</p>';
 		}
 	}
 
