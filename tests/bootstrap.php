@@ -121,11 +121,19 @@ function is_email( string $email ): bool {
 function add_action( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {}
 function add_filter( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {}
 function add_shortcode( string $tag, $callback ): void {}
+function shortcode_atts( array $pairs, $atts ): array {
+	if ( ! is_array( $atts ) ) {
+		$atts = array();
+	}
+	return array_merge( $pairs, $atts );
+}
 function register_widget( string $class ): void {}
 function add_options_page( string $page_title, string $menu_title, string $capability, string $menu_slug, $callback ): void {}
 function register_setting( string $group, string $name, array $args = array() ): void {}
 function register_activation_hook( string $file, $callback ): void {}
 function register_deactivation_hook( string $file, $callback ): void {}
+function wp_script_is( string $handle, string $status = '' ): bool { return false; }
+function wp_enqueue_script( string $handle, string $src = '', array $deps = array(), $ver = false, $in_footer = false ): void {}
 function load_textdomain( string $domain, string $mofile ): bool { return true; }
 function load_plugin_textdomain( string $domain, bool $deprecated = false, string $plugin_rel_path = '' ): bool { return true; }
 function determine_locale(): string { return 'en_US'; }
