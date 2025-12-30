@@ -156,7 +156,28 @@ jobs:
           fi
 
           # Merge (can fail if branch protection blocks)
-          gh pr merge "$PR_NUMBER" --merge --delete-branch
+          gh pr merge "$PR_NUMBER" --merge
+
+      - name: Merge PR back into develop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          PR_NUMBER=$(gh pr list --state open --head "release/v${VERSION}" --base develop --json number -q '.[0].number')
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No open PR to develop found. Skipping."
+            exit 0
+          fi
+
+          gh pr merge "$PR_NUMBER" --merge
+
+      - name: Delete release branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          BRANCH="release/v${VERSION}"
+          gh api -X DELETE "repos/${{ github.repository }}/git/refs/heads/${BRANCH}" || true
 
       - name: Tag main
         env:
