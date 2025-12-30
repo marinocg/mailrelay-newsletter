@@ -99,5 +99,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 		.uve-mr-err {
 			background: rgba(200, 0, 0, .08);
 		}
+
+		.uve-mr-loading .msubmit input,
+		.uve-mr-loading .msubmit button {
+			opacity: .6;
+			cursor: not-allowed;
+		}
 	</style>
 </div>
