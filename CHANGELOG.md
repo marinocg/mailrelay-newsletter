@@ -1,10 +1,12 @@
 # Changelog
 
 ## Unreleased
-
-## 1.5.0
+- Pending
 
 ## 1.6.0
+- Add elementor support and refactors.
+
+## 1.5.0
 - Initial scaffolding.
 
 ## 1.4.1

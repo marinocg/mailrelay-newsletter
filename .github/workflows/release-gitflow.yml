@@ -79,27 +79,44 @@ jobs:
             done
           fi
 
-          # Changelog: move Unreleased into version heading (simple)
+          # Changelog: insert release notes under version and keep Unreleased at top
           if [ -f CHANGELOG.md ]; then
-            # Prepend a new section if not present
-            if ! grep -q "## ${VERSION}" CHANGELOG.md; then
-              awk -v ver="${VERSION}" '
-                BEGIN{added=0}
-                /^## Unreleased/ && added==0 {
-                  print;
-                  next
-                }
-                /^- / && added==0 {
-                  # first bullet under Unreleased -> insert version header before bullets
-                  print "";
-                  print "## " ver;
-                  added=1;
-                  print;
-                  next
-                }
-                {print}
-              ' CHANGELOG.md > CHANGELOG.tmp && mv CHANGELOG.tmp CHANGELOG.md
+            NOTES="${{ inputs.release_notes }}"
+            if [ -n "$NOTES" ]; then
+              NOTES_FORMATTED=$(printf "%s" "$NOTES" | sed 's/\r//g' | awk 'NF{print "- " $0}')
+            else
+              NOTES_FORMATTED="-"
             fi
+
+            HEADER=$(head -n1 CHANGELOG.md)
+            if [ "$HEADER" != "# Changelog" ]; then
+              HEADER="# Changelog"
+            fi
+
+            awk -v ver="${VERSION}" '
+              BEGIN{skip=0}
+              NR==1 {next}
+              $0=="## Unreleased"{skip=1; next}
+              skip==1 && /^## /{skip=0}
+              skip==1{next}
+              $0=="## " ver {skip=1; next}
+              skip==1 && /^## /{skip=0}
+              skip==1{next}
+              {print}
+            ' CHANGELOG.md > CHANGELOG.body
+
+            {
+              echo "$HEADER"
+              echo ""
+              echo "## Unreleased"
+              echo "- Pending"
+              echo ""
+              echo "## ${VERSION}"
+              echo "$NOTES_FORMATTED"
+              echo ""
+              cat CHANGELOG.body
+            } > CHANGELOG.tmp && mv CHANGELOG.tmp CHANGELOG.md
+            rm -f CHANGELOG.body
           fi
 
       - name: Commit bump
