@@ -131,6 +131,29 @@ final class UVE_MR_Frontend {
 		add_action(
 			'wp_footer',
 			function () {
+				?>
+			<script>
+				(function() {
+					document.addEventListener('submit', function(ev) {
+						var form = ev.target;
+						if (!form || !form.classList || !form.classList.contains('uve-mr-form')) return;
+						var btn = form.querySelector('button[type="submit"], input[type="submit"]');
+						if (btn) {
+							btn.disabled = true;
+							btn.setAttribute('aria-busy', 'true');
+						}
+						form.classList.add('uve-mr-loading');
+					});
+				})();
+			</script>
+				<?php
+			},
+			55
+		);
+
+		add_action(
+			'wp_footer',
+			function () {
 				if ( ! self::$ajax_requested ) {
 					return;
 				}
@@ -138,6 +161,23 @@ final class UVE_MR_Frontend {
 			<script>
 				(function() {
 					var uveMrAjaxFallbackMessage = <?php echo wp_json_encode( self::$ajax_error_msg ); ?>;
+
+					function setLoading(form, isLoading) {
+						var btn = form.querySelector('button[type="submit"], input[type="submit"]');
+						if (btn) {
+							btn.disabled = !!isLoading;
+							if (isLoading) {
+								btn.setAttribute('aria-busy', 'true');
+							} else {
+								btn.removeAttribute('aria-busy');
+							}
+						}
+						if (isLoading) {
+							form.classList.add('uve-mr-loading');
+						} else {
+							form.classList.remove('uve-mr-loading');
+						}
+					}
 
 					function renderMessage(form, status, message) {
 						var wrapper = form.closest('.uve-mr-newsletter');
@@ -159,19 +199,25 @@ final class UVE_MR_Frontend {
 					function submitForm(form) {
 						var url = form.getAttribute('data-ajax-url');
 						if (!url) return;
+						setLoading(form, true);
 						var data = new FormData(form);
 						data.set('action', 'uve_mr_subscribe_ajax');
 
 						fetch(url, { method: 'POST', body: data, credentials: 'same-origin' })
 							.then(function(resp) { return resp.json(); })
 							.then(function(payload) {
-								if (!payload || !payload.data) return;
+								if (!payload || !payload.data) {
+									setLoading(form, false);
+									return;
+								}
 								var status = payload.data.status || 'error';
 								var message = payload.data.message || '';
 								renderMessage(form, status, message);
+								setLoading(form, false);
 							})
 							.catch(function() {
 								renderMessage(form, 'error', uveMrAjaxFallbackMessage || '');
+								setLoading(form, false);
 							});
 					}
 
