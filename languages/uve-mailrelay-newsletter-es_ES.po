@@ -72,6 +72,14 @@ msgstr "Placeholder email"
 msgid "Button text"
 msgstr "Texto botón"
 
+msgid "Enable AJAX submissions"
+msgstr "Activar envíos por AJAX"
+
+msgid "Yes"
+msgstr "Sí"
+
+msgid "No"
+msgstr "No"
 msgid "GDPR + Logs"
 msgstr "RGPD + Logs"
 

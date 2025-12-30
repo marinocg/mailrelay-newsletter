@@ -150,7 +150,19 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 					)
 				);
 
-		$this->end_controls_section();
+				$this->add_control(
+					'ajax_mode',
+					array(
+						'label'        => __( 'Enable AJAX submissions', 'uve-mailrelay-newsletter' ),
+						'type'         => \Elementor\Controls_Manager::SWITCHER,
+						'label_on'     => __( 'Yes', 'uve-mailrelay-newsletter' ),
+						'label_off'    => __( 'No', 'uve-mailrelay-newsletter' ),
+						'return_value' => '1',
+						'default'      => '0',
+					)
+				);
+
+				$this->end_controls_section();
 	}
 
 	/**
@@ -162,17 +174,18 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 		$settings = $this->get_settings_for_display();
 		$privacy  = $settings['privacy_url']['url'] ?? '';
 
-		$form_args = array(
-			'title'             => $settings['title'] ?? '',
-			'description'       => $settings['description'] ?? '',
-			'email_placeholder' => $settings['email_placeholder'] ?? '',
-			'submit_label'      => $settings['submit_label'] ?? '',
-			'group_ids'         => $settings['group_ids'] ?? '',
-			'privacy_url'       => $privacy,
-			'consent_label'     => $settings['consent_label'] ?? '',
-			'class'             => $settings['extra_class'] ?? '',
-		);
+				$form_args = array(
+					'title'             => $settings['title'] ?? '',
+					'description'       => $settings['description'] ?? '',
+					'email_placeholder' => $settings['email_placeholder'] ?? '',
+					'submit_label'      => $settings['submit_label'] ?? '',
+					'group_ids'         => $settings['group_ids'] ?? '',
+					'privacy_url'       => $privacy,
+					'consent_label'     => $settings['consent_label'] ?? '',
+					'class'             => $settings['extra_class'] ?? '',
+					'ajax'              => $settings['ajax_mode'] ?? '0',
+				);
 
-		echo UVE_MR_Frontend::shortcode( $form_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo UVE_MR_Frontend::shortcode( $form_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }

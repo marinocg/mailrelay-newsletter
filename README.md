@@ -47,6 +47,7 @@ Open Settings -> MR4WP and set:
 - Turnstile site and secret keys.
 - Text labels and GDPR consent text.
 - Log retention and rate limits.
+- Enable AJAX submissions (optional).
 
 ## Logs and GDPR
 Logs are stored in a dedicated table. You can:
@@ -72,6 +73,24 @@ composer run phpcs
 composer run phpstan
 vendor/bin/phpunit
 ```
+
+## Build a local ZIP for testing
+CI compiles MO files during release. To package locally, make sure you compile translations and then zip the plugin folder.
+
+Compile translations (requires `msgfmt`):
+```
+msgfmt languages/uve-mailrelay-newsletter-es_ES.po -o languages/uve-mailrelay-newsletter-es_ES.mo
+msgfmt languages/uve-mailrelay-newsletter-en_US.po -o languages/uve-mailrelay-newsletter-en_US.mo
+```
+
+Create a ZIP from the plugin root (PowerShell example):
+```
+$zip = "mr4wp.zip"
+if (Test-Path $zip) { Remove-Item $zip }
+Compress-Archive -Path * -DestinationPath $zip
+```
+
+Then upload `mr4wp.zip` in WordPress -> Plugins -> Add New -> Upload Plugin.
 
 ## Releases (GitFlow)
 Branches:
