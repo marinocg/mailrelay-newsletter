@@ -65,7 +65,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 				$this->start_controls_section(
 					'content_section',
 					array(
-						'label' => __( 'Contenido', 'uve-mailrelay-newsletter' ),
+						'label' => __( 'Content', 'uve-mailrelay-newsletter' ),
 						'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
 					)
 				);
@@ -73,7 +73,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 				$this->add_control(
 					'title',
 					array(
-						'label'       => __( 'Título', 'uve-mailrelay-newsletter' ),
+						'label'       => __( 'Title', 'uve-mailrelay-newsletter' ),
 						'type'        => \Elementor\Controls_Manager::TEXT,
 						'default'     => $opts['title'],
 						'label_block' => true,
@@ -83,7 +83,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 				$this->add_control(
 					'description',
 					array(
-						'label'       => __( 'Descripción', 'uve-mailrelay-newsletter' ),
+						'label'       => __( 'Description', 'uve-mailrelay-newsletter' ),
 						'type'        => \Elementor\Controls_Manager::TEXTAREA,
 						'default'     => $opts['description'],
 						'label_block' => true,
@@ -93,7 +93,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 				$this->add_control(
 					'email_placeholder',
 					array(
-						'label'       => __( 'Placeholder email', 'uve-mailrelay-newsletter' ),
+						'label'       => __( 'Email placeholder', 'uve-mailrelay-newsletter' ),
 						'type'        => \Elementor\Controls_Manager::TEXT,
 						'default'     => $opts['email_placeholder'],
 						'label_block' => true,
@@ -103,7 +103,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 				$this->add_control(
 					'submit_label',
 					array(
-						'label'       => __( 'Texto botón', 'uve-mailrelay-newsletter' ),
+						'label'       => __( 'Button text', 'uve-mailrelay-newsletter' ),
 						'type'        => \Elementor\Controls_Manager::TEXT,
 						'default'     => $opts['submit_label'],
 						'label_block' => true,
@@ -123,7 +123,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 				$this->add_control(
 					'privacy_url',
 					array(
-						'label'       => __( 'URL privacidad', 'uve-mailrelay-newsletter' ),
+						'label'       => __( 'Privacy URL', 'uve-mailrelay-newsletter' ),
 						'type'        => \Elementor\Controls_Manager::URL,
 						'default'     => array( 'url' => $opts['privacy_url'] ),
 						'label_block' => true,
@@ -133,7 +133,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 				$this->add_control(
 					'consent_label',
 					array(
-						'label'       => __( 'Texto consentimiento', 'uve-mailrelay-newsletter' ),
+						'label'       => __( 'Consent text', 'uve-mailrelay-newsletter' ),
 						'type'        => \Elementor\Controls_Manager::TEXT,
 						'default'     => $opts['consent_label'],
 						'label_block' => true,
@@ -143,7 +143,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 				$this->add_control(
 					'extra_class',
 					array(
-						'label'       => __( 'Clase CSS extra', 'uve-mailrelay-newsletter' ),
+						'label'       => __( 'Extra CSS class', 'uve-mailrelay-newsletter' ),
 						'type'        => \Elementor\Controls_Manager::TEXT,
 						'default'     => '',
 						'label_block' => true,

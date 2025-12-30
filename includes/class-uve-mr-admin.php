@@ -104,7 +104,7 @@ final class UVE_MR_Admin {
 		if ( ! empty( $_POST['uve_mr_purge_now'] ) && check_admin_referer( 'uve_mr_purge_now' ) ) {
 			$deleted = UVE_MR_Logs::purge_old_logs( true );
 			// translators: %s: number of records deleted.
-			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( __( 'Purgados %s registros.', 'uve-mailrelay-newsletter' ), (string) $deleted ) ) . '</p></div>';
+			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( __( 'Purged %s records.', 'uve-mailrelay-newsletter' ), (string) $deleted ) ) . '</p></div>';
 		}
 
 		$opts = UVE_Mailrelay_Newsletter::get_options();
@@ -136,10 +136,10 @@ final class UVE_MR_Admin {
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Modo suscripción', 'uve-mailrelay-newsletter' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Subscription mode', 'uve-mailrelay-newsletter' ); ?></th>
 						<td>
 							<select name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[subscriber_status]">
-								<option value="inactive" <?php selected( $opts['subscriber_status'], 'inactive' ); ?>><?php echo esc_html__( 'Double opt-in (inactive + confirmación)', 'uve-mailrelay-newsletter' ); ?></option>
+								<option value="inactive" <?php selected( $opts['subscriber_status'], 'inactive' ); ?>><?php echo esc_html__( 'Double opt-in (inactive + confirmation)', 'uve-mailrelay-newsletter' ); ?></option>
 								<option value="active" <?php selected( $opts['subscriber_status'], 'active' ); ?>><?php echo esc_html__( 'Single opt-in (active)', 'uve-mailrelay-newsletter' ); ?></option>
 							</select>
 						</td>
@@ -161,40 +161,40 @@ final class UVE_MR_Admin {
 					</tr>
 
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'Textos', 'uve-mailrelay-newsletter' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'Texts', 'uve-mailrelay-newsletter' ); ?></th>
 						<td>
-							<p><label><?php echo esc_html__( 'Título', 'uve-mailrelay-newsletter' ); ?><br>
+							<p><label><?php echo esc_html__( 'Title', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="text" class="regular-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[title]" value="<?php echo esc_attr( $opts['title'] ); ?>">
 								</label></p>
-							<p><label><?php echo esc_html__( 'Descripción', 'uve-mailrelay-newsletter' ); ?><br>
+							<p><label><?php echo esc_html__( 'Description', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="text" class="regular-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[description]" value="<?php echo esc_attr( $opts['description'] ); ?>">
 								</label></p>
-							<p><label><?php echo esc_html__( 'Placeholder email', 'uve-mailrelay-newsletter' ); ?><br>
+							<p><label><?php echo esc_html__( 'Email placeholder', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="text" class="regular-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[email_placeholder]" value="<?php echo esc_attr( $opts['email_placeholder'] ); ?>">
 								</label></p>
-							<p><label><?php echo esc_html__( 'Texto botón', 'uve-mailrelay-newsletter' ); ?><br>
+							<p><label><?php echo esc_html__( 'Button text', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="text" class="regular-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[submit_label]" value="<?php echo esc_attr( $opts['submit_label'] ); ?>">
 								</label></p>
 						</td>
 					</tr>
 
 					<tr>
-						<th scope="row"><?php echo esc_html__( 'RGPD + Logs', 'uve-mailrelay-newsletter' ); ?></th>
+						<th scope="row"><?php echo esc_html__( 'GDPR + Logs', 'uve-mailrelay-newsletter' ); ?></th>
 						<td>
-							<p><label><?php echo esc_html__( 'URL política de privacidad', 'uve-mailrelay-newsletter' ); ?><br>
+							<p><label><?php echo esc_html__( 'Privacy policy URL', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="text" class="regular-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[privacy_url]"
 										value="<?php echo esc_attr( $opts['privacy_url'] ); ?>">
 								</label></p>
-							<p><label><?php echo esc_html__( 'Texto del checkbox', 'uve-mailrelay-newsletter' ); ?><br>
+							<p><label><?php echo esc_html__( 'Checkbox text', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="text" class="regular-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[consent_label]"
 										value="<?php echo esc_attr( $opts['consent_label'] ); ?>">
 								</label></p>
 							<p>
 								<label><input type="checkbox" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[store_consent_log]" value="1" <?php checked( $opts['store_consent_log'], '1' ); ?>>
-									<?php echo esc_html__( 'Guardar log en BD', 'uve-mailrelay-newsletter' ); ?></label><br>
+									<?php echo esc_html__( 'Store log in database', 'uve-mailrelay-newsletter' ); ?></label><br>
 								<label><input type="checkbox" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[hash_ip]" value="1" <?php checked( $opts['hash_ip'], '1' ); ?>>
-									<?php echo esc_html__( 'Guardar IP como hash', 'uve-mailrelay-newsletter' ); ?></label><br>
-								<label><?php echo esc_html__( 'Retención (días)', 'uve-mailrelay-newsletter' ); ?><br>
+									<?php echo esc_html__( 'Store IP as hash', 'uve-mailrelay-newsletter' ); ?></label><br>
+								<label><?php echo esc_html__( 'Retention (days)', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="number" min="1" class="small-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[retention_days]"
 										value="<?php echo esc_attr( (string) $opts['retention_days'] ); ?>">
 								</label>
@@ -205,21 +205,21 @@ final class UVE_MR_Admin {
 					<tr>
 						<th scope="row"><?php echo esc_html__( 'Rate limit', 'uve-mailrelay-newsletter' ); ?></th>
 						<td>
-							<p><label><?php echo esc_html__( 'Máx intentos por IP+email', 'uve-mailrelay-newsletter' ); ?><br>
+							<p><label><?php echo esc_html__( 'Max attempts per IP+email', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="number" min="1" class="small-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[rate_limit_max]"
 										value="<?php echo esc_attr( (string) $opts['rate_limit_max'] ); ?>">
 								</label></p>
-							<p><label><?php echo esc_html__( 'Ventana (segundos)', 'uve-mailrelay-newsletter' ); ?><br>
+							<p><label><?php echo esc_html__( 'Window (seconds)', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="number" min="60" class="small-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[rate_limit_window_seconds]"
 										value="<?php echo esc_attr( (string) $opts['rate_limit_window_seconds'] ); ?>">
 								</label></p>
 
 							<hr>
-							<p><label><?php echo esc_html__( 'Máx reenvíos confirmación por IP+email (0 = desactivar)', 'uve-mailrelay-newsletter' ); ?><br>
+							<p><label><?php echo esc_html__( 'Max confirmation resends per IP+email (0 = disable)', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="number" min="0" class="small-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[confirm_resend_max]"
 										value="<?php echo esc_attr( (string) $opts['confirm_resend_max'] ); ?>">
 								</label></p>
-							<p><label><?php echo esc_html__( 'Ventana confirmación (segundos)', 'uve-mailrelay-newsletter' ); ?><br>
+							<p><label><?php echo esc_html__( 'Confirmation window (seconds)', 'uve-mailrelay-newsletter' ); ?><br>
 									<input type="number" min="60" class="small-text" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[confirm_resend_window_seconds]"
 										value="<?php echo esc_attr( (string) $opts['confirm_resend_window_seconds'] ); ?>">
 								</label></p>
@@ -234,12 +234,12 @@ final class UVE_MR_Admin {
 			<p><code>[uve_mailrelay_newsletter]</code></p>
 
 			<hr>
-			<h2><?php echo esc_html__( 'Logs recientes', 'uve-mailrelay-newsletter' ); ?></h2>
+			<h2><?php echo esc_html__( 'Recent logs', 'uve-mailrelay-newsletter' ); ?></h2>
 			<?php UVE_MR_Logs::render_logs_table_safe(); ?>
 
 			<form method="post" style="margin-top:12px;">
 				<?php wp_nonce_field( 'uve_mr_purge_now' ); ?>
-				<button type="submit" class="button" name="uve_mr_purge_now" value="1"><?php echo esc_html__( 'Purgar ahora', 'uve-mailrelay-newsletter' ); ?></button>
+				<button type="submit" class="button" name="uve_mr_purge_now" value="1"><?php echo esc_html__( 'Purge now', 'uve-mailrelay-newsletter' ); ?></button>
 			</form>
 		</div>
 		<?php

@@ -70,6 +70,15 @@ jobs:
             sed -i -E "s/^Stable tag:\\s*.*/Stable tag: ${VERSION}/" readme.txt
           fi
 
+          # Translation files project version
+          if [ -d languages ]; then
+            for file in languages/*.po languages/*.pot; do
+              if [ -f "$file" ]; then
+                sed -i -E "s/^\"Project-Id-Version: .*\"/\"Project-Id-Version: MR4WP ${VERSION}\"/" "$file"
+              fi
+            done
+          fi
+
           # Changelog: move Unreleased into version heading (simple)
           if [ -f CHANGELOG.md ]; then
             # Prepend a new section if not present
@@ -97,7 +106,7 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          git add class-uve-mailrelay-newsletter.php readme.txt CHANGELOG.md || true
+          git add class-uve-mailrelay-newsletter.php readme.txt CHANGELOG.md languages/*.po languages/*.pot || true
           git commit -m "chore(release): v${VERSION}" || echo "No changes to commit"
 
       - name: Push release branch

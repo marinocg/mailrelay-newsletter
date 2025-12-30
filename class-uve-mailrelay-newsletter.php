@@ -82,13 +82,13 @@ final class UVE_Mailrelay_Newsletter {
 
 			// UI texts.
 			'title'                         => __( 'Newsletter', 'uve-mailrelay-newsletter' ),
-			'description'                   => __( 'Suscríbete y estarás al tanto de nuestras novedades', 'uve-mailrelay-newsletter' ),
+			'description'                   => __( 'Subscribe and stay up to date with our news', 'uve-mailrelay-newsletter' ),
 			'email_placeholder'             => __( 'Email...', 'uve-mailrelay-newsletter' ),
-			'submit_label'                  => __( 'Suscribir', 'uve-mailrelay-newsletter' ),
+			'submit_label'                  => __( 'Subscribe', 'uve-mailrelay-newsletter' ),
 
 			// GDPR.
 			'privacy_url'                   => '',
-			'consent_label'                 => __( 'Acepto recibir la newsletter y he leído la política de privacidad', 'uve-mailrelay-newsletter' ),
+			'consent_label'                 => __( 'I agree to receive the newsletter and have read the privacy policy', 'uve-mailrelay-newsletter' ),
 			'store_consent_log'             => '1', // String flag (1 or 0).
 			'hash_ip'                       => '1',            // store hashed IP by default.
 			'retention_days'                => 180,     // purge logs older than N days.

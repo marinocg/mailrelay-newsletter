@@ -47,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</p>
 
 			<div style="position:absolute;left:-9999px;height:0;overflow:hidden;" aria-hidden="true">
-				<label><?php echo esc_html__( 'Deja este campo vacío', 'uve-mailrelay-newsletter' ); ?></label>
+				<label><?php echo esc_html__( 'Leave this field empty', 'uve-mailrelay-newsletter' ); ?></label>
 				<input type="text" name="uve_mr_hp" tabindex="-1" autocomplete="off" value="">
 			</div>
 
@@ -58,9 +58,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<span>
 						<?php echo esc_html( $consent_label ); ?>
 						<?php if ( $privacy_url ) : ?>
-							<a href="<?php echo esc_url( $privacy_url ); ?>" rel="noopener" target="_blank">(<?php echo esc_html__( 'ver', 'uve-mailrelay-newsletter' ); ?>)</a>
+							<a href="<?php echo esc_url( $privacy_url ); ?>" rel="noopener" target="_blank">(<?php echo esc_html__( 'view', 'uve-mailrelay-newsletter' ); ?>)</a>
 						<?php endif; ?>
-						<br><small><?php echo esc_html__( 'Puedes darte de baja en cualquier momento desde el enlace de cada email.', 'uve-mailrelay-newsletter' ); ?></small>
+						<br><small><?php echo esc_html__( 'You can unsubscribe at any time using the link in each email.', 'uve-mailrelay-newsletter' ); ?></small>
 					</span>
 				</label>
 			</p>
@@ -68,10 +68,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php if ( $site_key ) : ?>
 				<div class="uve-mr-turnstile" data-sitekey="<?php echo esc_attr( $site_key ); ?>"></div>
 				<noscript>
-					<p><?php echo esc_html__( 'Activa JavaScript para poder suscribirte.', 'uve-mailrelay-newsletter' ); ?></p>
+					<p><?php echo esc_html__( 'Enable JavaScript to subscribe.', 'uve-mailrelay-newsletter' ); ?></p>
 				</noscript>
 			<?php else : ?>
-				<p class="uve-mr-msg uve-mr-err"><?php echo esc_html__( 'Falta configurar Turnstile (Site Key).', 'uve-mailrelay-newsletter' ); ?></p>
+				<p class="uve-mr-msg uve-mr-err"><?php echo esc_html__( 'Turnstile is not configured (Site Key).', 'uve-mailrelay-newsletter' ); ?></p>
 			<?php endif; ?>
 
 			<p class="msubmit" style="margin-top: 10px;">
