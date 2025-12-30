@@ -38,11 +38,12 @@ jobs:
           php -r "unlink('composer-setup.php');"
           php composer.phar install --no-interaction --no-progress
 
-      - name: Lint + PHPCS + PHPStan (gate)
+      - name: Lint + PHPCS + PHPStan + PHPUnit (gate)
         run: |
           find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
           php vendor/bin/phpcs
           php vendor/bin/phpstan analyse
+          php vendor/bin/phpunit
 
       - name: Configure git
         run: |

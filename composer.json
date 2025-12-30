@@ -12,7 +12,8 @@
     "wp-coding-standards/wpcs": "^3.1",
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
     "phpstan/extension-installer": "^1.4",
-    "szepeviktor/phpstan-wordpress": "^2.0"
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "phpunit/phpunit": "^11.0"
   },
   "scripts": {
     "lint": "php -l uve-mailrelay-newsletter.php && find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
