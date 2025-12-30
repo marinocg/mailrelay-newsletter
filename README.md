@@ -1,35 +1,86 @@
-# Uve Mailrelay Newsletter (self-hosted)
+# MR4WP
 
-Plugin WordPress para suscripción a Mailrelay con Cloudflare Turnstile, RGPD y logs.
+MR4WP is a WordPress plugin that adds a Mailrelay newsletter form with Cloudflare Turnstile, GDPR consent, double opt-in support, and audit logs.
 
-## Instalación (en un sitio)
-1. Descarga el ZIP de una Release (GitHub Releases).
-2. WordPress → Plugins → Añadir nuevo → Subir plugin → Activar.
-3. Ajustes → Uve Mailrelay Newsletter → configura API/Turnstile.
+## Features
+- Mailrelay API integration (active or inactive subscribers).
+- Cloudflare Turnstile protection.
+- GDPR consent checkbox and optional log retention.
+- Neutral success message to avoid email enumeration.
+- Shortcode, WordPress widget, and Elementor widget.
+- Logs table with retention and manual purge.
 
-## Self-hosted updates (sin wp.org)
-- Este repo genera un ZIP “instalable” en cada Release.
-- Puedes actualizar manualmente subiendo el ZIP.
-- (Opcional) puedes integrar un updater que mire GitHub Releases, pero no es obligatorio.
+## Requirements
+- PHP 8.1+
+- WordPress 6.0+
+- Mailrelay account with API token
+- Cloudflare Turnstile keys (optional but recommended)
 
-## GitFlow (ramas)
-- `main`: producción (solo merges desde release/* o hotfix/*).
-- `develop`: integración.
-- `feature/*`: trabajo.
-- `release/vX.Y.Z`: preparación de versión.
-- `hotfix/vX.Y.Z`: arreglos urgentes sobre main.
+## Installation (single site)
+1. Download the ZIP from a GitHub Release.
+2. WordPress -> Plugins -> Add New -> Upload Plugin -> Activate.
+3. Settings -> MR4WP -> configure API and Turnstile.
 
-## Cómo sacar una release
-1. Trabaja en `feature/*`, PR a `develop`.
-2. Cuando `develop` esté listo: ejecuta el workflow **Release (GitFlow)** desde Actions.
-3. El workflow:
-   - crea `release/vX.Y.Z` desde `develop`
-   - bump de versiones
-   - checks (lint/phpcs/phpstan)
-   - PR a `main` y PR de back-merge a `develop`
-   - merge a `main`, tag `vX.Y.Z`
-   - genera ZIP instalable y GitHub Release
+## Usage
+Shortcode:
+```
+[uve_mailrelay_newsletter]
+```
 
-### Requisitos del repo para que el Action pueda “pasar a main”
-- Settings → Actions → Workflow permissions: **Read and write**
-- (Si hay branch protection en main/develop) permitir merges por GitHub Actions o permitir `gh pr merge` (dependiendo de tu política).
+Widget:
+- Appearance -> Widgets -> "MR4WP"
+
+Elementor:
+- Search for "MR4WP" in the widget panel.
+
+## Theme template override
+You can override the frontend form by adding a template file in your theme:
+- `your-theme/uve-mr-newsletter/form.php`
+- or `your-theme/mr4wp/form.php`
+
+The plugin will load the first matching file and fall back to its own template at `templates/form.php`.
+
+## Configuration
+Open Settings -> MR4WP and set:
+- Mailrelay API base URL and token.
+- Group IDs and subscriber status (active or inactive).
+- Turnstile site and secret keys.
+- Text labels and GDPR consent text.
+- Log retention and rate limits.
+
+## Logs and GDPR
+Logs are stored in a dedicated table. You can:
+- Enable or disable log storage.
+- Hash IPs instead of storing raw IPs.
+- Purge logs automatically after the retention window.
+- Purge logs manually from the settings page.
+
+## Local development
+Install dev tools:
+```
+composer install
+```
+
+Run checks:
+```
+composer run phpcs
+composer run phpstan
+vendor/bin/phpunit
+```
+
+## Releases (GitFlow)
+Branches:
+- `main`: production
+- `develop`: integration
+- `feature/*`: development
+- `release/vX.Y.Z`: release prep
+- `hotfix/vX.Y.Z`: urgent fixes
+
+To cut a release:
+1. Merge feature work into `develop`.
+2. Run the "Release (GitFlow)" workflow in GitHub Actions.
+3. The workflow bumps versions, runs checks, opens PRs, tags `vX.Y.Z`, and creates a ZIP.
+
+## Translations
+Translation files live in `languages/`.
+To update translations, regenerate the POT and build PO/MO files as needed.

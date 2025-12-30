@@ -10,4 +10,7 @@ php vendor/bin/phpcs
 echo "Running PHPStan..."
 php vendor/bin/phpstan analyse
 
+echo "Running PHPUnit..."
+php vendor/bin/phpunit
+
 echo "OK"

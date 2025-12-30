@@ -1,0 +1,208 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: MR4WP 1.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-01 00:00+0000\n"
+"PO-Revision-Date: 2025-01-01 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Newsletter"
+msgstr "Newsletter"
+
+msgid "Suscríbete y estarás al tanto de nuestras novedades"
+msgstr "Suscríbete y estarás al tanto de nuestras novedades"
+
+msgid "Email..."
+msgstr "Email..."
+
+msgid "Suscribir"
+msgstr "Suscribir"
+
+msgid "Acepto recibir la newsletter y he leído la política de privacidad"
+msgstr "Acepto recibir la newsletter y he leído la política de privacidad"
+
+msgid "Purgados %s registros."
+msgstr "Purgados %s registros."
+
+msgid "MR4WP"
+msgstr "MR4WP"
+
+msgid "Mailrelay API base URL"
+msgstr "Mailrelay API base URL"
+
+msgid "Mailrelay API token"
+msgstr "Mailrelay API token"
+
+msgid "Group IDs"
+msgstr "Group IDs"
+
+msgid "Modo suscripción"
+msgstr "Modo suscripción"
+
+msgid "Double opt-in (inactive + confirmación)"
+msgstr "Double opt-in (inactive + confirmación)"
+
+msgid "Single opt-in (active)"
+msgstr "Single opt-in (active)"
+
+msgid "Turnstile Site Key"
+msgstr "Turnstile Site Key"
+
+msgid "Turnstile Secret Key"
+msgstr "Turnstile Secret Key"
+
+msgid "Textos"
+msgstr "Textos"
+
+msgid "Título"
+msgstr "Título"
+
+msgid "Descripción"
+msgstr "Descripción"
+
+msgid "Placeholder email"
+msgstr "Placeholder email"
+
+msgid "Texto botón"
+msgstr "Texto botón"
+
+msgid "RGPD + Logs"
+msgstr "RGPD + Logs"
+
+msgid "URL política de privacidad"
+msgstr "URL política de privacidad"
+
+msgid "Texto del checkbox"
+msgstr "Texto del checkbox"
+
+msgid "Guardar log en BD"
+msgstr "Guardar log en BD"
+
+msgid "Guardar IP como hash"
+msgstr "Guardar IP como hash"
+
+msgid "Retención (días)"
+msgstr "Retención (días)"
+
+msgid "Rate limit"
+msgstr "Rate limit"
+
+msgid "Máx intentos por IP+email"
+msgstr "Máx intentos por IP+email"
+
+msgid "Ventana (segundos)"
+msgstr "Ventana (segundos)"
+
+msgid "Máx reenvíos confirmación por IP+email (0 = desactivar)"
+msgstr "Máx reenvíos confirmación por IP+email (0 = desactivar)"
+
+msgid "Ventana confirmación (segundos)"
+msgstr "Ventana confirmación (segundos)"
+
+msgid "Shortcode"
+msgstr "Shortcode"
+
+msgid "Logs recientes"
+msgstr "Logs recientes"
+
+msgid "Purgar ahora"
+msgstr "Purgar ahora"
+
+msgid "No existe la tabla de logs todavía. Desactiva y reactiva el plugin para crearla."
+msgstr "No existe la tabla de logs todavía. Desactiva y reactiva el plugin para crearla."
+
+msgid "La tabla existe pero no se pudieron leer columnas."
+msgstr "La tabla existe pero no se pudieron leer columnas."
+
+msgid "Sin registros aún."
+msgstr "Sin registros aún."
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Fecha"
+msgstr "Fecha"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Consentimiento"
+msgstr "Consentimiento"
+
+msgid "IP"
+msgstr "IP"
+
+msgid "Origen"
+msgstr "Origen"
+
+msgid "Alta"
+msgstr "Alta"
+
+msgid "Confirmación email"
+msgstr "Confirmación email"
+
+msgid "sí"
+msgstr "sí"
+
+msgid "no"
+msgstr "no"
+
+msgid "Aún no existen columnas de confirmación. El plugin debería añadirlas automáticamente al activarse (dbDelta)."
+msgstr "Aún no existen columnas de confirmación. El plugin debería añadirlas automáticamente al activarse (dbDelta)."
+
+msgid "Acepto la política de privacidad"
+msgstr "Acepto la política de privacidad"
+
+msgid "Gracias. Si el email es válido, recibirás un correo para confirmar (o ya estabas suscrito)."
+msgstr "Gracias. Si el email es válido, recibirás un correo para confirmar (o ya estabas suscrito)."
+
+msgid "Por favor, verifica que eres humano."
+msgstr "Por favor, verifica que eres humano."
+
+msgid "Debes aceptar la política de privacidad."
+msgstr "Debes aceptar la política de privacidad."
+
+msgid "No se pudo completar la solicitud. Inténtalo de nuevo."
+msgstr "No se pudo completar la solicitud. Inténtalo de nuevo."
+
+msgid "Deja este campo vacío"
+msgstr "Deja este campo vacío"
+
+msgid "ver"
+msgstr "ver"
+
+msgid "Puedes darte de baja en cualquier momento desde el enlace de cada email."
+msgstr "Puedes darte de baja en cualquier momento desde el enlace de cada email."
+
+msgid "Activa JavaScript para poder suscribirte."
+msgstr "Activa JavaScript para poder suscribirte."
+
+msgid "Falta configurar Turnstile (Site Key)."
+msgstr "Falta configurar Turnstile (Site Key)."
+
+msgid "Formulario de newsletter con Turnstile + Mailrelay API + double opt-in (mensaje neutro) y logs."
+msgstr "Formulario de newsletter con Turnstile + Mailrelay API + double opt-in (mensaje neutro) y logs."
+
+msgid "URL privacidad"
+msgstr "URL privacidad"
+
+msgid "Texto consentimiento"
+msgstr "Texto consentimiento"
+
+msgid "Clase CSS extra (opcional)"
+msgstr "Clase CSS extra (opcional)"
+
+msgid "Contenido"
+msgstr "Contenido"
+
+msgid "Clase CSS extra"
+msgstr "Clase CSS extra"
+
+msgid "Uve Mailrelay"
+msgstr "Uve Mailrelay"
