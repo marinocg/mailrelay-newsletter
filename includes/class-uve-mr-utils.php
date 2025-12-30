@@ -70,4 +70,38 @@ final class UVE_MR_Utils {
 		}
 		return $filtered;
 	}
+
+	/**
+	 * Normalize common mojibake issues to UTF-8.
+	 *
+	 * @param string $text Raw text.
+	 * @return string
+	 */
+	public static function normalize_text( string $text ): string {
+		if ( '' === $text ) {
+			return $text;
+		}
+
+		$needs_fix = false;
+		foreach ( array( 'Ã', 'Â', 'â' ) as $needle ) {
+			if ( false !== strpos( $text, $needle ) ) {
+				$needs_fix = true;
+				break;
+			}
+		}
+
+		if ( ! $needs_fix ) {
+			return $text;
+		}
+
+		$fixed = $text;
+		if ( function_exists( 'iconv' ) ) {
+			$converted = iconv( 'ISO-8859-1', 'UTF-8//IGNORE', $text );
+			if ( false !== $converted && '' !== $converted ) {
+				$fixed = $converted;
+			}
+		}
+
+		return $fixed;
+	}
 }

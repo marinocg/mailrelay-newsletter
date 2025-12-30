@@ -21,7 +21,7 @@ class UVE_MR_Newsletter_Widget extends WP_Widget {
 		parent::__construct(
 			'uve_mr_newsletter_widget',
 			__( 'MR4WP', 'uve-mailrelay-newsletter' ),
-			array( 'description' => __( 'Formulario de newsletter con Turnstile + Mailrelay API + double opt-in (mensaje neutro) y logs.', 'uve-mailrelay-newsletter' ) )
+			array( 'description' => __( 'Newsletter form with Turnstile + Mailrelay API + double opt-in (neutral message) and logs.', 'uve-mailrelay-newsletter' ) )
 		);
 	}
 
@@ -68,28 +68,28 @@ class UVE_MR_Newsletter_Widget extends WP_Widget {
 		$consent_label     = $instance['consent_label'] ?? $opts['consent_label'];
 		$class             = $instance['class'] ?? '';
 		?>
-		<p><label><?php echo esc_html__( 'Título', 'uve-mailrelay-newsletter' ); ?>
+		<p><label><?php echo esc_html__( 'Title', 'uve-mailrelay-newsletter' ); ?>
 				<input class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
 			</label></p>
-		<p><label><?php echo esc_html__( 'Descripción', 'uve-mailrelay-newsletter' ); ?>
+		<p><label><?php echo esc_html__( 'Description', 'uve-mailrelay-newsletter' ); ?>
 				<input class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'description' ) ); ?>" type="text" value="<?php echo esc_attr( $description ); ?>">
 			</label></p>
-		<p><label><?php echo esc_html__( 'Placeholder email', 'uve-mailrelay-newsletter' ); ?>
+		<p><label><?php echo esc_html__( 'Email placeholder', 'uve-mailrelay-newsletter' ); ?>
 				<input class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'email_placeholder' ) ); ?>" type="text" value="<?php echo esc_attr( $email_placeholder ); ?>">
 			</label></p>
-		<p><label><?php echo esc_html__( 'Texto botón', 'uve-mailrelay-newsletter' ); ?>
+		<p><label><?php echo esc_html__( 'Button text', 'uve-mailrelay-newsletter' ); ?>
 				<input class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'submit_label' ) ); ?>" type="text" value="<?php echo esc_attr( $submit_label ); ?>">
 			</label></p>
 		<p><label><?php echo esc_html__( 'Group IDs', 'uve-mailrelay-newsletter' ); ?>
 				<input class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'group_ids' ) ); ?>" type="text" value="<?php echo esc_attr( $group_ids ); ?>">
 			</label></p>
-		<p><label><?php echo esc_html__( 'URL privacidad', 'uve-mailrelay-newsletter' ); ?>
+		<p><label><?php echo esc_html__( 'Privacy URL', 'uve-mailrelay-newsletter' ); ?>
 				<input class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'privacy_url' ) ); ?>" type="text" value="<?php echo esc_attr( $privacy_url ); ?>">
 			</label></p>
-		<p><label><?php echo esc_html__( 'Texto consentimiento', 'uve-mailrelay-newsletter' ); ?>
+		<p><label><?php echo esc_html__( 'Consent text', 'uve-mailrelay-newsletter' ); ?>
 				<input class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'consent_label' ) ); ?>" type="text" value="<?php echo esc_attr( $consent_label ); ?>">
 			</label></p>
-		<p><label><?php echo esc_html__( 'Clase CSS extra (opcional)', 'uve-mailrelay-newsletter' ); ?>
+		<p><label><?php echo esc_html__( 'Extra CSS class (optional)', 'uve-mailrelay-newsletter' ); ?>
 				<input class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'class' ) ); ?>" type="text" value="<?php echo esc_attr( $class ); ?>">
 			</label></p>
 		<?php

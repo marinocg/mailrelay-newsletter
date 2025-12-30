@@ -115,6 +115,7 @@ function is_email( string $email ): bool {
 }
 
 function add_action( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {}
+function add_filter( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {}
 function add_shortcode( string $tag, $callback ): void {}
 function register_widget( string $class ): void {}
 function add_options_page( string $page_title, string $menu_title, string $capability, string $menu_slug, $callback ): void {}
@@ -249,6 +250,10 @@ function wp_parse_url( string $url ) {
 
 function locate_template( array $templates ) {
 	return '';
+}
+
+function plugin_basename( string $file ): string {
+	return basename( $file );
 }
 
 function current_time( string $type ): string {

@@ -52,6 +52,7 @@ final class UVE_Mailrelay_Newsletter {
 		add_action( 'elementor/elements/categories_registered', array( 'UVE_MR_Elementor', 'register_elementor_category' ) );
 		add_action( 'admin_menu', array( 'UVE_MR_Admin', 'admin_menu' ) );
 		add_action( 'admin_init', array( 'UVE_MR_Admin', 'admin_init' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( __CLASS__, 'add_settings_link' ) );
 
 		add_action( 'admin_post_nopriv_uve_mr_subscribe', array( 'UVE_MR_Submit', 'handle_submit' ) );
 		add_action( 'admin_post_uve_mr_subscribe', array( 'UVE_MR_Submit', 'handle_submit' ) );
@@ -81,13 +82,13 @@ final class UVE_Mailrelay_Newsletter {
 
 			// UI texts.
 			'title'                         => __( 'Newsletter', 'uve-mailrelay-newsletter' ),
-			'description'                   => __( 'Suscríbete y estarás al tanto de nuestras novedades', 'uve-mailrelay-newsletter' ),
+			'description'                   => __( 'Subscribe and stay up to date with our news', 'uve-mailrelay-newsletter' ),
 			'email_placeholder'             => __( 'Email...', 'uve-mailrelay-newsletter' ),
-			'submit_label'                  => __( 'Suscribir', 'uve-mailrelay-newsletter' ),
+			'submit_label'                  => __( 'Subscribe', 'uve-mailrelay-newsletter' ),
 
 			// GDPR.
 			'privacy_url'                   => '',
-			'consent_label'                 => __( 'Acepto recibir la newsletter y he leído la política de privacidad', 'uve-mailrelay-newsletter' ),
+			'consent_label'                 => __( 'I agree to receive the newsletter and have read the privacy policy', 'uve-mailrelay-newsletter' ),
 			'store_consent_log'             => '1', // String flag (1 or 0).
 			'hash_ip'                       => '1',            // store hashed IP by default.
 			'retention_days'                => 180,     // purge logs older than N days.
@@ -151,6 +152,19 @@ final class UVE_Mailrelay_Newsletter {
 			false,
 			dirname( plugin_basename( __FILE__ ) ) . '/languages'
 		);
+	}
+
+	/**
+	 * Add settings link on Plugins list.
+	 *
+	 * @param array $links Existing plugin links.
+	 * @return array
+	 */
+	public static function add_settings_link( array $links ): array {
+		$url           = admin_url( 'options-general.php?page=uve-mr-newsletter' );
+		$settings_link = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Settings', 'uve-mailrelay-newsletter' ) . '</a>';
+		array_unshift( $links, $settings_link );
+		return $links;
 	}
 
 	/**

@@ -15,19 +15,19 @@ msgstr ""
 msgid "Newsletter"
 msgstr ""
 
-msgid "Suscríbete y estarás al tanto de nuestras novedades"
+msgid "Subscribe and stay up to date with our news"
 msgstr ""
 
 msgid "Email..."
 msgstr ""
 
-msgid "Suscribir"
+msgid "Subscribe"
 msgstr ""
 
-msgid "Acepto recibir la newsletter y he leído la política de privacidad"
+msgid "I agree to receive the newsletter and have read the privacy policy"
 msgstr ""
 
-msgid "Purgados %s registros."
+msgid "Purged %s records."
 msgstr ""
 
 msgid "MR4WP"
@@ -42,10 +42,10 @@ msgstr ""
 msgid "Group IDs"
 msgstr ""
 
-msgid "Modo suscripción"
+msgid "Subscription mode"
 msgstr ""
 
-msgid "Double opt-in (inactive + confirmación)"
+msgid "Double opt-in (inactive + confirmation)"
 msgstr ""
 
 msgid "Single opt-in (active)"
@@ -57,151 +57,151 @@ msgstr ""
 msgid "Turnstile Secret Key"
 msgstr ""
 
-msgid "Textos"
+msgid "Texts"
 msgstr ""
 
-msgid "Título"
+msgid "Title"
 msgstr ""
 
-msgid "Descripción"
+msgid "Description"
 msgstr ""
 
-msgid "Placeholder email"
+msgid "Email placeholder"
 msgstr ""
 
-msgid "Texto botón"
+msgid "Button text"
 msgstr ""
 
-msgid "RGPD + Logs"
+msgid "GDPR + Logs"
 msgstr ""
 
-msgid "URL política de privacidad"
+msgid "Privacy policy URL"
 msgstr ""
 
-msgid "Texto del checkbox"
+msgid "Checkbox text"
 msgstr ""
 
-msgid "Guardar log en BD"
+msgid "Store log in database"
 msgstr ""
 
-msgid "Guardar IP como hash"
+msgid "Store IP as hash"
 msgstr ""
 
-msgid "Retención (días)"
+msgid "Retention (days)"
 msgstr ""
 
 msgid "Rate limit"
 msgstr ""
 
-msgid "Máx intentos por IP+email"
+msgid "Max attempts per IP+email"
 msgstr ""
 
-msgid "Ventana (segundos)"
+msgid "Window (seconds)"
 msgstr ""
 
-msgid "Máx reenvíos confirmación por IP+email (0 = desactivar)"
+msgid "Max confirmation resends per IP+email (0 = disable)"
 msgstr ""
 
-msgid "Ventana confirmación (segundos)"
+msgid "Confirmation window (seconds)"
 msgstr ""
 
 msgid "Shortcode"
 msgstr ""
 
-msgid "Logs recientes"
+msgid "Recent logs"
 msgstr ""
 
-msgid "Purgar ahora"
+msgid "Purge now"
 msgstr ""
 
-msgid "No existe la tabla de logs todavía. Desactiva y reactiva el plugin para crearla."
+msgid "The logs table does not exist yet. Deactivate and reactivate the plugin to create it."
 msgstr ""
 
-msgid "La tabla existe pero no se pudieron leer columnas."
+msgid "The table exists but columns could not be read."
 msgstr ""
 
-msgid "Sin registros aún."
+msgid "No records yet."
 msgstr ""
 
 msgid "ID"
 msgstr ""
 
-msgid "Fecha"
+msgid "Date"
 msgstr ""
 
 msgid "Email"
 msgstr ""
 
-msgid "Consentimiento"
+msgid "Consent"
 msgstr ""
 
 msgid "IP"
 msgstr ""
 
-msgid "Origen"
+msgid "Source"
 msgstr ""
 
-msgid "Alta"
+msgid "Signup"
 msgstr ""
 
-msgid "Confirmación email"
+msgid "Confirmation email"
 msgstr ""
 
-msgid "sí"
+msgid "yes"
 msgstr ""
 
 msgid "no"
 msgstr ""
 
-msgid "Aún no existen columnas de confirmación. El plugin debería añadirlas automáticamente al activarse (dbDelta)."
+msgid "Confirmation columns do not exist yet. The plugin should add them automatically on activation (dbDelta)."
 msgstr ""
 
-msgid "Acepto la política de privacidad"
+msgid "I accept the privacy policy"
 msgstr ""
 
-msgid "Gracias. Si el email es válido, recibirás un correo para confirmar (o ya estabas suscrito)."
+msgid "Thanks. If the email is valid, you will receive a confirmation email (or you were already subscribed)."
 msgstr ""
 
-msgid "Por favor, verifica que eres humano."
+msgid "Please verify you are human."
 msgstr ""
 
-msgid "Debes aceptar la política de privacidad."
+msgid "You must accept the privacy policy."
 msgstr ""
 
-msgid "No se pudo completar la solicitud. Inténtalo de nuevo."
+msgid "We could not complete the request. Please try again."
 msgstr ""
 
-msgid "Deja este campo vacío"
+msgid "Leave this field empty"
 msgstr ""
 
-msgid "ver"
+msgid "view"
 msgstr ""
 
-msgid "Puedes darte de baja en cualquier momento desde el enlace de cada email."
+msgid "You can unsubscribe at any time using the link in each email."
 msgstr ""
 
-msgid "Activa JavaScript para poder suscribirte."
+msgid "Enable JavaScript to subscribe."
 msgstr ""
 
-msgid "Falta configurar Turnstile (Site Key)."
+msgid "Turnstile is not configured (Site Key)."
 msgstr ""
 
-msgid "Formulario de newsletter con Turnstile + Mailrelay API + double opt-in (mensaje neutro) y logs."
+msgid "Newsletter form with Turnstile + Mailrelay API + double opt-in (neutral message) and logs."
 msgstr ""
 
-msgid "URL privacidad"
+msgid "Privacy URL"
 msgstr ""
 
-msgid "Texto consentimiento"
+msgid "Consent text"
 msgstr ""
 
-msgid "Clase CSS extra (opcional)"
+msgid "Extra CSS class (optional)"
 msgstr ""
 
-msgid "Contenido"
+msgid "Content"
 msgstr ""
 
-msgid "Clase CSS extra"
+msgid "Extra CSS class"
 msgstr ""
 
 msgid "Uve Mailrelay"

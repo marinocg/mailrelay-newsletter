@@ -126,10 +126,10 @@ final class UVE_MR_Frontend {
 		$email_placeholder = $args['email_placeholder'] ?? __( 'Email...', 'uve-mailrelay-newsletter' );
 		$title             = $args['title'] ?? '';
 		$desc              = $args['description'] ?? '';
-		$submit            = $args['submit_label'] ?? __( 'Suscribir', 'uve-mailrelay-newsletter' );
+		$submit            = $args['submit_label'] ?? __( 'Subscribe', 'uve-mailrelay-newsletter' );
 		$group_ids         = $args['group_ids'] ?? '';
 		$privacy_url       = $args['privacy_url'] ?? '';
-		$consent_label     = $args['consent_label'] ?? __( 'Acepto la política de privacidad', 'uve-mailrelay-newsletter' );
+		$consent_label     = $args['consent_label'] ?? __( 'I accept the privacy policy', 'uve-mailrelay-newsletter' );
 		$class             = $args['class'] ?? '';
 
 		$site_key = UVE_MR_Turnstile::get_site_key();
@@ -141,22 +141,22 @@ final class UVE_MR_Frontend {
 			if ( 'ok' === $st ) {
 				$msg_html = sprintf(
 					'<p class="uve-mr-msg uve-mr-ok">%s</p>',
-					esc_html__( 'Gracias. Si el email es válido, recibirás un correo para confirmar (o ya estabas suscrito).', 'uve-mailrelay-newsletter' )
+					esc_html__( 'Thanks. If the email is valid, you will receive a confirmation email (or you were already subscribed).', 'uve-mailrelay-newsletter' )
 				);
 			} elseif ( 'captcha' === $st ) {
 				$msg_html = sprintf(
 					'<p class="uve-mr-msg uve-mr-err">%s</p>',
-					esc_html__( 'Por favor, verifica que eres humano.', 'uve-mailrelay-newsletter' )
+					esc_html__( 'Please verify you are human.', 'uve-mailrelay-newsletter' )
 				);
 			} elseif ( 'consent' === $st ) {
 				$msg_html = sprintf(
 					'<p class="uve-mr-msg uve-mr-err">%s</p>',
-					esc_html__( 'Debes aceptar la política de privacidad.', 'uve-mailrelay-newsletter' )
+					esc_html__( 'You must accept the privacy policy.', 'uve-mailrelay-newsletter' )
 				);
 			} else {
 				$msg_html = sprintf(
 					'<p class="uve-mr-msg uve-mr-err">%s</p>',
-					esc_html__( 'No se pudo completar la solicitud. Inténtalo de nuevo.', 'uve-mailrelay-newsletter' )
+					esc_html__( 'We could not complete the request. Please try again.', 'uve-mailrelay-newsletter' )
 				);
 			}
 		}
