@@ -3,12 +3,15 @@
 ## Unreleased
 - Pending
 
+## 1.6.2
+- Test release with new workflow (no changes)
+
+
 ## 1.6.1
--
+- Add elementor support and refactors.
 
 
 ## 1.6.0
-- Add elementor support and refactors.
 
 ## 1.5.0
 - Initial scaffolding.
