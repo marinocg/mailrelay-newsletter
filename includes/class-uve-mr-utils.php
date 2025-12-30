@@ -63,7 +63,11 @@ final class UVE_MR_Utils {
 	 * @return string
 	 */
 	public static function get_client_ip(): string {
-		$ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' ) );
-		return preg_replace( '/[^0-9a-fA-F\.:]/', '', $ip );
+		$ip       = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' ) );
+		$filtered = preg_replace( '/[^0-9a-fA-F\.:]/', '', $ip );
+		if ( ! $filtered || false === filter_var( $filtered, FILTER_VALIDATE_IP ) ) {
+			return '';
+		}
+		return $filtered;
 	}
 }
