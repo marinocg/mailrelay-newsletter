@@ -231,7 +231,9 @@ final class UVE_MR_Logs {
             created_at DATETIME NOT NULL,
             PRIMARY KEY  (id),
             KEY created_at (created_at),
-            KEY email_idx (email)
+            KEY email_idx (email),
+            KEY confirmation_requested_at_idx (confirmation_requested_at),
+            KEY ip_hash_idx (ip_hash)
         ) {$charset};";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
