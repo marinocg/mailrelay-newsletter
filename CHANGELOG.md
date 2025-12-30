@@ -3,6 +3,10 @@
 ## Unreleased
 - Pending
 
+## 1.6.1
+-
+
+
 ## 1.6.0
 - Add elementor support and refactors.
 

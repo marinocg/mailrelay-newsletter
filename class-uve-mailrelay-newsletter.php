@@ -2,7 +2,7 @@
 /**
  * Plugin Name: MR4WP
  * Description: Widget + shortcode newsletter with Cloudflare Turnstile and Mailrelay official API. Uses inactive + resend_confirmation_email for double opt-in. Neutral success message to prevent email enumeration. GDPR consent log with retention and confirmation-send logging.
- * Version: 1.6.0
+ * Version: 1.6.1
  * Author: Uve / Custom
  * License: GPLv3 or later
  * Text Domain: uve-mailrelay-newsletter
@@ -36,7 +36,7 @@ final class UVE_Mailrelay_Newsletter {
 	const TABLE       = 'uve_mr_newsletter_consent';
 	const NONCE       = 'uve_mr_subscribe_nonce';
 	const CRON_PURGE  = 'uve_mr_newsletter_purge_logs';
-	const VERSION     = '1.6.0';
+	const VERSION    = '1.6.1';
 	const TEXT_DOMAIN = 'uve-mailrelay-newsletter';
 
 	/**
