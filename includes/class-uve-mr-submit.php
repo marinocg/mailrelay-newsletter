@@ -58,11 +58,6 @@ final class UVE_MR_Submit {
 	private static function process_submission( array $data ): array {
 		$opts = UVE_Mailrelay_Newsletter::get_options();
 
-		$nonce = isset( $data['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $data['_wpnonce'] ) ) : '';
-		if ( '' === $nonce || ! wp_verify_nonce( $nonce, UVE_Mailrelay_Newsletter::NONCE ) ) {
-			return self::build_result( 'ok' );
-		}
-
 		$hp = isset( $data['uve_mr_hp'] ) ? sanitize_text_field( wp_unslash( $data['uve_mr_hp'] ) ) : '';
 		if ( '' !== $hp ) {
 			return self::build_result( 'ok' );
@@ -154,16 +149,14 @@ final class UVE_MR_Submit {
 		$status  = $result['status'] ?? 'ok';
 		$message = $result['message'] ?? '';
 
-		if ( function_exists( 'wp_send_json_success' ) ) {
-			if ( 'ok' === $status ) {
-				wp_send_json_success(
-					array(
-						'status'  => $status,
-						'message' => $message,
-					)
-				);
-			}
-
+		if ( 'ok' === $status ) {
+			wp_send_json_success(
+				array(
+					'status'  => $status,
+					'message' => $message,
+				)
+			);
+		} else {
 			wp_send_json_error(
 				array(
 					'status'  => $status,
@@ -171,14 +164,5 @@ final class UVE_MR_Submit {
 				)
 			);
 		}
-
-		echo wp_json_encode(
-			array(
-				'ok'      => ( 'ok' === $status ),
-				'status'  => $status,
-				'message' => $message,
-			)
-		);
-		exit;
 	}
 }

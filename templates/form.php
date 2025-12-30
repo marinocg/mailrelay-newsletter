@@ -17,6 +17,7 @@
  * @var string $msg_html
  * @var bool   $ajax_enabled
  * @var string $ajax_url
+ * @var string $ajax_error_msg
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -34,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		?>
 	</div>
 
-	<form class="simple_form form form-vertical uve-mr-form" method="post" action="<?php echo esc_url( $action ); ?>" accept-charset="UTF-8" data-ajax="<?php echo $ajax_enabled ? '1' : '0'; ?>" data-ajax-url="<?php echo esc_url( $ajax_url ); ?>">
+	<form class="simple_form form form-vertical uve-mr-form" method="post" action="<?php echo esc_url( $action ); ?>" accept-charset="UTF-8" data-ajax="<?php echo esc_attr( $ajax_enabled ? '1' : '0' ); ?>" data-ajax-url="<?php echo esc_url( $ajax_url ); ?>">
 		<input type="hidden" name="action" value="uve_mr_subscribe">
 		<?php wp_nonce_field( UVE_Mailrelay_Newsletter::NONCE, '_wpnonce' ); ?>
 		<input type="hidden" name="uve_mr_group_ids" value="<?php echo esc_attr( $group_ids ); ?>">

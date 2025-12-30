@@ -138,7 +138,9 @@ function load_textdomain( string $domain, string $mofile ): bool { return true; 
 function load_plugin_textdomain( string $domain, bool $deprecated = false, string $plugin_rel_path = '' ): bool { return true; }
 function determine_locale(): string { return 'en_US'; }
 function get_locale(): string { return 'en_US'; }
-function wp_verify_nonce( string $nonce, string $action ): bool { return true; }
+function wp_verify_nonce( string $nonce, string $action ): bool {
+	return $GLOBALS['uve_mr_test_nonce_ok'] ?? true;
+}
 function wp_next_scheduled( string $hook ) {
 	return false;
 }
@@ -254,10 +256,16 @@ function wp_json_encode( $value ): string {
 
 function wp_send_json_success( array $data ): void {
 	echo wp_json_encode( array( 'success' => true, 'data' => $data ) );
+	if ( empty( $GLOBALS['uve_mr_test_no_exit'] ) ) {
+		exit;
+	}
 }
 
 function wp_send_json_error( array $data ): void {
 	echo wp_json_encode( array( 'success' => false, 'data' => $data ) );
+	if ( empty( $GLOBALS['uve_mr_test_no_exit'] ) ) {
+		exit;
+	}
 }
 
 function get_transient( string $key ) {
