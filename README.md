@@ -33,6 +33,13 @@ Widget:
 Elementor:
 - Search for "MR4WP" in the widget panel.
 
+## Theme template override
+You can override the frontend form by adding a template file in your theme:
+- `your-theme/uve-mr-newsletter/form.php`
+- or `your-theme/mr4wp/form.php`
+
+The plugin will load the first matching file and fall back to its own template at `templates/form.php`.
+
 ## Configuration
 Open Settings -> MR4WP and set:
 - Mailrelay API base URL and token.

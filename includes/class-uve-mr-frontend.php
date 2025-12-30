@@ -161,84 +161,56 @@ final class UVE_MR_Frontend {
 			}
 		}
 
+		$template_path = self::resolve_template_path();
+		$context       = array(
+			'email_placeholder' => $email_placeholder,
+			'title'             => $title,
+			'desc'              => $desc,
+			'submit'            => $submit,
+			'group_ids'         => $group_ids,
+			'privacy_url'       => $privacy_url,
+			'consent_label'     => $consent_label,
+			'class'             => $class,
+			'site_key'          => $site_key,
+			'action'            => $action,
+			'msg_html'          => $msg_html,
+		);
+
 		ob_start();
-		?>
-		<div class="uve-mr-newsletter <?php echo esc_attr( $class ); ?>">
-			<?php
-			if ( $title ) :
-				?>
-				<h2 class="widgettitle"><?php echo esc_html( $title ); ?></h2><?php endif; ?>
-			<?php
-			echo $msg_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			?>
-
-			<form class="simple_form form form-vertical uve-mr-form" method="post" action="<?php echo esc_url( $action ); ?>" accept-charset="UTF-8">
-				<input type="hidden" name="action" value="uve_mr_subscribe">
-				<?php wp_nonce_field( UVE_Mailrelay_Newsletter::NONCE, '_wpnonce' ); ?>
-				<input type="hidden" name="uve_mr_group_ids" value="<?php echo esc_attr( $group_ids ); ?>">
-				<input type="hidden" name="uve_mr_page_url" value="<?php echo esc_attr( UVE_MR_Utils::current_url() ); ?>">
-
-				<div class="mc4wp-form-fields">
-					<?php
-					if ( $desc ) :
-						?>
-						<p class="mdes"><?php echo esc_html( $desc ); ?></p><?php endif; ?>
-
-					<p class="memail">
-						<input type="email" name="subscriber[email]" placeholder="<?php echo esc_attr( $email_placeholder ); ?>" required>
-					</p>
-
-					<div style="position:absolute;left:-9999px;height:0;overflow:hidden;" aria-hidden="true">
-						<label><?php echo esc_html__( 'Deja este campo vacío', 'uve-mailrelay-newsletter' ); ?></label>
-						<input type="text" name="uve_mr_hp" tabindex="-1" autocomplete="off" value="">
-					</div>
-
-					<p class="mconsent" style="margin: 8px 0;">
-						<input value="0" type="hidden" name="subscriber[subscribed_with_acceptance]">
-						<label style="display:flex; gap:8px; align-items:flex-start;">
-							<input type="checkbox" value="1" name="subscriber[subscribed_with_acceptance]" required>
-							<span>
-								<?php echo esc_html( $consent_label ); ?>
-								<?php if ( $privacy_url ) : ?>
-									<a href="<?php echo esc_url( $privacy_url ); ?>" rel="noopener" target="_blank">(<?php echo esc_html__( 'ver', 'uve-mailrelay-newsletter' ); ?>)</a>
-								<?php endif; ?>
-								<br><small><?php echo esc_html__( 'Puedes darte de baja en cualquier momento desde el enlace de cada email.', 'uve-mailrelay-newsletter' ); ?></small>
-							</span>
-						</label>
-					</p>
-
-					<?php if ( $site_key ) : ?>
-						<div class="uve-mr-turnstile" data-sitekey="<?php echo esc_attr( $site_key ); ?>"></div>
-						<noscript>
-							<p><?php echo esc_html__( 'Activa JavaScript para poder suscribirte.', 'uve-mailrelay-newsletter' ); ?></p>
-						</noscript>
-					<?php else : ?>
-						<p class="uve-mr-msg uve-mr-err"><?php echo esc_html__( 'Falta configurar Turnstile (Site Key).', 'uve-mailrelay-newsletter' ); ?></p>
-					<?php endif; ?>
-
-					<p class="msubmit" style="margin-top: 10px;">
-						<input type="submit" value="<?php echo esc_attr( $submit ); ?>">
-					</p>
-				</div>
-			</form>
-
-			<style>
-				.uve-mr-msg {
-					margin: 0 0 10px;
-					padding: 10px 12px;
-					border-radius: 6px;
-				}
-
-				.uve-mr-ok {
-					background: rgba(0, 128, 0, .08);
-				}
-
-				.uve-mr-err {
-					background: rgba(200, 0, 0, .08);
-				}
-			</style>
-		</div>
-		<?php
+		$email_placeholder = $context['email_placeholder'];
+		$title             = $context['title'];
+		$desc              = $context['desc'];
+		$submit            = $context['submit'];
+		$group_ids         = $context['group_ids'];
+		$privacy_url       = $context['privacy_url'];
+		$consent_label     = $context['consent_label'];
+		$class             = $context['class'];
+		$site_key          = $context['site_key'];
+		$action            = $context['action'];
+		$msg_html          = $context['msg_html'];
+		require $template_path;
 		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Resolve the template path, allowing theme overrides.
+	 *
+	 * @return string
+	 */
+	private static function resolve_template_path(): string {
+		$default = __DIR__ . '/../templates/form.php';
+
+		if ( function_exists( 'locate_template' ) ) {
+			$templates = array(
+				'uve-mr-newsletter/form.php',
+				'mr4wp/form.php',
+			);
+			$found     = locate_template( $templates );
+			if ( $found ) {
+				return $found;
+			}
+		}
+
+		return $default;
 	}
 }

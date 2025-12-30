@@ -247,6 +247,10 @@ function wp_parse_url( string $url ) {
 	return parse_url( $url );
 }
 
+function locate_template( array $templates ) {
+	return '';
+}
+
 function current_time( string $type ): string {
 	return '2025-01-01 00:00:00';
 }
