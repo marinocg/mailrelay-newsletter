@@ -2,7 +2,7 @@
 /**
  * Plugin Name: MR4WP
  * Description: Widget + shortcode newsletter with Cloudflare Turnstile and Mailrelay official API. Uses inactive + resend_confirmation_email for double opt-in. Neutral success message to prevent email enumeration. GDPR consent log with retention and confirmation-send logging.
- * Version: 1.6.2
+ * Version: 1.7.0
  * Author: Uve / Custom
  * License: GPLv3 or later
  * Text Domain: uve-mailrelay-newsletter
@@ -36,7 +36,7 @@ final class UVE_Mailrelay_Newsletter {
 	const TABLE       = 'uve_mr_newsletter_consent';
 	const NONCE       = 'uve_mr_subscribe_nonce';
 	const CRON_PURGE  = 'uve_mr_newsletter_purge_logs';
-	const VERSION     = '1.6.2';
+	const VERSION     = '1.7.0';
 	const TEXT_DOMAIN = 'uve-mailrelay-newsletter';
 
 	/**
@@ -56,6 +56,8 @@ final class UVE_Mailrelay_Newsletter {
 
 		add_action( 'admin_post_nopriv_uve_mr_subscribe', array( 'UVE_MR_Submit', 'handle_submit' ) );
 		add_action( 'admin_post_uve_mr_subscribe', array( 'UVE_MR_Submit', 'handle_submit' ) );
+		add_action( 'wp_ajax_nopriv_uve_mr_subscribe_ajax', array( 'UVE_MR_Submit', 'handle_submit_ajax' ) );
+		add_action( 'wp_ajax_uve_mr_subscribe_ajax', array( 'UVE_MR_Submit', 'handle_submit_ajax' ) );
 
 		add_action( self::CRON_PURGE, array( 'UVE_MR_Logs', 'purge_old_logs_cron' ) );
 
@@ -85,6 +87,7 @@ final class UVE_Mailrelay_Newsletter {
 			'description'                   => __( 'Subscribe and stay up to date with our news', 'uve-mailrelay-newsletter' ),
 			'email_placeholder'             => __( 'Email...', 'uve-mailrelay-newsletter' ),
 			'submit_label'                  => __( 'Subscribe', 'uve-mailrelay-newsletter' ),
+			'ajax_mode'                     => '0',
 
 			// GDPR.
 			'privacy_url'                   => '',

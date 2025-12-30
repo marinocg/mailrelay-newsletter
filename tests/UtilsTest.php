@@ -15,6 +15,11 @@ final class UtilsTest extends TestCase {
 		$this->assertSame( array( 1, 2, 10 ), UVE_MR_Utils::parse_group_ids( $raw ) );
 	}
 
+	public function test_defaults_include_ajax_mode(): void {
+		$defaults = UVE_Mailrelay_Newsletter::defaults();
+		$this->assertSame( '0', $defaults['ajax_mode'] );
+	}
+
 	public function test_current_url_builds_from_server_vars(): void {
 		$_SERVER['HTTP_HOST']          = 'example.test';
 		$_SERVER['REQUEST_URI']        = '/path?x=1';

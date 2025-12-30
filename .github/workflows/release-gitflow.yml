@@ -38,6 +38,11 @@ jobs:
           php -r "unlink('composer-setup.php');"
           php composer.phar install --no-interaction --no-progress
 
+      - name: Install gettext (msgfmt)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gettext
+
       - name: Lint + PHPCS + PHPStan + PHPUnit (gate)
         run: |
           find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
@@ -79,6 +84,17 @@ jobs:
               fi
             done
           fi
+
+          # Compile MO files from PO (requires msgfmt)
+          if ! command -v msgfmt >/dev/null 2>&1; then
+            echo "msgfmt not available; install gettext to compile .mo files."
+            exit 1
+          fi
+          for file in languages/*.po; do
+            if [ -f "$file" ]; then
+              msgfmt "$file" -o "${file%.po}.mo"
+            fi
+          done
 
           # Changelog: insert release notes under version and keep Unreleased at top
           if [ -f CHANGELOG.md ]; then
@@ -124,7 +140,7 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          git add class-uve-mailrelay-newsletter.php readme.txt CHANGELOG.md languages/*.po languages/*.pot || true
+          git add class-uve-mailrelay-newsletter.php readme.txt CHANGELOG.md languages/*.po languages/*.pot languages/*.mo || true
           git commit -m "chore(release): v${VERSION}" || echo "No changes to commit"
 
       - name: Push release branch
