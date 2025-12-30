@@ -21,8 +21,8 @@ final class UVE_MR_Admin {
 	 */
 	public static function admin_menu(): void {
 		add_options_page(
-			__( 'Uve Mailrelay Newsletter', 'uve-mailrelay-newsletter' ),
-			__( 'Uve Mailrelay Newsletter', 'uve-mailrelay-newsletter' ),
+			__( 'MR4WP', 'uve-mailrelay-newsletter' ),
+			__( 'MR4WP', 'uve-mailrelay-newsletter' ),
 			'manage_options',
 			'uve-mr-newsletter',
 			array( __CLASS__, 'render_settings_page' )
@@ -110,7 +110,7 @@ final class UVE_MR_Admin {
 		$opts = UVE_Mailrelay_Newsletter::get_options();
 		?>
 		<div class="wrap">
-		<h1><?php echo esc_html__( 'Uve Mailrelay Newsletter', 'uve-mailrelay-newsletter' ); ?></h1>
+		<h1><?php echo esc_html__( 'MR4WP', 'uve-mailrelay-newsletter' ); ?></h1>
 
 			<form method="post" action="options.php">
 				<?php settings_fields( 'uve_mr_newsletter' ); ?>

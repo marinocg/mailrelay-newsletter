@@ -20,7 +20,7 @@ class UVE_MR_Newsletter_Widget extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
 			'uve_mr_newsletter_widget',
-			__( 'Uve Mailrelay Newsletter', 'uve-mailrelay-newsletter' ),
+			__( 'MR4WP', 'uve-mailrelay-newsletter' ),
 			array( 'description' => __( 'Formulario de newsletter con Turnstile + Mailrelay API + double opt-in (mensaje neutro) y logs.', 'uve-mailrelay-newsletter' ) )
 		);
 	}

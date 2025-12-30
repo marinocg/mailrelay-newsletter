@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Uve Mailrelay Newsletter 1.5.0\n"
+"Project-Id-Version: MR4WP 1.5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-01 00:00+0000\n"
 "PO-Revision-Date: 2025-01-01 00:00+0000\n"
@@ -30,8 +30,8 @@ msgstr "Acepto recibir la newsletter y he leído la política de privacidad"
 msgid "Purgados %s registros."
 msgstr "Purgados %s registros."
 
-msgid "Uve Mailrelay Newsletter"
-msgstr "Uve Mailrelay Newsletter"
+msgid "MR4WP"
+msgstr "MR4WP"
 
 msgid "Mailrelay API base URL"
 msgstr "Mailrelay API base URL"

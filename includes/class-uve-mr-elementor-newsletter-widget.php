@@ -1,6 +1,6 @@
 <?php
 /**
- * Elementor widget for the Uve Mailrelay Newsletter.
+ * Elementor widget for MR4WP.
  *
  * @package UVE_Mailrelay_Newsletter
  */
@@ -33,7 +33,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 	 * @return string
 	 */
 	public function get_title() {
-		return __( 'Uve Mailrelay Newsletter', 'uve-mailrelay-newsletter' );
+		return __( 'MR4WP', 'uve-mailrelay-newsletter' );
 	}
 
 	/**
