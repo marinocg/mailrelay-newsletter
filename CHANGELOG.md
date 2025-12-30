@@ -3,6 +3,10 @@
 ## Unreleased
 - Pending
 
+## 1.7.1
+- Block form after submit and add ajax behaviour
+
+
 ## 1.7.0
 -
 
