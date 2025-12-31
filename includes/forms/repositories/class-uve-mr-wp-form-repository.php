@@ -52,9 +52,14 @@ final class UVE_MR_WP_Form_Repository implements UVE_MR_Form_Repository_Interfac
 			'posts_per_page' => 50,
 			'orderby'        => 'modified',
 			'order'          => 'DESC',
+			'perm'           => 'readable',
 		);
 		$query_args = wp_parse_args( $args, $defaults );
 		$posts      = get_posts( $query_args );
+		if ( empty( $posts ) ) {
+			$query_args['post_status'] = 'any';
+			$posts                     = get_posts( $query_args );
+		}
 		$forms      = array();
 		foreach ( $posts as $post ) {
 			if ( $post instanceof WP_Post ) {
