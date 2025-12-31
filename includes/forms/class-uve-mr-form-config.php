@@ -34,9 +34,54 @@ final class UVE_MR_Form_Config {
 				'subscriber_status' => (string) ( $opts['subscriber_status'] ?? 'inactive' ),
 			),
 			'fields'      => array(
-				'include_name'  => false,
-				'name_label'    => __( 'Name', 'uve-mailrelay-newsletter' ),
-				'custom_fields' => array(),
+				'email'   => array(
+					'enabled'     => true,
+					'label'       => __( 'Email', 'uve-mailrelay-newsletter' ),
+					'placeholder' => (string) ( $opts['email_placeholder'] ?? '' ),
+					'type'        => 'email',
+				),
+				'name'    => array(
+					'enabled'     => false,
+					'label'       => __( 'Name', 'uve-mailrelay-newsletter' ),
+					'placeholder' => '',
+					'type'        => 'text',
+				),
+				'address' => array(
+					'enabled'     => false,
+					'label'       => __( 'Address', 'uve-mailrelay-newsletter' ),
+					'placeholder' => '',
+					'type'        => 'text',
+				),
+				'city'    => array(
+					'enabled'     => false,
+					'label'       => __( 'City', 'uve-mailrelay-newsletter' ),
+					'placeholder' => '',
+					'type'        => 'text',
+				),
+				'state'   => array(
+					'enabled'     => false,
+					'label'       => __( 'State', 'uve-mailrelay-newsletter' ),
+					'placeholder' => '',
+					'type'        => 'text',
+				),
+				'birthday' => array(
+					'enabled'     => false,
+					'label'       => __( 'Birthday', 'uve-mailrelay-newsletter' ),
+					'placeholder' => '',
+					'type'        => 'date',
+				),
+				'website' => array(
+					'enabled'     => false,
+					'label'       => __( 'Website', 'uve-mailrelay-newsletter' ),
+					'placeholder' => '',
+					'type'        => 'url',
+				),
+				'phone'   => array(
+					'enabled'     => false,
+					'label'       => __( 'Phone', 'uve-mailrelay-newsletter' ),
+					'placeholder' => '',
+					'type'        => 'tel',
+				),
 			),
 			'consent'     => array(
 				'inherit'     => true,
@@ -92,29 +137,30 @@ final class UVE_MR_Form_Config {
 		$status                                  = sanitize_text_field( (string) ( $raw['destination']['subscriber_status'] ?? $defaults['destination']['subscriber_status'] ) );
 		$out['destination']['subscriber_status'] = in_array( $status, array( 'inactive', 'active' ), true ) ? $status : 'inactive';
 
-		$out['fields']['include_name'] = ! empty( $raw['fields']['include_name'] );
-		$out['fields']['name_label']   = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['fields']['name_label'] ?? $defaults['fields']['name_label'] ) ) );
-
-		$custom_fields = array();
-		if ( ! empty( $raw['fields']['custom_fields'] ) && is_array( $raw['fields']['custom_fields'] ) ) {
-			foreach ( $raw['fields']['custom_fields'] as $row ) {
-				if ( ! is_array( $row ) ) {
+		if ( ! empty( $defaults['fields'] ) && is_array( $defaults['fields'] ) ) {
+			foreach ( $defaults['fields'] as $key => $field ) {
+				if ( ! is_array( $field ) ) {
 					continue;
 				}
-				$key      = sanitize_key( (string) ( $row['key'] ?? '' ) );
-				$label    = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $row['label'] ?? '' ) ) );
-				$required = ! empty( $row['required'] );
-				if ( '' === $key || '' === $label ) {
-					continue;
+				$raw_field = $raw['fields'][ $key ] ?? array();
+				if ( ! is_array( $raw_field ) ) {
+					$raw_field = array();
 				}
-				$custom_fields[] = array(
-					'key'      => $key,
-					'label'    => $label,
-					'required' => $required,
+				$enabled = ! empty( $raw_field['enabled'] );
+				if ( 'email' === $key ) {
+					$enabled = true;
+				}
+				$out['fields'][ $key ] = array(
+					'enabled'     => $enabled,
+					'label'       => UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw_field['label'] ?? $field['label'] ) ) ),
+					'placeholder' => UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw_field['placeholder'] ?? $field['placeholder'] ) ) ),
+					'type'        => (string) ( $field['type'] ?? 'text' ),
 				);
+				if ( 'email' === $key ) {
+					$out['fields'][ $key ]['placeholder'] = $out['basics']['email_placeholder'];
+				}
 			}
 		}
-		$out['fields']['custom_fields'] = $custom_fields;
 
 		$out['consent']['inherit']     = ! empty( $raw['consent']['inherit'] );
 		$out['consent']['label']       = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['consent']['label'] ?? $defaults['consent']['label'] ) ) );

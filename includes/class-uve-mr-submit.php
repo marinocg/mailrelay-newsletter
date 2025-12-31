@@ -114,29 +114,36 @@ final class UVE_MR_Submit {
 		}
 		$page_url = UVE_MR_Utils::safe_page_url_from_request( $data );
 
-		$name = '';
-		if ( ! empty( $config['fields']['include_name'] ) ) {
-			$name = sanitize_text_field( (string) wp_unslash( $data['subscriber']['name'] ?? '' ) );
-		}
-
-		$custom_fields = array();
-		if ( ! empty( $config['fields']['custom_fields'] ) && is_array( $config['fields']['custom_fields'] ) ) {
-			foreach ( $config['fields']['custom_fields'] as $field ) {
-				if ( ! is_array( $field ) ) {
-					continue;
-				}
-				$key = (string) ( $field['key'] ?? '' );
-				if ( '' === $key ) {
-					continue;
-				}
-				$value = sanitize_text_field( (string) wp_unslash( $data['subscriber']['custom_fields'][ $key ] ?? '' ) );
-				if ( ! empty( $field['required'] ) && '' === $value ) {
-					return self::build_result( 'error', $messages );
-				}
-				if ( '' !== $value ) {
-					$custom_fields[ $key ] = $value;
-				}
+		$fields_payload = array();
+		$fields_config  = $config['fields'] ?? array();
+		$allowed_fields = array( 'name', 'address', 'city', 'state', 'birthday', 'website', 'phone' );
+		foreach ( $allowed_fields as $field_key ) {
+			$field_cfg = $fields_config[ $field_key ] ?? array();
+			if ( ! is_array( $field_cfg ) || empty( $field_cfg['enabled'] ) ) {
+				continue;
 			}
+			$value_raw = $data['subscriber'][ $field_key ] ?? '';
+			$value_raw = is_scalar( $value_raw ) ? (string) wp_unslash( $value_raw ) : '';
+			if ( '' === $value_raw ) {
+				continue;
+			}
+
+			if ( 'website' === $field_key ) {
+				$value = esc_url_raw( $value_raw );
+			} else {
+				$value = sanitize_text_field( $value_raw );
+			}
+			if ( '' === $value ) {
+				continue;
+			}
+
+			if ( 'phone' === $field_key ) {
+				$fields_payload['sms_phone']      = $value;
+				$fields_payload['whatsapp_phone'] = $value;
+				continue;
+			}
+
+			$fields_payload[ $field_key ] = $value;
 		}
 
 		$result = UVE_MR_Mailrelay::subscribe_with_confirmation(
@@ -146,8 +153,7 @@ final class UVE_MR_Submit {
 			$ip,
 			array(
 				'subscriber_status' => (string) ( $config['destination']['subscriber_status'] ?? 'inactive' ),
-				'name'              => $name,
-				'custom_fields'     => $custom_fields,
+				'fields'            => $fields_payload,
 			)
 		);
 

@@ -186,52 +186,49 @@ final class UVE_MR_Forms_Admin {
 
 				<h2><?php echo esc_html__( 'Fields', 'uve-mailrelay-newsletter' ); ?></h2>
 				<table class="form-table" role="presentation">
-					<tr>
-						<th scope="row"><?php echo esc_html__( 'Name field', 'uve-mailrelay-newsletter' ); ?></th>
-						<td>
-							<label><input type="checkbox" name="form_config[fields][include_name]" value="1" <?php checked( $config['fields']['include_name'] ); ?>> <?php echo esc_html__( 'Include name field', 'uve-mailrelay-newsletter' ); ?></label>
-							<p><input type="text" class="regular-text" name="form_config[fields][name_label]" value="<?php echo esc_attr( $config['fields']['name_label'] ); ?>"></p>
-						</td>
-					</tr>
-				</table>
-
-				<h3><?php echo esc_html__( 'Custom fields', 'uve-mailrelay-newsletter' ); ?></h3>
-				<table class="widefat" id="uve-mr-custom-fields" style="max-width:720px;">
-					<thead>
-						<tr>
-							<th><?php echo esc_html__( 'Key', 'uve-mailrelay-newsletter' ); ?></th>
-							<th><?php echo esc_html__( 'Label', 'uve-mailrelay-newsletter' ); ?></th>
-							<th><?php echo esc_html__( 'Required', 'uve-mailrelay-newsletter' ); ?></th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php
-						$custom_fields = $config['fields']['custom_fields'] ?? array();
-						if ( empty( $custom_fields ) ) {
-							$custom_fields = array(
-								array(
-									'key'      => '',
-									'label'    => '',
-									'required' => false,
-								),
-							);
+					<?php
+					$fields = $config['fields'] ?? array();
+					foreach ( $fields as $key => $field ) :
+						if ( ! is_array( $field ) ) {
+							continue;
 						}
-						foreach ( $custom_fields as $index => $field ) :
-							$key      = $field['key'] ?? '';
-							$label    = $field['label'] ?? '';
-							$required = ! empty( $field['required'] );
-							?>
-							<tr>
-								<td><input type="text" name="form_config[fields][custom_fields][<?php echo esc_attr( (string) $index ); ?>][key]" value="<?php echo esc_attr( $key ); ?>" placeholder="company"></td>
-								<td><input type="text" name="form_config[fields][custom_fields][<?php echo esc_attr( (string) $index ); ?>][label]" value="<?php echo esc_attr( $label ); ?>" placeholder="Company"></td>
-								<td><input type="checkbox" name="form_config[fields][custom_fields][<?php echo esc_attr( (string) $index ); ?>][required]" value="1" <?php checked( $required ); ?>></td>
-								<td><button type="button" class="button uve-mr-remove-field"><?php echo esc_html__( 'Remove', 'uve-mailrelay-newsletter' ); ?></button></td>
-							</tr>
-						<?php endforeach; ?>
-					</tbody>
+						$enabled     = ! empty( $field['enabled'] );
+						$label       = $field['label'] ?? '';
+						$placeholder = $field['placeholder'] ?? '';
+						$disabled    = ( 'email' === $key );
+						?>
+						<tr>
+							<th scope="row"><?php echo esc_html( ucfirst( (string) $key ) ); ?></th>
+							<td>
+								<label>
+									<input type="checkbox" name="form_config[fields][<?php echo esc_attr( $key ); ?>][enabled]" value="1" <?php checked( $enabled ); ?> <?php disabled( $disabled ); ?>>
+									<?php echo esc_html__( 'Enable field', 'uve-mailrelay-newsletter' ); ?>
+								</label>
+								<?php if ( $disabled ) : ?>
+									<input type="hidden" name="form_config[fields][<?php echo esc_attr( $key ); ?>][enabled]" value="1">
+									<p class="description"><?php echo esc_html__( 'Email is required by Mailrelay and cannot be disabled.', 'uve-mailrelay-newsletter' ); ?></p>
+								<?php endif; ?>
+								<p>
+									<label><?php echo esc_html__( 'Label', 'uve-mailrelay-newsletter' ); ?><br>
+										<input type="text" class="regular-text" name="form_config[fields][<?php echo esc_attr( $key ); ?>][label]" value="<?php echo esc_attr( $label ); ?>">
+									</label>
+								</p>
+								<?php if ( 'email' === $key ) : ?>
+									<p class="description"><?php echo esc_html__( 'Email placeholder is set in the Basics section.', 'uve-mailrelay-newsletter' ); ?></p>
+								<?php else : ?>
+									<p>
+										<label><?php echo esc_html__( 'Placeholder', 'uve-mailrelay-newsletter' ); ?><br>
+											<input type="text" class="regular-text" name="form_config[fields][<?php echo esc_attr( $key ); ?>][placeholder]" value="<?php echo esc_attr( $placeholder ); ?>">
+										</label>
+									</p>
+								<?php endif; ?>
+								<?php if ( 'phone' === $key ) : ?>
+									<p class="description"><?php echo esc_html__( 'Used for SMS or WhatsApp in Mailrelay; the same value is sent to both.', 'uve-mailrelay-newsletter' ); ?></p>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
 				</table>
-				<p><button type="button" class="button" id="uve-mr-add-field"><?php echo esc_html__( 'Add field', 'uve-mailrelay-newsletter' ); ?></button></p>
 
 				<h2><?php echo esc_html__( 'Consent', 'uve-mailrelay-newsletter' ); ?></h2>
 				<table class="form-table" role="presentation">
@@ -308,42 +305,6 @@ final class UVE_MR_Forms_Admin {
 			</form>
 		</div>
 
-		<script>
-			(function() {
-				var table = document.getElementById('uve-mr-custom-fields');
-				if (!table) return;
-				var addBtn = document.getElementById('uve-mr-add-field');
-				function rebuildIndexes() {
-					var rows = table.querySelectorAll('tbody tr');
-					rows.forEach(function(row, index) {
-						row.querySelectorAll('input').forEach(function(input) {
-							input.name = input.name.replace(/custom_fields\[[0-9]+\]/, 'custom_fields[' + index + ']');
-						});
-					});
-				}
-				table.addEventListener('click', function(ev) {
-					if (!ev.target.classList.contains('uve-mr-remove-field')) return;
-					var row = ev.target.closest('tr');
-					if (row) {
-						row.remove();
-						rebuildIndexes();
-					}
-				});
-				if (addBtn) {
-					addBtn.addEventListener('click', function() {
-						var tbody = table.querySelector('tbody');
-						if (!tbody) return;
-						var index = tbody.querySelectorAll('tr').length;
-						var row = document.createElement('tr');
-						row.innerHTML = '<td><input type="text" name="form_config[fields][custom_fields][' + index + '][key]" placeholder="company"></td>' +
-							'<td><input type="text" name="form_config[fields][custom_fields][' + index + '][label]" placeholder="Company"></td>' +
-							'<td><input type="checkbox" name="form_config[fields][custom_fields][' + index + '][required]" value="1"></td>' +
-							'<td><button type="button" class="button uve-mr-remove-field">' + <?php echo wp_json_encode( __( 'Remove', 'uve-mailrelay-newsletter' ) ); ?> + '</button></td>';
-						tbody.appendChild(row);
-					});
-				}
-			})();
-		</script>
 		<?php
 	}
 

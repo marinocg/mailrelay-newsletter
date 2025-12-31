@@ -51,31 +51,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 				?>
 				<p class="mdes"><?php echo esc_html( $desc ); ?></p><?php endif; ?>
 
-			<p class="memail">
-				<input type="email" name="subscriber[email]" placeholder="<?php echo esc_attr( $email_placeholder ); ?>" required>
-			</p>
-
-			<?php if ( ! empty( $fields['include_name'] ) ) : ?>
-				<p class="mname">
-					<input type="text" name="subscriber[name]" placeholder="<?php echo esc_attr( (string) ( $fields['name_label'] ?? __( 'Name', 'uve-mailrelay-newsletter' ) ) ); ?>">
-				</p>
-			<?php endif; ?>
-
-			<?php if ( ! empty( $fields['custom_fields'] ) && is_array( $fields['custom_fields'] ) ) : ?>
-				<?php foreach ( $fields['custom_fields'] as $field ) : ?>
+			<?php if ( is_array( $fields ) ) : ?>
+				<?php foreach ( $fields as $key => $field ) : ?>
 					<?php
-					if ( ! is_array( $field ) ) {
+					if ( ! is_array( $field ) || empty( $field['enabled'] ) ) {
 						continue;
 					}
-					$key      = (string) ( $field['key'] ?? '' );
-					$label    = (string) ( $field['label'] ?? '' );
-					$required = ! empty( $field['required'] );
-					if ( '' === $key || '' === $label ) {
-						continue;
+					$type        = (string) ( $field['type'] ?? 'text' );
+					$label       = (string) ( $field['label'] ?? '' );
+					$placeholder = (string) ( $field['placeholder'] ?? '' );
+					$required    = ( 'email' === $key );
+					$name_attr   = 'subscriber[' . $key . ']';
+					if ( 'email' === $key ) {
+						$type        = 'email';
+						$placeholder = $email_placeholder;
 					}
 					?>
-					<p class="mcustom">
-						<input type="text" name="subscriber[custom_fields][<?php echo esc_attr( $key ); ?>]" placeholder="<?php echo esc_attr( $label ); ?>" <?php echo $required ? 'required' : ''; ?>>
+					<p class="mfield mfield-<?php echo esc_attr( $key ); ?>">
+						<input type="<?php echo esc_attr( $type ); ?>" name="<?php echo esc_attr( $name_attr ); ?>" placeholder="<?php echo esc_attr( $placeholder ?: $label ); ?>" <?php echo $required ? 'required' : ''; ?>>
 					</p>
 				<?php endforeach; ?>
 			<?php endif; ?>

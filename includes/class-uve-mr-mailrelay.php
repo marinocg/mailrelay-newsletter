@@ -46,14 +46,14 @@ final class UVE_MR_Mailrelay {
 			'subscribe_ip'               => $ip,
 		);
 
-		$name = sanitize_text_field( (string) ( $args['name'] ?? '' ) );
-		if ( '' !== $name ) {
-			$payload['name'] = $name;
-		}
-
-		$custom_fields = $args['custom_fields'] ?? array();
-		if ( is_array( $custom_fields ) && ! empty( $custom_fields ) ) {
-			$payload['custom_fields'] = $custom_fields;
+		$fields = $args['fields'] ?? array();
+		if ( is_array( $fields ) && ! empty( $fields ) ) {
+			foreach ( $fields as $key => $value ) {
+				if ( ! is_string( $key ) || '' === $key ) {
+					continue;
+				}
+				$payload[ $key ] = $value;
+			}
 		}
 
 		$create = self::post_json(
