@@ -225,6 +225,11 @@ function add_option( string $key, $value ): void {
 }
 
 function wp_remote_post( string $url, array $args = array() ) {
+	$GLOBALS['uve_mr_test_last_http'] = array(
+		'method' => 'POST',
+		'url'    => $url,
+		'args'   => $args,
+	);
 	return $GLOBALS['uve_mr_test_http']['POST'][ $url ] ?? array(
 		'response' => array( 'code' => 500 ),
 		'body'     => '',
@@ -232,6 +237,11 @@ function wp_remote_post( string $url, array $args = array() ) {
 }
 
 function wp_remote_get( string $url, array $args = array() ) {
+	$GLOBALS['uve_mr_test_last_http'] = array(
+		'method' => 'GET',
+		'url'    => $url,
+		'args'   => $args,
+	);
 	return $GLOBALS['uve_mr_test_http']['GET'][ $url ] ?? array(
 		'response' => array( 'code' => 500 ),
 		'body'     => '',

@@ -58,6 +58,53 @@ final class UVE_MR_Utils {
 	}
 
 	/**
+	 * Get a safe page URL for logging.
+	 *
+	 * @param array $data Request data.
+	 * @return string
+	 */
+	public static function safe_page_url_from_request( array $data ): string {
+		$home_url  = home_url( '/' );
+		$home_host = self::extract_host( $home_url );
+
+		$raw_url = $data['uve_mr_page_url'] ?? '';
+		if ( is_array( $raw_url ) ) {
+			$raw_url = '';
+		}
+		$candidate = sanitize_text_field( is_scalar( $raw_url ) ? wp_unslash( (string) $raw_url ) : '' );
+		if ( $candidate ) {
+			$c_host = self::extract_host( $candidate );
+			if ( '' !== $c_host && '' !== $home_host && strtolower( $c_host ) === strtolower( $home_host ) ) {
+				return esc_url_raw( $candidate );
+			}
+		}
+
+		$ref = wp_get_referer();
+		if ( $ref ) {
+			$ref_host = self::extract_host( $ref );
+			if ( '' !== $ref_host && '' !== $home_host && strtolower( $ref_host ) === strtolower( $home_host ) ) {
+				return esc_url_raw( $ref );
+			}
+		}
+
+		return $home_url;
+	}
+
+	/**
+	 * Extract host from a URL using wp_parse_url.
+	 *
+	 * @param string $url URL string.
+	 * @return string
+	 */
+	private static function extract_host( string $url ): string {
+		$parsed = wp_parse_url( $url );
+		if ( is_array( $parsed ) ) {
+			return (string) ( $parsed['host'] ?? '' );
+		}
+		return '';
+	}
+
+	/**
 	 * Get client IP address.
 	 *
 	 * @return string

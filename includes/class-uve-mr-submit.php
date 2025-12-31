@@ -89,9 +89,14 @@ final class UVE_MR_Submit {
 			return self::build_result( 'captcha' );
 		}
 
-		$group_ids_raw = sanitize_text_field( (string) wp_unslash( $data['uve_mr_group_ids'] ?? $opts['group_ids'] ) );
-		$group_ids     = UVE_MR_Utils::parse_group_ids( $group_ids_raw );
-		$page_url      = sanitize_text_field( (string) wp_unslash( $data['uve_mr_page_url'] ?? '' ) );
+		$group_ids_raw   = sanitize_text_field( (string) wp_unslash( $data['uve_mr_group_ids'] ?? '' ) );
+		$group_ids_input = UVE_MR_Utils::parse_group_ids( $group_ids_raw );
+		$group_ids_cfg   = UVE_MR_Utils::parse_group_ids( (string) ( $opts['group_ids'] ?? '' ) );
+		$group_ids       = $group_ids_cfg;
+		if ( '' !== $group_ids_raw && $group_ids_input ) {
+			$group_ids = array_values( array_intersect( $group_ids_input, $group_ids_cfg ) );
+		}
+		$page_url = UVE_MR_Utils::safe_page_url_from_request( $data );
 
 		$result = UVE_MR_Mailrelay::subscribe_with_confirmation( $email, $group_ids, true, $ip );
 
