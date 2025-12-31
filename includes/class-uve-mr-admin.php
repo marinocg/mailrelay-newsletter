@@ -20,12 +20,31 @@ final class UVE_MR_Admin {
 	 * @return void
 	 */
 	public static function admin_menu(): void {
-		add_options_page(
+		add_menu_page(
 			__( 'MR4WP', 'uve-mailrelay-newsletter' ),
 			__( 'MR4WP', 'uve-mailrelay-newsletter' ),
 			'manage_options',
 			'uve-mr-newsletter',
+			array( __CLASS__, 'render_settings_page' ),
+			'dashicons-email-alt2'
+		);
+
+		add_submenu_page(
+			'uve-mr-newsletter',
+			__( 'Settings', 'uve-mailrelay-newsletter' ),
+			__( 'Settings', 'uve-mailrelay-newsletter' ),
+			'manage_options',
+			'uve-mr-newsletter',
 			array( __CLASS__, 'render_settings_page' )
+		);
+
+		add_submenu_page(
+			'uve-mr-newsletter',
+			__( 'Logs', 'uve-mailrelay-newsletter' ),
+			__( 'Logs', 'uve-mailrelay-newsletter' ),
+			'manage_options',
+			'uve-mr-newsletter-logs',
+			array( __CLASS__, 'render_logs_page' )
 		);
 	}
 
@@ -97,15 +116,6 @@ final class UVE_MR_Admin {
 	public static function render_settings_page(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
-		}
-
-		// Ensure schema is up-to-date before rendering (safe + idempotent).
-		UVE_MR_Logs::maybe_create_or_update_table();
-
-		if ( ! empty( $_POST['uve_mr_purge_now'] ) && check_admin_referer( 'uve_mr_purge_now' ) ) {
-			$deleted = UVE_MR_Logs::purge_old_logs( true );
-			// translators: %s: number of records deleted.
-			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( __( 'Purged %s records.', 'uve-mailrelay-newsletter' ), (string) $deleted ) ) . '</p></div>';
 		}
 
 		$opts = UVE_Mailrelay_Newsletter::get_options();
@@ -237,9 +247,32 @@ final class UVE_MR_Admin {
 			<hr>
 			<h2><?php echo esc_html__( 'Shortcode', 'uve-mailrelay-newsletter' ); ?></h2>
 			<p><code>[uve_mailrelay_newsletter]</code></p>
+		</div>
+		<?php
+	}
 
-			<hr>
-			<h2><?php echo esc_html__( 'Recent logs', 'uve-mailrelay-newsletter' ); ?></h2>
+	/**
+	 * Render the logs page.
+	 *
+	 * @return void
+	 */
+	public static function render_logs_page(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Ensure schema is up-to-date before rendering (safe + idempotent).
+		UVE_MR_Logs::maybe_create_or_update_table();
+
+		if ( ! empty( $_POST['uve_mr_purge_now'] ) && check_admin_referer( 'uve_mr_purge_now' ) ) {
+			$deleted = UVE_MR_Logs::purge_old_logs( true );
+			// translators: %s: number of records deleted.
+			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( __( 'Purged %s records.', 'uve-mailrelay-newsletter' ), (string) $deleted ) ) . '</p></div>';
+		}
+		?>
+		<div class="wrap">
+			<h1><?php echo esc_html__( 'MR4WP Logs', 'uve-mailrelay-newsletter' ); ?></h1>
+
 			<?php UVE_MR_Logs::render_logs_table_safe(); ?>
 
 			<form method="post" style="margin-top:12px;">
