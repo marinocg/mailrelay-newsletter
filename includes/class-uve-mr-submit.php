@@ -96,7 +96,7 @@ final class UVE_MR_Submit {
 		if ( $group_ids_input ) {
 			$group_ids = array_values( array_intersect( $group_ids_input, $group_ids_cfg ) );
 		}
-		$page_url = UVE_MR_Utils::safe_page_url();
+		$page_url = UVE_MR_Utils::safe_page_url_from_request( $data );
 
 		$result = UVE_MR_Mailrelay::subscribe_with_confirmation( $email, $group_ids, true, $ip );
 

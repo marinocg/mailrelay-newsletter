@@ -60,18 +60,30 @@ final class UVE_MR_Utils {
 	/**
 	 * Get a safe page URL for logging.
 	 *
+	 * @param array $data Request data.
 	 * @return string
 	 */
-	public static function safe_page_url(): string {
+	public static function safe_page_url_from_request( array $data ): string {
+		$home_url  = home_url( '/' );
+		$home_host = wp_parse_url( $home_url, PHP_URL_HOST );
+
+		$candidate = sanitize_text_field( (string) wp_unslash( $data['uve_mr_page_url'] ?? '' ) );
+		if ( $candidate ) {
+			$c_host = wp_parse_url( $candidate, PHP_URL_HOST );
+			if ( $c_host && $home_host && strtolower( (string) $c_host ) === strtolower( (string) $home_host ) ) {
+				return esc_url_raw( $candidate );
+			}
+		}
+
 		$ref = wp_get_referer();
 		if ( $ref ) {
-			$ref_host  = wp_parse_url( $ref, PHP_URL_HOST );
-			$home_host = wp_parse_url( home_url( '/' ), PHP_URL_HOST );
+			$ref_host = wp_parse_url( $ref, PHP_URL_HOST );
 			if ( $ref_host && $home_host && strtolower( (string) $ref_host ) === strtolower( (string) $home_host ) ) {
 				return esc_url_raw( $ref );
 			}
 		}
-		return home_url( '/' );
+
+		return $home_url;
 	}
 
 	/**
