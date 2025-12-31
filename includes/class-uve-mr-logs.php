@@ -233,7 +233,55 @@ final class UVE_MR_Logs {
 
 		$has_confirm = in_array( 'confirmation_requested_at', $select, true ) || in_array( 'confirmation_http_code', $select, true );
 
-		$current_page = 'uve-mr-newsletter-logs';
+		$current_page     = 'uve-mr-newsletter-logs';
+		$pagination_links = '';
+		if ( $pages > 1 ) {
+			$base_args = array(
+				'page'     => $current_page,
+				's'        => $search,
+				'per_page' => $per_page,
+				'_wpnonce' => $nonce,
+				'orderby'  => $orderby,
+				'order'    => $order,
+			);
+
+			$first_url = add_query_arg( array_merge( $base_args, array( 'paged' => 1 ) ), admin_url( 'admin.php' ) );
+			$prev_url  = add_query_arg( array_merge( $base_args, array( 'paged' => max( 1, $paged - 1 ) ) ), admin_url( 'admin.php' ) );
+			$next_url  = add_query_arg( array_merge( $base_args, array( 'paged' => min( $pages, $paged + 1 ) ) ), admin_url( 'admin.php' ) );
+			$last_url  = add_query_arg( array_merge( $base_args, array( 'paged' => $pages ) ), admin_url( 'admin.php' ) );
+
+			$pagination_links = '<span class="pagination-links">';
+			if ( $paged > 1 ) {
+				$pagination_links .= '<a class="first-page button" href="' . esc_url( $first_url ) . '"><span class="screen-reader-text">' . esc_html__( 'First page', 'uve-mailrelay-newsletter' ) . '</span><span aria-hidden="true">&laquo;</span></a>';
+				$pagination_links .= '<a class="prev-page button" href="' . esc_url( $prev_url ) . '"><span class="screen-reader-text">' . esc_html__( 'Previous page', 'uve-mailrelay-newsletter' ) . '</span><span aria-hidden="true">&lsaquo;</span></a>';
+			} else {
+				$pagination_links .= '<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&laquo;</span>';
+				$pagination_links .= '<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&lsaquo;</span>';
+			}
+			// translators: %1$s: current page, %2$s: total pages.
+			$pagination_links .= '<span class="paging-input">' . esc_html( sprintf( __( '%1$s of %2$s', 'uve-mailrelay-newsletter' ), (string) $paged, (string) $pages ) ) . '</span>';
+			if ( $paged < $pages ) {
+				$pagination_links .= '<a class="next-page button" href="' . esc_url( $next_url ) . '"><span class="screen-reader-text">' . esc_html__( 'Next page', 'uve-mailrelay-newsletter' ) . '</span><span aria-hidden="true">&rsaquo;</span></a>';
+				$pagination_links .= '<a class="last-page button" href="' . esc_url( $last_url ) . '"><span class="screen-reader-text">' . esc_html__( 'Last page', 'uve-mailrelay-newsletter' ) . '</span><span aria-hidden="true">&raquo;</span></a>';
+			} else {
+				$pagination_links .= '<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&rsaquo;</span>';
+				$pagination_links .= '<span class="tablenav-pages-navspan button disabled" aria-hidden="true">&raquo;</span>';
+			}
+			$pagination_links .= '</span>';
+		}
+
+		echo '<style>
+.uve-mr-logs .column-id { width: 60px; }
+.uve-mr-logs .column-date { width: 170px; white-space: nowrap; }
+.uve-mr-logs .column-email { width: 230px; }
+.uve-mr-logs .column-consent { width: 110px; }
+.uve-mr-logs .column-ip { width: 180px; }
+.uve-mr-logs .column-source { width: 30%; }
+.uve-mr-logs .column-signup { width: 80px; text-align: right; }
+.uve-mr-logs .column-confirmation { width: 200px; white-space: nowrap; }
+.uve-mr-logs td.column-email,
+.uve-mr-logs td.column-source { word-break: break-word; }
+</style>';
 		echo '<form method="get">';
 		echo '<input type="hidden" name="page" value="' . esc_attr( $current_page ) . '">';
 		echo '<input type="hidden" name="_wpnonce" value="' . esc_attr( $nonce ) . '">';
@@ -255,6 +303,9 @@ final class UVE_MR_Logs {
 		echo '<div class="tablenav-pages">';
 		// translators: %1$s: number of items.
 		echo '<span class="displaying-num">' . esc_html( sprintf( __( '%1$s items', 'uve-mailrelay-newsletter' ), (string) $total ) ) . '</span>';
+		if ( $pagination_links ) {
+			echo wp_kses_post( $pagination_links );
+		}
 		echo '</div>';
 		echo '</div>';
 		echo '</form>';
@@ -272,8 +323,20 @@ final class UVE_MR_Logs {
 			$header_cols['confirmation_requested_at'] = __( 'Confirmation email', 'uve-mailrelay-newsletter' );
 		}
 
-		echo '<table class="wp-list-table widefat fixed striped table-view-list"><thead><tr>';
+		$column_classes = array(
+			'id'                        => 'column-id',
+			'created_at'                => 'column-date',
+			'email'                     => 'column-email',
+			'accepted'                  => 'column-consent',
+			'ip'                        => 'column-ip',
+			'page_url'                  => 'column-source',
+			'mailrelay_http_code'       => 'column-signup',
+			'confirmation_requested_at' => 'column-confirmation',
+		);
+
+		echo '<table class="wp-list-table widefat fixed striped table-view-list uve-mr-logs"><thead><tr>';
 		foreach ( $header_cols as $col => $label ) {
+			$col_class = $column_classes[ $col ];
 			if ( isset( $sortable_columns[ $col ] ) ) {
 				$is_sorted  = ( $orderby === $col );
 				$next_order = ( $is_sorted && 'asc' === $order ) ? 'desc' : 'asc';
@@ -289,9 +352,10 @@ final class UVE_MR_Logs {
 					),
 					admin_url( 'admin.php' )
 				);
-				echo '<th scope="col" class="manage-column ' . esc_attr( $class ) . '"><a href="' . esc_url( $link ) . '"><span>' . esc_html( $label ) . '</span><span class="sorting-indicator"></span></a></th>';
+				$th_class   = trim( 'manage-column ' . $col_class . ' ' . $class );
+				echo '<th scope="col" class="' . esc_attr( $th_class ) . '"><a href="' . esc_url( $link ) . '"><span>' . esc_html( $label ) . '</span><span class="sorting-indicator"></span></a></th>';
 			} else {
-				echo '<th scope="col" class="manage-column">' . esc_html( $label ) . '</th>';
+				echo '<th scope="col" class="manage-column ' . esc_attr( $col_class ) . '">' . esc_html( $label ) . '</th>';
 			}
 		}
 		echo '</tr></thead><tbody>';
@@ -314,54 +378,27 @@ final class UVE_MR_Logs {
 			}
 
 			echo '<tr>';
-			echo '<td>' . esc_html( (string) ( $r['id'] ?? '' ) ) . '</td>';
-			echo '<td>' . esc_html( (string) ( $r['created_at'] ?? '' ) ) . '</td>';
-			echo '<td>' . esc_html( (string) ( $r['email'] ?? '' ) ) . '</td>';
-			echo '<td>' . esc_html( ( 1 === (int) ( $r['accepted'] ?? 0 ) ) ? __( 'yes', 'uve-mailrelay-newsletter' ) : __( 'no', 'uve-mailrelay-newsletter' ) ) . '</td>';
-			echo '<td><code>' . esc_html( (string) $ip ) . '</code></td>';
-			echo '<td>' . esc_html( (string) ( $r['page_url'] ?? '' ) ) . '</td>';
-			echo '<td>' . esc_html( $create ) . '</td>';
+			echo '<td class="column-id">' . esc_html( (string) ( $r['id'] ?? '' ) ) . '</td>';
+			echo '<td class="column-date">' . esc_html( (string) ( $r['created_at'] ?? '' ) ) . '</td>';
+			echo '<td class="column-email">' . esc_html( (string) ( $r['email'] ?? '' ) ) . '</td>';
+			echo '<td class="column-consent">' . esc_html( ( 1 === (int) ( $r['accepted'] ?? 0 ) ) ? __( 'yes', 'uve-mailrelay-newsletter' ) : __( 'no', 'uve-mailrelay-newsletter' ) ) . '</td>';
+			echo '<td class="column-ip"><code>' . esc_html( (string) $ip ) . '</code></td>';
+			echo '<td class="column-source">' . esc_html( (string) ( $r['page_url'] ?? '' ) ) . '</td>';
+			echo '<td class="column-signup">' . esc_html( $create ) . '</td>';
 			if ( $has_confirm ) {
-				echo '<td>' . esc_html( $confirm_text ) . '</td>';
+				echo '<td class="column-confirmation">' . esc_html( $confirm_text ) . '</td>';
 			}
 			echo '</tr>';
 		}
 
 		echo '</tbody></table>';
 
-		$pagination = paginate_links(
-			array(
-				'base'      => esc_url_raw(
-					add_query_arg(
-						array(
-							'page'     => $current_page,
-							's'        => $search,
-							'per_page' => $per_page,
-							'_wpnonce' => $nonce,
-							'orderby'  => $orderby,
-							'order'    => $order,
-							'paged'    => '%#%',
-						),
-						admin_url( 'admin.php' )
-					)
-				),
-				'format'    => '',
-				'total'     => $pages,
-				'current'   => $paged,
-				'prev_text' => __( '&laquo; Previous', 'uve-mailrelay-newsletter' ),
-				'next_text' => __( 'Next &raquo;', 'uve-mailrelay-newsletter' ),
-				'type'      => 'array',
-			)
-		);
-		if ( $pagination ) {
+		if ( $pagination_links ) {
 			echo '<div class="tablenav bottom"><div class="tablenav-pages">';
 			// translators: %1$s: number of items.
 			echo '<span class="displaying-num">' . esc_html( sprintf( __( '%1$s items', 'uve-mailrelay-newsletter' ), (string) $total ) ) . '</span>';
-			echo '<span class="pagination-links">';
-			foreach ( $pagination as $link ) {
-				echo wp_kses_post( $link );
-			}
-			echo '</span></div></div>';
+			echo wp_kses_post( $pagination_links );
+			echo '</div></div>';
 		}
 
 		if ( ! $has_confirm ) {
