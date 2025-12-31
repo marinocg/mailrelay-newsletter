@@ -44,4 +44,26 @@ final class UtilsTest extends TestCase {
 		$_SERVER['REMOTE_ADDR'] = '203.0.113.10';
 		$this->assertSame( '203.0.113.10', UVE_MR_Utils::get_client_ip() );
 	}
+
+	public function test_safe_page_url_from_request_uses_candidate_on_same_host(): void {
+		$data = array( 'uve_mr_page_url' => 'https://example.test/page' );
+		$this->assertSame( 'https://example.test/page', UVE_MR_Utils::safe_page_url_from_request( $data ) );
+	}
+
+	public function test_safe_page_url_from_request_rejects_other_host(): void {
+		$data = array( 'uve_mr_page_url' => 'https://evil.test/page' );
+		$this->assertSame( 'https://example.test/', UVE_MR_Utils::safe_page_url_from_request( $data ) );
+	}
+
+	public function test_safe_page_url_from_request_falls_back_to_referer(): void {
+		$GLOBALS['uve_mr_test_referer'] = 'https://example.test/from-ref';
+		$data                           = array( 'uve_mr_page_url' => 'https://evil.test/page' );
+		$this->assertSame( 'https://example.test/from-ref', UVE_MR_Utils::safe_page_url_from_request( $data ) );
+	}
+
+	public function test_safe_page_url_from_request_handles_array_input(): void {
+		$GLOBALS['uve_mr_test_referer'] = 'https://example.test/from-ref';
+		$data                           = array( 'uve_mr_page_url' => array( 'bad' ) );
+		$this->assertSame( 'https://example.test/from-ref', UVE_MR_Utils::safe_page_url_from_request( $data ) );
+	}
 }

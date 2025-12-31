@@ -1,7 +1,9 @@
 # Changelog
 
 ## Unreleased
-- Patch security isses
+- Harden group ID handling to prevent tampering while preserving defaults.
+- Validate logged page URLs with same-host checks and safer fallbacks.
+- Add tests for group ID handling and safe page URL logic.
 
 ## 1.7.1
 - Block form after submit and add ajax behaviour

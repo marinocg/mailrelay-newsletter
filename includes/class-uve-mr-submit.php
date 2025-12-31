@@ -93,7 +93,7 @@ final class UVE_MR_Submit {
 		$group_ids_input = UVE_MR_Utils::parse_group_ids( $group_ids_raw );
 		$group_ids_cfg   = UVE_MR_Utils::parse_group_ids( (string) ( $opts['group_ids'] ?? '' ) );
 		$group_ids       = $group_ids_cfg;
-		if ( $group_ids_input ) {
+		if ( '' !== $group_ids_raw && $group_ids_input ) {
 			$group_ids = array_values( array_intersect( $group_ids_input, $group_ids_cfg ) );
 		}
 		$page_url = UVE_MR_Utils::safe_page_url_from_request( $data );

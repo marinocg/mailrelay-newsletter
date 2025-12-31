@@ -74,7 +74,7 @@ final class UVE_MR_Utils {
 		$candidate = sanitize_text_field( is_scalar( $raw_url ) ? wp_unslash( (string) $raw_url ) : '' );
 		if ( $candidate ) {
 			$c_host = self::extract_host( $candidate );
-			if ( $c_host && $home_host && strtolower( (string) $c_host ) === strtolower( (string) $home_host ) ) {
+			if ( '' !== $c_host && '' !== $home_host && strtolower( $c_host ) === strtolower( $home_host ) ) {
 				return esc_url_raw( $candidate );
 			}
 		}
@@ -82,7 +82,7 @@ final class UVE_MR_Utils {
 		$ref = wp_get_referer();
 		if ( $ref ) {
 			$ref_host = self::extract_host( $ref );
-			if ( $ref_host && $home_host && strtolower( (string) $ref_host ) === strtolower( (string) $home_host ) ) {
+			if ( '' !== $ref_host && '' !== $home_host && strtolower( $ref_host ) === strtolower( $home_host ) ) {
 				return esc_url_raw( $ref );
 			}
 		}
@@ -101,7 +101,7 @@ final class UVE_MR_Utils {
 		if ( is_array( $parsed ) ) {
 			return (string) ( $parsed['host'] ?? '' );
 		}
-		return is_string( $parsed ) ? $parsed : '';
+		return '';
 	}
 
 	/**
