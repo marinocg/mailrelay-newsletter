@@ -98,6 +98,25 @@ final class UVE_MR_Logs {
 		global $wpdb;
 		$table = self::table_name();
 
+		$nonce        = wp_create_nonce( 'uve_mr_logs_search' );
+		$nonce_ok     = false;
+		$search       = '';
+		$paged        = 1;
+		$per_page     = 30;
+		$per_page_set = array( 20, 30, 50, 100 );
+
+		if ( isset( $_GET['_wpnonce'] ) ) {
+			$submitted_nonce = sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) );
+			$nonce_ok        = (bool) wp_verify_nonce( $submitted_nonce, 'uve_mr_logs_search' );
+		}
+
+		if ( $nonce_ok ) {
+			$search     = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
+			$paged      = isset( $_GET['paged'] ) ? max( 1, (int) $_GET['paged'] ) : 1;
+			$per_page   = isset( $_GET['per_page'] ) ? (int) $_GET['per_page'] : 30;
+			$per_page   = in_array( $per_page, $per_page_set, true ) ? $per_page : 30;
+		}
+
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) );
 		if ( $exists !== $table ) {
@@ -132,6 +151,33 @@ final class UVE_MR_Logs {
 			return;
 		}
 
+		$where_sql  = '';
+		$where_args = array();
+		if ( '' !== $search ) {
+			$searchable = array( 'email', 'page_url', 'ip_raw', 'ip_hash' );
+			$searchable = array_values( array_intersect( $searchable, $cols ) );
+			if ( $searchable ) {
+				$like       = '%' . $wpdb->esc_like( $search ) . '%';
+				$parts      = array();
+				$where_args = array();
+				foreach ( $searchable as $col ) {
+					$parts[]      = '`' . esc_sql( $col ) . '` LIKE %s';
+					$where_args[] = $like;
+				}
+				$where_sql = 'WHERE (' . implode( ' OR ', $parts ) . ')';
+			}
+		}
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$count_sql = "SELECT COUNT(*) FROM {$table} {$where_sql}";
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$total = (int) $wpdb->get_var( $wpdb->prepare( $count_sql, $where_args ) );
+		$pages = max( 1, (int) ceil( $total / $per_page ) );
+		if ( $paged > $pages ) {
+			$paged = $pages;
+		}
+		$offset = ( $paged - 1 ) * $per_page;
+
 		$columns_sql = implode(
 			',',
 			array_map(
@@ -141,16 +187,35 @@ final class UVE_MR_Logs {
 				$select
 			)
 		);
-		$sql         = "SELECT {$columns_sql} FROM {$table} ORDER BY id DESC LIMIT 30";
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$rows = $wpdb->get_results( $sql, ARRAY_A );
+		$sql         = "SELECT {$columns_sql} FROM {$table} {$where_sql} ORDER BY id DESC LIMIT %d OFFSET %d";
+		$sql_args    = array_merge( $where_args, array( $per_page, $offset ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
+		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $sql_args ), ARRAY_A );
 
 		if ( ! $rows ) {
-			echo '<p>' . esc_html__( 'No records yet.', 'uve-mailrelay-newsletter' ) . '</p>';
+			if ( '' !== $search ) {
+				echo '<p>' . esc_html__( 'No records match your search.', 'uve-mailrelay-newsletter' ) . '</p>';
+			} else {
+				echo '<p>' . esc_html__( 'No records yet.', 'uve-mailrelay-newsletter' ) . '</p>';
+			}
 			return;
 		}
 
 		$has_confirm = in_array( 'confirmation_requested_at', $select, true ) || in_array( 'confirmation_http_code', $select, true );
+
+		$current_page = 'uve-mr-newsletter-logs';
+		echo '<form method="get" style="margin-bottom:12px;">';
+		echo '<input type="hidden" name="page" value="' . esc_attr( $current_page ) . '">';
+		echo '<input type="hidden" name="_wpnonce" value="' . esc_attr( $nonce ) . '">';
+		echo '<input type="search" name="s" value="' . esc_attr( $search ) . '" placeholder="' . esc_attr__( 'Search logs', 'uve-mailrelay-newsletter' ) . '"> ';
+		echo '<label class="screen-reader-text" for="per_page">' . esc_html__( 'Items per page', 'uve-mailrelay-newsletter' ) . '</label>';
+		echo '<select name="per_page" id="per_page">';
+		foreach ( $per_page_set as $size ) {
+			echo '<option value="' . esc_attr( (string) $size ) . '"' . selected( $per_page, $size, false ) . '>' . esc_html( (string) $size ) . '</option>';
+		}
+		echo '</select> ';
+		submit_button( __( 'Search', 'uve-mailrelay-newsletter' ), 'secondary', '', false );
+		echo '</form>';
 
 		echo '<table class="widefat striped"><thead><tr>';
 		echo '<th>' . esc_html__( 'ID', 'uve-mailrelay-newsletter' ) . '</th>';
@@ -197,6 +262,39 @@ final class UVE_MR_Logs {
 		}
 
 		echo '</tbody></table>';
+
+		$pagination = paginate_links(
+			array(
+				'base'      => esc_url_raw(
+					add_query_arg(
+						array(
+							'page'     => $current_page,
+							's'        => $search,
+							'per_page' => $per_page,
+							'_wpnonce' => $nonce,
+							'paged'    => '%#%',
+						),
+						admin_url( 'admin.php' )
+					)
+				),
+				'format'    => '',
+				'total'     => $pages,
+				'current'   => $paged,
+				'prev_text' => __( '&laquo; Previous', 'uve-mailrelay-newsletter' ),
+				'next_text' => __( 'Next &raquo;', 'uve-mailrelay-newsletter' ),
+				'type'      => 'array',
+			)
+		);
+		if ( $pagination ) {
+			echo '<div class="tablenav"><div class="tablenav-pages">';
+			// translators: %1$s: number of items.
+			echo '<span class="displaying-num">' . esc_html( sprintf( __( '%1$s items', 'uve-mailrelay-newsletter' ), (string) $total ) ) . '</span>';
+			echo '<span class="pagination-links">';
+			foreach ( $pagination as $link ) {
+				echo wp_kses_post( $link );
+			}
+			echo '</span></div></div>';
+		}
 
 		if ( ! $has_confirm ) {
 			echo '<p class="description">' . esc_html__( 'Confirmation columns do not exist yet. The plugin should add them automatically on activation (dbDelta).', 'uve-mailrelay-newsletter' ) . '</p>';
