@@ -17,6 +17,10 @@ if ( ! defined( 'DAY_IN_SECONDS' ) ) {
 	define( 'DAY_IN_SECONDS', 86400 );
 }
 
+if ( ! defined( 'ARRAY_A' ) ) {
+	define( 'ARRAY_A', 'ARRAY_A' );
+}
+
 class WP_Error {
 	private string $message;
 
@@ -33,7 +37,17 @@ class WPDB_Mock {
 	public string $prefix = 'wp_';
 
 	public function prepare( string $query, ...$args ): string {
+		$flat_args = array();
 		foreach ( $args as $arg ) {
+			if ( is_array( $arg ) ) {
+				foreach ( $arg as $inner ) {
+					$flat_args[] = $inner;
+				}
+				continue;
+			}
+			$flat_args[] = $arg;
+		}
+		foreach ( $flat_args as $arg ) {
 			$query = preg_replace( '/%s/', (string) $arg, $query, 1 );
 			$query = preg_replace( '/%i/', (string) $arg, $query, 1 );
 		}
@@ -45,10 +59,19 @@ class WPDB_Mock {
 	}
 
 	public function get_var( string $query ) {
+		if ( false !== stripos( $query, 'SHOW TABLES LIKE' ) ) {
+			return $GLOBALS['uve_mr_test_wpdb_tables_like'] ?? null;
+		}
+		if ( false !== stripos( $query, 'COUNT(' ) ) {
+			return $GLOBALS['uve_mr_test_wpdb_count'] ?? 0;
+		}
 		return $GLOBALS['uve_mr_test_wpdb_get_var'] ?? null;
 	}
 
 	public function get_results( string $query, $output = null ) {
+		if ( false !== stripos( $query, 'SHOW COLUMNS FROM' ) ) {
+			return $GLOBALS['uve_mr_test_wpdb_columns'] ?? array();
+		}
 		return $GLOBALS['uve_mr_test_wpdb_get_results'] ?? array();
 	}
 
@@ -94,6 +117,10 @@ function esc_attr( string $text ): string {
 	return $text;
 }
 
+function esc_sql( string $text ): string {
+	return $text;
+}
+
 function esc_url_raw( string $url ): string {
 	return $url;
 }
@@ -129,6 +156,27 @@ function shortcode_atts( array $pairs, $atts ): array {
 }
 function register_widget( string $class ): void {}
 function add_options_page( string $page_title, string $menu_title, string $capability, string $menu_slug, $callback ): void {}
+function add_menu_page( string $page_title, string $menu_title, string $capability, string $menu_slug, $callback, string $icon_url = '', $position = null ): void {
+	$GLOBALS['uve_mr_test_menu_pages'][] = array(
+		'page_title' => $page_title,
+		'menu_title' => $menu_title,
+		'capability' => $capability,
+		'menu_slug'  => $menu_slug,
+		'callback'   => $callback,
+		'icon_url'   => $icon_url,
+		'position'   => $position,
+	);
+}
+function add_submenu_page( string $parent_slug, string $page_title, string $menu_title, string $capability, string $menu_slug, $callback ): void {
+	$GLOBALS['uve_mr_test_submenu_pages'][] = array(
+		'parent_slug' => $parent_slug,
+		'page_title'  => $page_title,
+		'menu_title'  => $menu_title,
+		'capability'  => $capability,
+		'menu_slug'   => $menu_slug,
+		'callback'    => $callback,
+	);
+}
 function register_setting( string $group, string $name, array $args = array() ): void {}
 function register_activation_hook( string $file, $callback ): void {}
 function register_deactivation_hook( string $file, $callback ): void {}
@@ -140,6 +188,9 @@ function determine_locale(): string { return 'en_US'; }
 function get_locale(): string { return 'en_US'; }
 function wp_verify_nonce( string $nonce, string $action ): bool {
 	return $GLOBALS['uve_mr_test_nonce_ok'] ?? true;
+}
+function wp_create_nonce( string $action ): string {
+	return 'testnonce';
 }
 function wp_next_scheduled( string $hook ) {
 	return false;
@@ -309,5 +360,11 @@ function wp_salt( string $scheme ): string {
 
 function selected( $value, $current ): void {}
 function checked( $value, $current ): void {}
+function submit_button( string $text = 'Submit', string $type = 'primary', string $name = 'submit', bool $wrap = true, $other = array() ): void {
+	echo '<button type="submit" class="button ' . esc_attr( $type ) . '">' . esc_html( $text ) . '</button>';
+}
+function sanitize_key( string $key ): string {
+	return preg_replace( '/[^a-z0-9_]/', '', strtolower( $key ) );
+}
 
 require_once __DIR__ . '/../class-uve-mailrelay-newsletter.php';

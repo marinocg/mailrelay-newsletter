@@ -45,6 +45,34 @@ final class UtilsTest extends TestCase {
 		$this->assertSame( '203.0.113.10', UVE_MR_Utils::get_client_ip() );
 	}
 
+	public function test_get_client_ip_prefers_cloudflare_header(): void {
+		$_SERVER = array(
+			'HTTP_CF_CONNECTING_IP' => '1.2.3.4',
+			'HTTP_CF_RAY'           => 'abc123',
+			'REMOTE_ADDR'           => '203.0.113.10',
+		);
+
+		$this->assertSame( '1.2.3.4', UVE_MR_Utils::get_client_ip() );
+	}
+
+	public function test_get_client_ip_prefers_public_from_forwarded_for(): void {
+		$_SERVER = array(
+			'HTTP_X_FORWARDED_FOR' => '10.0.0.1, 1.1.1.1',
+			'REMOTE_ADDR'          => '192.168.0.1',
+		);
+
+		$this->assertSame( '1.1.1.1', UVE_MR_Utils::get_client_ip() );
+	}
+
+	public function test_get_client_ip_falls_back_to_first_valid_ip(): void {
+		$_SERVER = array(
+			'HTTP_X_FORWARDED_FOR' => '10.0.0.1',
+			'REMOTE_ADDR'          => '192.168.0.1',
+		);
+
+		$this->assertSame( '10.0.0.1', UVE_MR_Utils::get_client_ip() );
+	}
+
 	public function test_safe_page_url_from_request_uses_candidate_on_same_host(): void {
 		$data = array( 'uve_mr_page_url' => 'https://example.test/page' );
 		$this->assertSame( 'https://example.test/page', UVE_MR_Utils::safe_page_url_from_request( $data ) );
