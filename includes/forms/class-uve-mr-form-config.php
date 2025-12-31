@@ -115,7 +115,14 @@ final class UVE_MR_Form_Config {
 	 * @return array
 	 */
 	public static function merge( array $defaults, array $stored ): array {
-		return array_replace_recursive( $defaults, $stored );
+		$merged = array_replace_recursive( $defaults, $stored );
+		if ( isset( $defaults['fields'] ) ) {
+			$merged['fields'] = self::normalize_fields(
+				$merged['fields'] ?? array(),
+				$defaults['fields']
+			);
+		}
+		return $merged;
 	}
 
 	/**
@@ -133,7 +140,19 @@ final class UVE_MR_Form_Config {
 		$out['basics']['email_placeholder'] = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['basics']['email_placeholder'] ?? $defaults['basics']['email_placeholder'] ) ) );
 		$out['basics']['submit_label']      = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['basics']['submit_label'] ?? $defaults['basics']['submit_label'] ) ) );
 
-		$out['destination']['group_ids']         = sanitize_text_field( (string) ( $raw['destination']['group_ids'] ?? $defaults['destination']['group_ids'] ) );
+		$group_ids_raw = $raw['destination']['group_ids'] ?? $defaults['destination']['group_ids'];
+		if ( is_array( $group_ids_raw ) ) {
+			$group_ids_clean = array();
+			foreach ( $group_ids_raw as $gid ) {
+				$gid = sanitize_text_field( (string) $gid );
+				if ( '' !== $gid ) {
+					$group_ids_clean[] = $gid;
+				}
+			}
+			$out['destination']['group_ids'] = implode( ',', $group_ids_clean );
+		} else {
+			$out['destination']['group_ids'] = sanitize_text_field( (string) $group_ids_raw );
+		}
 		$status                                  = sanitize_text_field( (string) ( $raw['destination']['subscriber_status'] ?? $defaults['destination']['subscriber_status'] ) );
 		$out['destination']['subscriber_status'] = in_array( $status, array( 'inactive', 'active' ), true ) ? $status : 'inactive';
 
@@ -161,6 +180,7 @@ final class UVE_MR_Form_Config {
 				}
 			}
 		}
+		$out['fields'] = self::normalize_fields( $out['fields'], $defaults['fields'] ?? array() );
 		if ( ! empty( $out['fields']['email']['placeholder'] ) ) {
 			$out['basics']['email_placeholder'] = $out['fields']['email']['placeholder'];
 		}
@@ -185,6 +205,40 @@ final class UVE_MR_Form_Config {
 
 		$out['version'] = UVE_MR_Form::CONFIG_VERSION;
 
+		return $out;
+	}
+
+	/**
+	 * Normalize fields against the allowed defaults.
+	 *
+	 * @param array $fields Current fields config.
+	 * @param array $defaults Default fields config.
+	 * @return array
+	 */
+	private static function normalize_fields( array $fields, array $defaults ): array {
+		$out = array();
+		foreach ( $defaults as $key => $field ) {
+			if ( ! is_array( $field ) ) {
+				continue;
+			}
+			$current = $fields[ $key ] ?? array();
+			if ( ! is_array( $current ) ) {
+				$current = array();
+			}
+			$enabled = ! empty( $current['enabled'] );
+			if ( 'email' === $key ) {
+				$enabled = true;
+			}
+			$out[ $key ] = array(
+				'enabled'     => $enabled,
+				'label'       => (string) ( $current['label'] ?? $field['label'] ?? '' ),
+				'placeholder' => (string) ( $current['placeholder'] ?? $field['placeholder'] ?? '' ),
+				'type'        => (string) ( $field['type'] ?? 'text' ),
+			);
+		}
+		if ( ! empty( $fields['email']['placeholder'] ) ) {
+			$out['email']['placeholder'] = (string) $fields['email']['placeholder'];
+		}
 		return $out;
 	}
 }
