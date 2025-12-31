@@ -1,0 +1,10 @@
+.uve-mr-logs .column-id { width: 60px; }
+.uve-mr-logs .column-date { width: 170px; white-space: nowrap; }
+.uve-mr-logs .column-email { width: 230px; }
+.uve-mr-logs .column-consent { width: 110px; }
+.uve-mr-logs .column-ip { width: 180px; }
+.uve-mr-logs .column-source { width: 30%; }
+.uve-mr-logs .column-signup { width: 80px; text-align: right; }
+.uve-mr-logs .column-confirmation { width: 200px; white-space: nowrap; }
+.uve-mr-logs td.column-email,
+.uve-mr-logs td.column-source { word-break: break-word; }

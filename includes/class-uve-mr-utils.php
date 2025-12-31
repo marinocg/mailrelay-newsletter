@@ -133,7 +133,7 @@ final class UVE_MR_Utils {
 
 		$candidates = array();
 		foreach ( $raw_candidates as $raw ) {
-			$ip = sanitize_text_field( wp_unslash( (string) $raw ) );
+			$ip = trim( (string) $raw );
 			$ip = preg_replace( '/[^0-9a-fA-F\.:]/', '', $ip );
 			if ( ! $ip || false === filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 				continue;

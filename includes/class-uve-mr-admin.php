@@ -66,6 +66,21 @@ final class UVE_MR_Admin {
 	}
 
 	/**
+	 * Enqueue admin assets.
+	 *
+	 * @param string $hook_suffix Current admin page.
+	 * @return void
+	 */
+	public static function admin_enqueue( string $hook_suffix ): void {
+		if ( false === strpos( $hook_suffix, 'uve-mr-newsletter-logs' ) ) {
+			return;
+		}
+
+		$src = plugins_url( 'assets/admin-logs.css', __DIR__ . '/../class-uve-mailrelay-newsletter.php' );
+		wp_enqueue_style( 'uve-mr-admin-logs', $src, array(), UVE_Mailrelay_Newsletter::VERSION );
+	}
+
+	/**
 	 * Sanitize settings before saving.
 	 *
 	 * @param mixed $raw Raw options.

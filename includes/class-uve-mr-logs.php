@@ -165,7 +165,7 @@ final class UVE_MR_Logs {
 				$parts      = array();
 				$where_args = array();
 				foreach ( $searchable as $col ) {
-					$parts[]      = '`' . esc_sql( $col ) . '` LIKE %s';
+					$parts[]      = '`' . $col . '` LIKE %s';
 					$where_args[] = $like;
 				}
 				$where_sql = 'WHERE (' . implode( ' OR ', $parts ) . ')';
@@ -210,12 +210,12 @@ final class UVE_MR_Logs {
 			',',
 			array_map(
 				static function ( $col ) {
-					return '`' . esc_sql( $col ) . '`';
+					return '`' . $col . '`';
 				},
 				$select
 			)
 		);
-		$orderby_sql = '`' . esc_sql( $orderby ) . '`';
+		$orderby_sql = '`' . $orderby . '`';
 		$order_sql   = ( 'asc' === $order ) ? 'ASC' : 'DESC';
 		$sql         = "SELECT {$columns_sql} FROM {$table} {$where_sql} ORDER BY {$orderby_sql} {$order_sql} LIMIT %d OFFSET %d";
 		$sql_args    = array_merge( $where_args, array( $per_page, $offset ) );
@@ -270,18 +270,6 @@ final class UVE_MR_Logs {
 			$pagination_links .= '</span>';
 		}
 
-		echo '<style>
-.uve-mr-logs .column-id { width: 60px; }
-.uve-mr-logs .column-date { width: 170px; white-space: nowrap; }
-.uve-mr-logs .column-email { width: 230px; }
-.uve-mr-logs .column-consent { width: 110px; }
-.uve-mr-logs .column-ip { width: 180px; }
-.uve-mr-logs .column-source { width: 30%; }
-.uve-mr-logs .column-signup { width: 80px; text-align: right; }
-.uve-mr-logs .column-confirmation { width: 200px; white-space: nowrap; }
-.uve-mr-logs td.column-email,
-.uve-mr-logs td.column-source { word-break: break-word; }
-</style>';
 		echo '<form method="get">';
 		echo '<input type="hidden" name="page" value="' . esc_attr( $current_page ) . '">';
 		echo '<input type="hidden" name="_wpnonce" value="' . esc_attr( $nonce ) . '">';
