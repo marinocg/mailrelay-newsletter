@@ -58,6 +58,23 @@ final class UVE_MR_Utils {
 	}
 
 	/**
+	 * Get a safe page URL for logging.
+	 *
+	 * @return string
+	 */
+	public static function safe_page_url(): string {
+		$ref = wp_get_referer();
+		if ( $ref ) {
+			$ref_host  = wp_parse_url( $ref, PHP_URL_HOST );
+			$home_host = wp_parse_url( home_url( '/' ), PHP_URL_HOST );
+			if ( $ref_host && $home_host && strtolower( (string) $ref_host ) === strtolower( (string) $home_host ) ) {
+				return esc_url_raw( $ref );
+			}
+		}
+		return home_url( '/' );
+	}
+
+	/**
 	 * Get client IP address.
 	 *
 	 * @return string
