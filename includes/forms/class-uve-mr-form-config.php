@@ -157,9 +157,12 @@ final class UVE_MR_Form_Config {
 					'type'        => (string) ( $field['type'] ?? 'text' ),
 				);
 				if ( 'email' === $key ) {
-					$out['fields'][ $key ]['placeholder'] = $out['basics']['email_placeholder'];
+					$out['fields'][ $key ]['placeholder'] = $out['fields'][ $key ]['placeholder'] ?: $out['basics']['email_placeholder'];
 				}
 			}
+		}
+		if ( ! empty( $out['fields']['email']['placeholder'] ) ) {
+			$out['basics']['email_placeholder'] = $out['fields']['email']['placeholder'];
 		}
 
 		$out['consent']['inherit']     = ! empty( $raw['consent']['inherit'] );

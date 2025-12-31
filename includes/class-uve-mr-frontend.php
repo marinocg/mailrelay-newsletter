@@ -275,7 +275,7 @@ final class UVE_MR_Frontend {
 	 * @return string
 	 */
 	private static function render_form( array $config, string $extra_class, int $form_id ): string {
-		$email_placeholder = (string) ( $config['basics']['email_placeholder'] ?? __( 'Email...', 'uve-mailrelay-newsletter' ) );
+		$email_placeholder = (string) ( $config['fields']['email']['placeholder'] ?? $config['basics']['email_placeholder'] ?? __( 'Email...', 'uve-mailrelay-newsletter' ) );
 		$title             = (string) ( $config['basics']['title'] ?? '' );
 		$desc              = (string) ( $config['basics']['description'] ?? '' );
 		$submit            = (string) ( $config['basics']['submit_label'] ?? __( 'Subscribe', 'uve-mailrelay-newsletter' ) );
