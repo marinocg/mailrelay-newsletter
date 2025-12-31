@@ -288,7 +288,7 @@ final class UVE_MR_Forms_Admin {
 									<td>
 										<input type="text" class="regular-text" name="form_config[fields][<?php echo esc_attr( $key ); ?>][placeholder]" value="<?php echo esc_attr( $placeholder ); ?>">
 										<?php if ( 'phone' === $key ) : ?>
-											<p class="description"><?php echo esc_html__( 'Used for SMS or WhatsApp in Mailrelay; the same value is sent to both.', 'uve-mailrelay-newsletter' ); ?></p>
+											<p class="description"><?php echo esc_html__( 'Use E.164 format (e.g., +34666666666). Sent to both SMS and WhatsApp in Mailrelay.', 'uve-mailrelay-newsletter' ); ?></p>
 										<?php endif; ?>
 									</td>
 								</tr>

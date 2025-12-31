@@ -138,8 +138,11 @@ final class UVE_MR_Submit {
 			}
 
 			if ( 'phone' === $field_key ) {
-				$fields_payload['sms_phone']      = $value;
-				$fields_payload['whatsapp_phone'] = $value;
+				$phone = preg_replace( '/\s+/', '', $value );
+				if ( is_string( $phone ) && preg_match( '/^\+\d{7,15}$/', $phone ) ) {
+					$fields_payload['sms_phone']      = $phone;
+					$fields_payload['whatsapp_phone'] = $phone;
+				}
 				continue;
 			}
 
