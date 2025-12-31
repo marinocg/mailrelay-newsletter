@@ -338,10 +338,11 @@ final class UVE_MR_Logs {
 		foreach ( $header_cols as $col => $label ) {
 			$col_class = $column_classes[ $col ];
 			if ( isset( $sortable_columns[ $col ] ) ) {
-				$is_sorted  = ( $orderby === $col );
-				$next_order = ( $is_sorted && 'asc' === $order ) ? 'desc' : 'asc';
-				$class      = $is_sorted ? 'sorted ' . $order . ' sortable' : 'sortable desc';
-				$link       = add_query_arg(
+				$is_sorted    = ( $orderby === $col );
+				$next_order   = ( $is_sorted && 'asc' === $order ) ? 'desc' : 'asc';
+				$class        = $is_sorted ? 'sorted ' . $order . ' sortable' : 'sortable desc';
+				$sr_text = ( 'asc' === $next_order ) ? __( 'Sort ascending.', 'uve-mailrelay-newsletter' ) : __( 'Sort descending.', 'uve-mailrelay-newsletter' );
+				$link         = add_query_arg(
 					array(
 						'page'     => $current_page,
 						's'        => $search,
@@ -352,8 +353,8 @@ final class UVE_MR_Logs {
 					),
 					admin_url( 'admin.php' )
 				);
-				$th_class = trim( 'manage-column ' . $col_class . ' ' . $class );
-				echo '<th scope="col" class="' . esc_attr( $th_class ) . '"' . ( $is_sorted ? ' aria-sort="' . esc_attr( ( 'asc' === $order ) ? 'ascending' : 'descending' ) . '"' : '' ) . '><a href="' . esc_url( $link ) . '"><span>' . esc_html( $label ) . '</span><span class="sorting-indicator"></span></a></th>';
+				$th_class     = trim( 'manage-column ' . $col_class . ' ' . $class );
+				echo '<th scope="col" class="' . esc_attr( $th_class ) . '"' . ( $is_sorted ? ' aria-sort="' . esc_attr( ( 'asc' === $order ) ? 'ascending' : 'descending' ) . '"' : '' ) . '><a href="' . esc_url( $link ) . '"><span>' . esc_html( $label ) . '</span><span class="sorting-indicators"><span class="sorting-indicator asc" aria-hidden="true"></span><span class="sorting-indicator desc" aria-hidden="true"></span></span> <span class="screen-reader-text">' . esc_html( $sr_text ) . '</span></a></th>';
 			} else {
 				echo '<th scope="col" class="manage-column ' . esc_attr( $col_class ) . '">' . esc_html( $label ) . '</th>';
 			}
