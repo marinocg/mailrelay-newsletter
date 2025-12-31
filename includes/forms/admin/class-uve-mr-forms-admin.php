@@ -173,17 +173,17 @@ final class UVE_MR_Forms_Admin {
 							<h3><?php echo esc_html__( 'Destination', 'uve-mailrelay-newsletter' ); ?></h3>
 					<table class="form-table" role="presentation">
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'Group IDs', 'uve-mailrelay-newsletter' ); ?></th>
+							<th scope="row"><?php echo esc_html__( 'Groups', 'uve-mailrelay-newsletter' ); ?></th>
 							<td>
 								<?php
-								$group_ids = UVE_MR_Utils::parse_group_ids( (string) ( $config['destination']['group_ids'] ?? '' ) );
-								$groups    = UVE_MR_Mailrelay::get_groups();
+								$group_ids   = UVE_MR_Utils::parse_group_ids( (string) ( $config['destination']['group_ids'] ?? '' ) );
+								$groups      = UVE_MR_Mailrelay::get_groups();
 								$refresh_url = wp_nonce_url(
 									add_query_arg(
 										array(
-											'page'                => 'uve-mr-newsletter-forms',
-											'action'              => $form_id ? 'edit' : 'new',
-											'form_id'             => $form_id,
+											'page'                  => 'uve-mr-newsletter-forms',
+											'action'                => $form_id ? 'edit' : 'new',
+											'form_id'               => $form_id,
 											'uve_mr_refresh_groups' => 1,
 										),
 										admin_url( 'admin.php' )
@@ -191,17 +191,46 @@ final class UVE_MR_Forms_Admin {
 									'uve_mr_refresh_groups'
 								);
 								?>
-								<select name="form_config[destination][group_ids][]" multiple size="6" style="min-width:260px;">
-									<?php if ( ! empty( $groups ) ) : ?>
-										<?php foreach ( $groups as $group ) : ?>
-											<option value="<?php echo esc_attr( (string) $group['id'] ); ?>" <?php selected( in_array( (int) $group['id'], $group_ids, true ) ); ?>>
-												<?php echo esc_html( $group['name'] ); ?>
-											</option>
-										<?php endforeach; ?>
-									<?php endif; ?>
-								</select>
+								<input type="hidden" name="form_config[destination][group_ids]" id="uve-mr-group-ids" value="<?php echo esc_attr( implode( ',', $group_ids ) ); ?>">
+								<div class="uve-mr-dual-list">
+									<div>
+										<label class="screen-reader-text" for="uve-mr-groups-available"><?php echo esc_html__( 'Available groups', 'uve-mailrelay-newsletter' ); ?></label>
+										<select id="uve-mr-groups-available" multiple size="8">
+											<?php if ( ! empty( $groups ) ) : ?>
+												<?php foreach ( $groups as $group ) : ?>
+													<?php if ( in_array( (int) $group['id'], $group_ids, true ) ) : ?>
+														<?php continue; ?>
+													<?php endif; ?>
+													<option value="<?php echo esc_attr( (string) $group['id'] ); ?>">
+														<?php echo esc_html( $group['name'] ); ?>
+													</option>
+												<?php endforeach; ?>
+											<?php endif; ?>
+										</select>
+										<p class="description"><?php echo esc_html__( 'Available', 'uve-mailrelay-newsletter' ); ?></p>
+									</div>
+									<div class="uve-mr-dual-actions">
+										<button type="button" class="button" id="uve-mr-group-add"><?php echo esc_html__( 'Add →', 'uve-mailrelay-newsletter' ); ?></button>
+										<button type="button" class="button" id="uve-mr-group-remove"><?php echo esc_html__( '← Remove', 'uve-mailrelay-newsletter' ); ?></button>
+									</div>
+									<div>
+										<label class="screen-reader-text" for="uve-mr-groups-selected"><?php echo esc_html__( 'Selected groups', 'uve-mailrelay-newsletter' ); ?></label>
+										<select id="uve-mr-groups-selected" multiple size="8">
+											<?php if ( ! empty( $groups ) ) : ?>
+												<?php foreach ( $groups as $group ) : ?>
+													<?php if ( ! in_array( (int) $group['id'], $group_ids, true ) ) : ?>
+														<?php continue; ?>
+													<?php endif; ?>
+													<option value="<?php echo esc_attr( (string) $group['id'] ); ?>">
+														<?php echo esc_html( $group['name'] ); ?>
+													</option>
+												<?php endforeach; ?>
+											<?php endif; ?>
+										</select>
+										<p class="description"><?php echo esc_html__( 'Selected', 'uve-mailrelay-newsletter' ); ?></p>
+									</div>
+								</div>
 								<p class="description">
-									<?php echo esc_html__( 'Hold Ctrl/Cmd to select multiple groups.', 'uve-mailrelay-newsletter' ); ?>
 									<a href="<?php echo esc_url( $refresh_url ); ?>"><?php echo esc_html__( 'Refresh groups', 'uve-mailrelay-newsletter' ); ?></a>
 								</p>
 								<?php if ( empty( $groups ) ) : ?>
@@ -426,6 +455,35 @@ final class UVE_MR_Forms_Admin {
 				toggleGroup('input[name="form_config[consent][inherit]"]', '.uve-mr-consent-fields');
 				toggleGroup('input[name="form_config[turnstile][inherit]"]', '.uve-mr-turnstile-fields');
 				toggleGroup('input[name="form_config[rate_limit][inherit]"]', '.uve-mr-rate-limit-fields');
+
+				var available = document.getElementById('uve-mr-groups-available');
+				var selected = document.getElementById('uve-mr-groups-selected');
+				var hiddenInput = document.getElementById('uve-mr-group-ids');
+				var addBtn = document.getElementById('uve-mr-group-add');
+				var removeBtn = document.getElementById('uve-mr-group-remove');
+
+				function moveSelected(from, to) {
+					var opts = Array.from(from.options).filter(function(opt) { return opt.selected; });
+					opts.forEach(function(opt) {
+						opt.selected = false;
+						to.appendChild(opt);
+					});
+					updateHidden();
+				}
+
+				function updateHidden() {
+					if (!hiddenInput || !selected) return;
+					var ids = Array.from(selected.options).map(function(opt) { return opt.value; });
+					hiddenInput.value = ids.join(',');
+				}
+
+				if (addBtn && removeBtn && available && selected) {
+					addBtn.addEventListener('click', function() { moveSelected(available, selected); });
+					removeBtn.addEventListener('click', function() { moveSelected(selected, available); });
+					available.addEventListener('dblclick', function() { moveSelected(available, selected); });
+					selected.addEventListener('dblclick', function() { moveSelected(selected, available); });
+					updateHidden();
+				}
 			})();
 		</script>
 
@@ -475,6 +533,22 @@ final class UVE_MR_Forms_Admin {
 				z-index: 2;
 				margin-top: 20px;
 				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+			}
+			.uve-mr-dual-list {
+				display: grid;
+				grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
+				gap: 12px;
+				align-items: center;
+				max-width: 700px;
+			}
+			.uve-mr-dual-list select {
+				width: 100%;
+				min-height: 160px;
+			}
+			.uve-mr-dual-actions {
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
 			}
 			@media (max-width: 960px) {
 				.uve-mr-tab-grid {
