@@ -65,7 +65,7 @@ final class UVE_MR_Utils {
 	 */
 	public static function safe_page_url_from_request( array $data ): string {
 		$home_url  = home_url( '/' );
-		$home_host = wp_parse_url( $home_url, PHP_URL_HOST );
+		$home_host = self::extract_host( $home_url );
 
 		$raw_url = $data['uve_mr_page_url'] ?? '';
 		if ( is_array( $raw_url ) ) {
@@ -73,7 +73,7 @@ final class UVE_MR_Utils {
 		}
 		$candidate = sanitize_text_field( is_scalar( $raw_url ) ? wp_unslash( (string) $raw_url ) : '' );
 		if ( $candidate ) {
-			$c_host = wp_parse_url( $candidate, PHP_URL_HOST );
+			$c_host = self::extract_host( $candidate );
 			if ( $c_host && $home_host && strtolower( (string) $c_host ) === strtolower( (string) $home_host ) ) {
 				return esc_url_raw( $candidate );
 			}
@@ -81,13 +81,27 @@ final class UVE_MR_Utils {
 
 		$ref = wp_get_referer();
 		if ( $ref ) {
-			$ref_host = wp_parse_url( $ref, PHP_URL_HOST );
+			$ref_host = self::extract_host( $ref );
 			if ( $ref_host && $home_host && strtolower( (string) $ref_host ) === strtolower( (string) $home_host ) ) {
 				return esc_url_raw( $ref );
 			}
 		}
 
 		return $home_url;
+	}
+
+	/**
+	 * Extract host from a URL using wp_parse_url.
+	 *
+	 * @param string $url URL string.
+	 * @return string
+	 */
+	private static function extract_host( string $url ): string {
+		$parsed = wp_parse_url( $url );
+		if ( is_array( $parsed ) ) {
+			return (string) ( $parsed['host'] ?? '' );
+		}
+		return is_string( $parsed ) ? $parsed : '';
 	}
 
 	/**
