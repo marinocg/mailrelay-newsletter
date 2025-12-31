@@ -261,7 +261,8 @@ final class UVE_MR_Admin {
 
 			<hr>
 			<h2><?php echo esc_html__( 'Shortcode', 'uve-mailrelay-newsletter' ); ?></h2>
-			<p><code>[uve_mailrelay_newsletter]</code></p>
+			<p><?php echo esc_html__( 'Use a form shortcode from the Forms screen, for example:', 'uve-mailrelay-newsletter' ); ?></p>
+			<p><code>[uve_mailrelay_newsletter id="123"]</code></p>
 		</div>
 		<?php
 	}

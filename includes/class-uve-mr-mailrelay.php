@@ -21,9 +21,10 @@ final class UVE_MR_Mailrelay {
 	 * @param array  $group_ids Group IDs.
 	 * @param bool   $accepted Consent accepted.
 	 * @param string $ip Client IP.
+	 * @param array  $args Optional overrides.
 	 * @return array
 	 */
-	public static function subscribe_with_confirmation( string $email, array $group_ids, bool $accepted, string $ip ): array {
+	public static function subscribe_with_confirmation( string $email, array $group_ids, bool $accepted, string $ip, array $args = array() ): array {
 		$opts  = UVE_Mailrelay_Newsletter::get_options();
 		$base  = rtrim( (string) $opts['api_base_url'], '/' );
 		$token = (string) $opts['api_token'];
@@ -35,18 +36,30 @@ final class UVE_MR_Mailrelay {
 			);
 		}
 
-		$status = ( 'active' === $opts['subscriber_status'] ) ? 'active' : 'inactive';
+		$status = ( 'active' === ( $args['subscriber_status'] ?? $opts['subscriber_status'] ) ) ? 'active' : 'inactive';
+
+		$payload = array(
+			'status'                     => $status,
+			'email'                      => $email,
+			'group_ids'                  => $group_ids,
+			'subscribed_with_acceptance' => $accepted,
+			'subscribe_ip'               => $ip,
+		);
+
+		$name = sanitize_text_field( (string) ( $args['name'] ?? '' ) );
+		if ( '' !== $name ) {
+			$payload['name'] = $name;
+		}
+
+		$custom_fields = $args['custom_fields'] ?? array();
+		if ( is_array( $custom_fields ) && ! empty( $custom_fields ) ) {
+			$payload['custom_fields'] = $custom_fields;
+		}
 
 		$create = self::post_json(
 			$base . '/subscribers',
 			$token,
-			array(
-				'status'                     => $status,
-				'email'                      => $email,
-				'group_ids'                  => $group_ids,
-				'subscribed_with_acceptance' => $accepted,
-				'subscribe_ip'               => $ip,
-			)
+			$payload
 		);
 
 		$out = array(

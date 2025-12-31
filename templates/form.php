@@ -18,6 +18,9 @@
  * @var bool   $ajax_enabled
  * @var string $ajax_url
  * @var string $ajax_error_msg
+ * @var int    $form_id
+ * @var array  $fields
+ * @var bool   $turnstile_enabled
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -38,6 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<form class="simple_form form form-vertical uve-mr-form" method="post" action="<?php echo esc_url( $action ); ?>" accept-charset="UTF-8" data-ajax="<?php echo esc_attr( $ajax_enabled ? '1' : '0' ); ?>" data-ajax-url="<?php echo esc_url( $ajax_url ); ?>">
 		<input type="hidden" name="action" value="uve_mr_subscribe">
 		<?php wp_nonce_field( UVE_Mailrelay_Newsletter::NONCE, '_wpnonce' ); ?>
+		<input type="hidden" name="uve_mr_form_id" value="<?php echo esc_attr( (string) $form_id ); ?>">
 		<input type="hidden" name="uve_mr_group_ids" value="<?php echo esc_attr( $group_ids ); ?>">
 		<input type="hidden" name="uve_mr_page_url" value="<?php echo esc_attr( UVE_MR_Utils::current_url() ); ?>">
 
@@ -50,6 +54,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<p class="memail">
 				<input type="email" name="subscriber[email]" placeholder="<?php echo esc_attr( $email_placeholder ); ?>" required>
 			</p>
+
+			<?php if ( ! empty( $fields['include_name'] ) ) : ?>
+				<p class="mname">
+					<input type="text" name="subscriber[name]" placeholder="<?php echo esc_attr( (string) ( $fields['name_label'] ?? __( 'Name', 'uve-mailrelay-newsletter' ) ) ); ?>">
+				</p>
+			<?php endif; ?>
+
+			<?php if ( ! empty( $fields['custom_fields'] ) && is_array( $fields['custom_fields'] ) ) : ?>
+				<?php foreach ( $fields['custom_fields'] as $field ) : ?>
+					<?php
+					if ( ! is_array( $field ) ) {
+						continue;
+					}
+					$key      = (string) ( $field['key'] ?? '' );
+					$label    = (string) ( $field['label'] ?? '' );
+					$required = ! empty( $field['required'] );
+					if ( '' === $key || '' === $label ) {
+						continue;
+					}
+					?>
+					<p class="mcustom">
+						<input type="text" name="subscriber[custom_fields][<?php echo esc_attr( $key ); ?>]" placeholder="<?php echo esc_attr( $label ); ?>" <?php echo $required ? 'required' : ''; ?>>
+					</p>
+				<?php endforeach; ?>
+			<?php endif; ?>
 
 			<div style="position:absolute;left:-9999px;height:0;overflow:hidden;" aria-hidden="true">
 				<label><?php echo esc_html__( 'Leave this field empty', 'uve-mailrelay-newsletter' ); ?></label>
@@ -70,12 +99,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</label>
 			</p>
 
-			<?php if ( $site_key ) : ?>
+			<?php if ( $turnstile_enabled && $site_key ) : ?>
 				<div class="uve-mr-turnstile" data-sitekey="<?php echo esc_attr( $site_key ); ?>"></div>
 				<noscript>
 					<p><?php echo esc_html__( 'Enable JavaScript to subscribe.', 'uve-mailrelay-newsletter' ); ?></p>
 				</noscript>
-			<?php else : ?>
+			<?php elseif ( $turnstile_enabled ) : ?>
 				<p class="uve-mr-msg uve-mr-err"><?php echo esc_html__( 'Turnstile is not configured (Site Key).', 'uve-mailrelay-newsletter' ); ?></p>
 			<?php endif; ?>
 

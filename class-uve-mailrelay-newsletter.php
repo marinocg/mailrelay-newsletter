@@ -22,6 +22,12 @@ require_once __DIR__ . '/includes/class-uve-mr-logs.php';
 require_once __DIR__ . '/includes/class-uve-mr-mailrelay.php';
 require_once __DIR__ . '/includes/class-uve-mr-frontend.php';
 require_once __DIR__ . '/includes/class-uve-mr-admin.php';
+require_once __DIR__ . '/includes/forms/class-uve-mr-form.php';
+require_once __DIR__ . '/includes/forms/class-uve-mr-form-config.php';
+require_once __DIR__ . '/includes/forms/repositories/interface-uve-mr-form-repository.php';
+require_once __DIR__ . '/includes/forms/repositories/class-uve-mr-wp-form-repository.php';
+require_once __DIR__ . '/includes/forms/use-cases/class-uve-mr-form-use-cases.php';
+require_once __DIR__ . '/includes/forms/class-uve-mr-forms.php';
 require_once __DIR__ . '/includes/class-uve-mr-submit.php';
 require_once __DIR__ . '/includes/class-uve-mr-widgets.php';
 require_once __DIR__ . '/includes/class-uve-mr-elementor.php';
@@ -46,6 +52,8 @@ final class UVE_Mailrelay_Newsletter {
 	 */
 	public static function init(): void {
 		add_action( 'plugins_loaded', array( __CLASS__, 'load_textdomain' ) );
+		add_action( 'init', array( 'UVE_MR_Forms', 'register_post_type' ) );
+		add_action( 'init', array( 'UVE_MR_Forms', 'maybe_migrate_default_form' ) );
 		add_action( 'init', array( 'UVE_MR_Frontend', 'register_shortcode' ) );
 		add_action( 'widgets_init', array( 'UVE_MR_Widgets', 'register_widget' ) );
 		add_action( 'elementor/widgets/register', array( 'UVE_MR_Elementor', 'register_elementor_widget' ) );
@@ -53,6 +61,12 @@ final class UVE_Mailrelay_Newsletter {
 		add_action( 'admin_menu', array( 'UVE_MR_Admin', 'admin_menu' ) );
 		add_action( 'admin_init', array( 'UVE_MR_Admin', 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( 'UVE_MR_Admin', 'admin_enqueue' ) );
+		if ( function_exists( 'is_admin' ) && is_admin() ) {
+			require_once __DIR__ . '/includes/forms/admin/class-uve-mr-forms-table.php';
+			require_once __DIR__ . '/includes/forms/admin/class-uve-mr-forms-admin.php';
+			add_action( 'admin_menu', array( 'UVE_MR_Forms_Admin', 'admin_menu' ) );
+			add_action( 'admin_init', array( 'UVE_MR_Forms_Admin', 'admin_init' ) );
+		}
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( __CLASS__, 'add_settings_link' ) );
 
 		add_action( 'admin_post_nopriv_uve_mr_subscribe', array( 'UVE_MR_Submit', 'handle_submit' ) );

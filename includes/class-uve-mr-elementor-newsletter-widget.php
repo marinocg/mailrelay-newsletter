@@ -60,13 +60,33 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 	 * @return void
 	 */
 	protected function register_controls() {
-		$opts = UVE_Mailrelay_Newsletter::get_options();
+		$opts           = UVE_Mailrelay_Newsletter::get_options();
+		$forms          = UVE_MR_Form_Use_Cases::list_forms( array( 'posts_per_page' => 100 ) );
+		$form_options   = array(
+			'0' => __( 'Use legacy overrides', 'uve-mailrelay-newsletter' ),
+		);
+		$select_control = defined( 'Elementor\\Controls_Manager::SELECT' )
+			? \Elementor\Controls_Manager::SELECT
+			: 'select';
+		foreach ( $forms as $form ) {
+			$form_options[ (string) $form->id ] = $form->name;
+		}
 
 				$this->start_controls_section(
 					'content_section',
 					array(
 						'label' => __( 'Content', 'uve-mailrelay-newsletter' ),
 						'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+					)
+				);
+
+				$this->add_control(
+					'form_id',
+					array(
+						'label'   => __( 'Form', 'uve-mailrelay-newsletter' ),
+						'type'    => $select_control,
+						'options' => $form_options,
+						'default' => '0',
 					)
 				);
 
@@ -173,18 +193,26 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 		$privacy  = $settings['privacy_url']['url'] ?? '';
+		$form_id  = isset( $settings['form_id'] ) ? (int) $settings['form_id'] : 0;
 
-				$form_args = array(
-					'title'             => $settings['title'] ?? '',
-					'description'       => $settings['description'] ?? '',
-					'email_placeholder' => $settings['email_placeholder'] ?? '',
-					'submit_label'      => $settings['submit_label'] ?? '',
-					'group_ids'         => $settings['group_ids'] ?? '',
-					'privacy_url'       => $privacy,
-					'consent_label'     => $settings['consent_label'] ?? '',
-					'class'             => $settings['extra_class'] ?? '',
-					'ajax'              => $settings['ajax_mode'] ?? '0',
-				);
+		if ( $form_id ) {
+			$form_args = array(
+				'id'    => $form_id,
+				'class' => $settings['extra_class'] ?? '',
+			);
+		} else {
+			$form_args = array(
+				'title'             => $settings['title'] ?? '',
+				'description'       => $settings['description'] ?? '',
+				'email_placeholder' => $settings['email_placeholder'] ?? '',
+				'submit_label'      => $settings['submit_label'] ?? '',
+				'group_ids'         => $settings['group_ids'] ?? '',
+				'privacy_url'       => $privacy,
+				'consent_label'     => $settings['consent_label'] ?? '',
+				'class'             => $settings['extra_class'] ?? '',
+				'ajax'              => $settings['ajax_mode'] ?? '0',
+			);
+		}
 
 				echo UVE_MR_Frontend::shortcode( $form_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}

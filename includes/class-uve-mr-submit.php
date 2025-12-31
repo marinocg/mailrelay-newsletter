@@ -20,16 +20,25 @@ final class UVE_MR_Submit {
 	 * @return void
 	 */
 	public static function handle_submit(): void {
-		$nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+		$nonce   = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+		$form_id = isset( $_POST['uve_mr_form_id'] ) ? (int) $_POST['uve_mr_form_id'] : 0;
 		if ( '' === $nonce || ! wp_verify_nonce( $nonce, UVE_Mailrelay_Newsletter::NONCE ) ) {
-			wp_safe_redirect( UVE_MR_Utils::safe_back_url( array( 'uve_mr_status' => 'ok' ) ) );
+			$args = array( 'uve_mr_status' => 'ok' );
+			if ( $form_id ) {
+				$args['uve_mr_form_id'] = $form_id;
+			}
+			wp_safe_redirect( UVE_MR_Utils::safe_back_url( $args ) );
 			exit;
 		}
 
 		$result = self::process_submission( $_POST );
 		$status = $result['status'] ?? 'ok';
 
-		wp_safe_redirect( UVE_MR_Utils::safe_back_url( array( 'uve_mr_status' => $status ) ) );
+		$args = array( 'uve_mr_status' => $status );
+		if ( $form_id ) {
+			$args['uve_mr_form_id'] = $form_id;
+		}
+		wp_safe_redirect( UVE_MR_Utils::safe_back_url( $args ) );
 		exit;
 	}
 
@@ -41,7 +50,7 @@ final class UVE_MR_Submit {
 	public static function handle_submit_ajax(): void {
 		$nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
 		if ( '' === $nonce || ! wp_verify_nonce( $nonce, UVE_Mailrelay_Newsletter::NONCE ) ) {
-			self::send_ajax_result( self::build_result( 'ok' ) );
+			self::send_ajax_result( self::build_result( 'ok', self::default_messages() ) );
 			return;
 		}
 
@@ -56,11 +65,13 @@ final class UVE_MR_Submit {
 	 * @return array{status:string,message:string}
 	 */
 	private static function process_submission( array $data ): array {
-		$opts = UVE_Mailrelay_Newsletter::get_options();
+		$context  = self::resolve_form_context( $data );
+		$config   = $context['config'];
+		$messages = $context['messages'];
 
 		$hp = isset( $data['uve_mr_hp'] ) ? sanitize_text_field( wp_unslash( $data['uve_mr_hp'] ) ) : '';
 		if ( '' !== $hp ) {
-			return self::build_result( 'ok' );
+			return self::build_result( 'ok', $messages );
 		}
 
 		$email_raw = isset( $data['subscriber']['email'] ) ? wp_unslash( $data['subscriber']['email'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -70,37 +81,78 @@ final class UVE_MR_Submit {
 		$ip        = UVE_MR_Utils::get_client_ip();
 
 		if ( ! $email || ! is_email( $email ) ) {
-			return self::build_result( 'ok' );
+			return self::build_result( 'ok', $messages );
 		}
 
 		if ( ! $accepted ) {
-			return self::build_result( 'consent' );
+			return self::build_result( 'consent', $messages );
 		}
 
-		$rl_key = 'uve_mr_rl_' . md5( $ip . '|' . strtolower( $email ) );
-		$count  = (int) get_transient( $rl_key );
-		if ( (int) $opts['rate_limit_max'] <= $count ) {
-			return self::build_result( 'ok' );
+		$rate_limit_max    = (int) ( $config['rate_limit']['max'] ?? 5 );
+		$rate_limit_window = (int) ( $config['rate_limit']['window_seconds'] ?? 3600 );
+		$form_key_part     = (int) ( $context['form_id'] ?? 0 );
+		$rl_key            = 'uve_mr_rl_' . $form_key_part . '_' . md5( $ip . '|' . strtolower( $email ) );
+		$count             = (int) get_transient( $rl_key );
+		if ( $rate_limit_max <= $count ) {
+			return self::build_result( 'ok', $messages );
 		}
-		set_transient( $rl_key, $count + 1, (int) $opts['rate_limit_window_seconds'] );
+		set_transient( $rl_key, $count + 1, $rate_limit_window );
 
-		$token = sanitize_text_field( (string) wp_unslash( $data['cf-turnstile-response'] ?? '' ) );
-		if ( ! UVE_MR_Turnstile::verify( $token, $ip ) ) {
-			return self::build_result( 'captcha' );
+		if ( self::turnstile_enabled( $config ) ) {
+			$token = sanitize_text_field( (string) wp_unslash( $data['cf-turnstile-response'] ?? '' ) );
+			if ( ! UVE_MR_Turnstile::verify( $token, $ip ) ) {
+				return self::build_result( 'captcha', $messages );
+			}
 		}
 
+		$group_ids_cfg   = UVE_MR_Utils::parse_group_ids( (string) ( $config['destination']['group_ids'] ?? '' ) );
+		$group_ids       = $group_ids_cfg;
 		$group_ids_raw   = sanitize_text_field( (string) wp_unslash( $data['uve_mr_group_ids'] ?? '' ) );
 		$group_ids_input = UVE_MR_Utils::parse_group_ids( $group_ids_raw );
-		$group_ids_cfg   = UVE_MR_Utils::parse_group_ids( (string) ( $opts['group_ids'] ?? '' ) );
-		$group_ids       = $group_ids_cfg;
 		if ( '' !== $group_ids_raw && $group_ids_input ) {
 			$group_ids = array_values( array_intersect( $group_ids_input, $group_ids_cfg ) );
 		}
 		$page_url = UVE_MR_Utils::safe_page_url_from_request( $data );
 
-		$result = UVE_MR_Mailrelay::subscribe_with_confirmation( $email, $group_ids, true, $ip );
+		$name = '';
+		if ( ! empty( $config['fields']['include_name'] ) ) {
+			$name = sanitize_text_field( (string) wp_unslash( $data['subscriber']['name'] ?? '' ) );
+		}
 
-		if ( '1' === $opts['store_consent_log'] ) {
+		$custom_fields = array();
+		if ( ! empty( $config['fields']['custom_fields'] ) && is_array( $config['fields']['custom_fields'] ) ) {
+			foreach ( $config['fields']['custom_fields'] as $field ) {
+				if ( ! is_array( $field ) ) {
+					continue;
+				}
+				$key = (string) ( $field['key'] ?? '' );
+				if ( '' === $key ) {
+					continue;
+				}
+				$value = sanitize_text_field( (string) wp_unslash( $data['subscriber']['custom_fields'][ $key ] ?? '' ) );
+				if ( ! empty( $field['required'] ) && '' === $value ) {
+					return self::build_result( 'error', $messages );
+				}
+				if ( '' !== $value ) {
+					$custom_fields[ $key ] = $value;
+				}
+			}
+		}
+
+		$result = UVE_MR_Mailrelay::subscribe_with_confirmation(
+			$email,
+			$group_ids,
+			true,
+			$ip,
+			array(
+				'subscriber_status' => (string) ( $config['destination']['subscriber_status'] ?? 'inactive' ),
+				'name'              => $name,
+				'custom_fields'     => $custom_fields,
+			)
+		);
+
+		$global_opts = UVE_Mailrelay_Newsletter::get_options();
+		if ( '1' === (string) ( $global_opts['store_consent_log'] ?? '0' ) ) {
 			$user_agent = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) );
 			$user_agent = substr( $user_agent, 0, 2000 );
 			UVE_MR_Logs::maybe_create_or_update_table();
@@ -121,27 +173,67 @@ final class UVE_MR_Submit {
 			);
 		}
 
-		return self::build_result( 'ok' );
+		return self::build_result( 'ok', $messages );
 	}
 
 	/**
 	 * Build a result payload.
 	 *
 	 * @param string $status Status.
+	 * @param array  $messages Messages map.
 	 * @return array{status:string,message:string}
 	 */
-	private static function build_result( string $status ): array {
-		$messages = array(
-			'ok'      => __( 'Thanks. If the email is valid, you will receive a confirmation email (or you were already subscribed).', 'uve-mailrelay-newsletter' ),
-			'captcha' => __( 'Please verify you are human.', 'uve-mailrelay-newsletter' ),
-			'consent' => __( 'You must accept the privacy policy.', 'uve-mailrelay-newsletter' ),
-			'error'   => __( 'We could not complete the request. Please try again.', 'uve-mailrelay-newsletter' ),
-		);
-
+	private static function build_result( string $status, array $messages ): array {
 		return array(
 			'status'  => $status,
 			'message' => $messages[ $status ] ?? $messages['error'],
 		);
+	}
+
+	/**
+	 * Resolve form context.
+	 *
+	 * @param array $data Submission payload.
+	 * @return array{form_id:int,config:array,messages:array}
+	 */
+	private static function resolve_form_context( array $data ): array {
+		$form_id  = isset( $data['uve_mr_form_id'] ) ? (int) $data['uve_mr_form_id'] : 0;
+		$form     = $form_id ? UVE_MR_Form_Use_Cases::get_form( $form_id ) : null;
+		$opts     = UVE_Mailrelay_Newsletter::get_options();
+		$defaults = UVE_MR_Form_Config::defaults( $opts );
+		$config   = $form ? $form->merge_config( $defaults ) : $defaults;
+		$messages = $config['messages'] ?? self::default_messages();
+
+		return array(
+			'form_id'  => $form_id,
+			'config'   => $config,
+			'messages' => $messages,
+		);
+	}
+
+	/**
+	 * Default messages for fallback flows.
+	 *
+	 * @return array
+	 */
+	private static function default_messages(): array {
+		$opts     = UVE_Mailrelay_Newsletter::get_options();
+		$defaults = UVE_MR_Form_Config::defaults( $opts );
+		return $defaults['messages'] ?? array();
+	}
+
+	/**
+	 * Determine if Turnstile should be enforced for a config.
+	 *
+	 * @param array $config Form config.
+	 * @return bool
+	 */
+	private static function turnstile_enabled( array $config ): bool {
+		$turnstile = $config['turnstile'] ?? array();
+		if ( ! empty( $turnstile['inherit'] ) ) {
+			return true;
+		}
+		return ! empty( $turnstile['enabled'] );
 	}
 
 	/**
