@@ -70,7 +70,17 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 			)
 		);
 
+		$this->_column_headers = array( $this->get_columns(), array(), array() );
 		$this->items = $this->forms;
+	}
+
+	/**
+	 * Display message when no items are found.
+	 *
+	 * @return void
+	 */
+	public function no_items() {
+		esc_html_e( 'No forms found.', 'uve-mailrelay-newsletter' );
 	}
 
 	/**

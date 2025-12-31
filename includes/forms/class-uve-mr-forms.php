@@ -37,7 +37,7 @@ final class UVE_MR_Forms {
 				'rewrite'            => false,
 				'supports'           => array( 'title', 'revisions' ),
 				'capability_type'    => 'post',
-				'capabilities'       => array(),
+				'map_meta_cap'       => true,
 				'can_export'         => true,
 			),
 		);
@@ -55,7 +55,7 @@ final class UVE_MR_Forms {
 
 		$existing = UVE_MR_Form_Use_Cases::list_forms(
 			array(
-				'post_status'    => array( 'publish', 'draft' ),
+				'post_status'    => array( 'publish', 'draft', 'private' ),
 				'posts_per_page' => 1,
 			)
 		);
