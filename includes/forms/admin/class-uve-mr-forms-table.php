@@ -48,7 +48,7 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 
 		$forms       = UVE_MR_Form_Use_Cases::list_forms(
 			array(
-				'post_status'    => array( 'publish', 'draft' ),
+				'post_status'    => array( 'publish', 'draft', 'private' ),
 				'posts_per_page' => $per_page,
 				'offset'         => ( $page - 1 ) * $per_page,
 			)
@@ -60,6 +60,7 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 		if ( $counts ) {
 			$total_items += (int) ( $counts->publish ?? 0 );
 			$total_items += (int) ( $counts->draft ?? 0 );
+			$total_items += (int) ( $counts->private ?? 0 );
 		}
 
 		$this->set_pagination_args(

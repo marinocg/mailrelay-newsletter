@@ -48,7 +48,7 @@ final class UVE_MR_WP_Form_Repository implements UVE_MR_Form_Repository_Interfac
 		}
 		$defaults   = array(
 			'post_type'      => UVE_MR_Form::POST_TYPE,
-			'post_status'    => array( 'publish', 'draft' ),
+			'post_status'    => array( 'publish', 'draft', 'private' ),
 			'posts_per_page' => 50,
 			'orderby'        => 'modified',
 			'order'          => 'DESC',
