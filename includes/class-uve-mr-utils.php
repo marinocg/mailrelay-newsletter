@@ -67,7 +67,11 @@ final class UVE_MR_Utils {
 		$home_url  = home_url( '/' );
 		$home_host = wp_parse_url( $home_url, PHP_URL_HOST );
 
-		$candidate = sanitize_text_field( (string) wp_unslash( $data['uve_mr_page_url'] ?? '' ) );
+		$raw_url = $data['uve_mr_page_url'] ?? '';
+		if ( is_array( $raw_url ) ) {
+			$raw_url = '';
+		}
+		$candidate = sanitize_text_field( is_scalar( $raw_url ) ? wp_unslash( (string) $raw_url ) : '' );
 		if ( $candidate ) {
 			$c_host = wp_parse_url( $candidate, PHP_URL_HOST );
 			if ( $c_host && $home_host && strtolower( (string) $c_host ) === strtolower( (string) $home_host ) ) {
