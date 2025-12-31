@@ -52,6 +52,7 @@ final class UVE_Mailrelay_Newsletter {
 		add_action( 'elementor/elements/categories_registered', array( 'UVE_MR_Elementor', 'register_elementor_category' ) );
 		add_action( 'admin_menu', array( 'UVE_MR_Admin', 'admin_menu' ) );
 		add_action( 'admin_init', array( 'UVE_MR_Admin', 'admin_init' ) );
+		add_action( 'admin_enqueue_scripts', array( 'UVE_MR_Admin', 'admin_enqueue' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( __CLASS__, 'add_settings_link' ) );
 
 		add_action( 'admin_post_nopriv_uve_mr_subscribe', array( 'UVE_MR_Submit', 'handle_submit' ) );

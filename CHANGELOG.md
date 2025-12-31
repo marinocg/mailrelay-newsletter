@@ -4,6 +4,11 @@
 - Harden group ID handling to prevent tampering while preserving defaults.
 - Validate logged page URLs with same-host checks and safer fallbacks.
 - Add tests for group ID handling and safe page URL logic.
+- Move MR4WP admin pages to a top-level menu with separate Settings and Logs screens.
+- Improve logs UI with search, per-page controls, pagination, and sortable columns.
+- Align logs table styling with WP list tables, including column sizing.
+- Improve client IP detection for proxy/Cloudflare setups.
+- Add tests for admin menu registration, logs table rendering, and client IP parsing.
 
 ## 1.7.1
 - Block form after submit and add ajax behaviour

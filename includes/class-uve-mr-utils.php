@@ -110,12 +110,44 @@ final class UVE_MR_Utils {
 	 * @return string
 	 */
 	public static function get_client_ip(): string {
-		$ip       = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' ) );
-		$filtered = preg_replace( '/[^0-9a-fA-F\.:]/', '', $ip );
-		if ( ! $filtered || false === filter_var( $filtered, FILTER_VALIDATE_IP ) ) {
-			return '';
+		$raw_candidates = array();
+
+		if ( ! empty( $_SERVER['HTTP_CF_CONNECTING_IP'] ) && ! empty( $_SERVER['HTTP_CF_RAY'] ) ) {
+			$raw_candidates[] = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) );
 		}
-		return $filtered;
+
+		if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+			$xff = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
+			foreach ( explode( ',', $xff ) as $part ) {
+				$raw_candidates[] = $part;
+			}
+		}
+
+		if ( ! empty( $_SERVER['HTTP_X_REAL_IP'] ) ) {
+			$raw_candidates[] = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_REAL_IP'] ) );
+		}
+
+		if ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
+			$raw_candidates[] = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+		}
+
+		$candidates = array();
+		foreach ( $raw_candidates as $raw ) {
+			$ip = trim( (string) $raw );
+			$ip = preg_replace( '/[^0-9a-fA-F\.:]/', '', $ip );
+			if ( ! $ip || false === filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+				continue;
+			}
+			$candidates[] = $ip;
+		}
+
+		foreach ( $candidates as $candidate ) {
+			if ( false !== filter_var( $candidate, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
+				return $candidate;
+			}
+		}
+
+		return $candidates[0] ?? '';
 	}
 
 	/**
