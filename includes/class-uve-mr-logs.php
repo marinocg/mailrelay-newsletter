@@ -340,7 +340,7 @@ final class UVE_MR_Logs {
 			if ( isset( $sortable_columns[ $col ] ) ) {
 				$is_sorted  = ( $orderby === $col );
 				$next_order = ( $is_sorted && 'asc' === $order ) ? 'desc' : 'asc';
-				$class      = $is_sorted ? 'sorted ' . $order : 'sortable desc';
+				$class      = $is_sorted ? 'sorted ' . $order . ' sortable' : 'sortable desc';
 				$link       = add_query_arg(
 					array(
 						'page'     => $current_page,
@@ -352,8 +352,8 @@ final class UVE_MR_Logs {
 					),
 					admin_url( 'admin.php' )
 				);
-				$th_class   = trim( 'manage-column ' . $col_class . ' ' . $class );
-				echo '<th scope="col" class="' . esc_attr( $th_class ) . '"><a href="' . esc_url( $link ) . '"><span>' . esc_html( $label ) . '</span><span class="sorting-indicator"></span></a></th>';
+				$th_class = trim( 'manage-column ' . $col_class . ' ' . $class );
+				echo '<th scope="col" class="' . esc_attr( $th_class ) . '"' . ( $is_sorted ? ' aria-sort="' . esc_attr( ( 'asc' === $order ) ? 'ascending' : 'descending' ) . '"' : '' ) . '><a href="' . esc_url( $link ) . '"><span>' . esc_html( $label ) . '</span><span class="sorting-indicator"></span></a></th>';
 			} else {
 				echo '<th scope="col" class="manage-column ' . esc_attr( $col_class ) . '">' . esc_html( $label ) . '</th>';
 			}
