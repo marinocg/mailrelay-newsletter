@@ -1,6 +1,13 @@
 # Changelog
 
 ## Unreleased
+- Restructure plugin code into domain-aware ports/adapters/use-cases for consistency.
+- Refresh forms and settings admin UIs with tabbed panels, help content, and improved controls.
+- Add Mailrelay group selectors with cached API data in forms and settings.
+- Improve logs table mobile behavior and responsiveness.
+- Expand translations and regenerate MO files.
+- Add plugin header requirements (WP/PHP) metadata.
+- Add tests for submit use case and logs table rendering.
 - Harden group ID handling to prevent tampering while preserving defaults.
 - Validate logged page URLs with same-host checks and safer fallbacks.
 - Add tests for group ID handling and safe page URL logic.

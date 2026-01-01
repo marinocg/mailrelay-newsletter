@@ -299,9 +299,9 @@ final class UVE_MR_Logs {
 		echo '</form>';
 
 		$header_cols = array(
-			'id'                  => __( 'ID', 'uve-mailrelay-newsletter' ),
-			'created_at'          => __( 'Date', 'uve-mailrelay-newsletter' ),
 			'email'               => __( 'Email', 'uve-mailrelay-newsletter' ),
+			'created_at'          => __( 'Date', 'uve-mailrelay-newsletter' ),
+			'id'                  => __( 'ID', 'uve-mailrelay-newsletter' ),
 			'accepted'            => __( 'Consent', 'uve-mailrelay-newsletter' ),
 			'ip'                  => __( 'IP', 'uve-mailrelay-newsletter' ),
 			'page_url'            => __( 'Source', 'uve-mailrelay-newsletter' ),
@@ -314,7 +314,7 @@ final class UVE_MR_Logs {
 		$column_classes = array(
 			'id'                        => 'column-id',
 			'created_at'                => 'column-date',
-			'email'                     => 'column-email',
+			'email'                     => 'column-email column-primary',
 			'accepted'                  => 'column-consent',
 			'ip'                        => 'column-ip',
 			'page_url'                  => 'column-source',
@@ -322,6 +322,7 @@ final class UVE_MR_Logs {
 			'confirmation_requested_at' => 'column-confirmation',
 		);
 
+		echo '<div class="uve-mr-logs-wrap">';
 		echo '<table class="wp-list-table widefat fixed striped table-view-list uve-mr-logs"><thead><tr>';
 		foreach ( $header_cols as $col => $label ) {
 			$col_class = $column_classes[ $col ];
@@ -366,21 +367,23 @@ final class UVE_MR_Logs {
 				}
 			}
 
+			$email = (string) ( $r['email'] ?? '' );
 			echo '<tr>';
-			echo '<td class="column-id">' . esc_html( (string) ( $r['id'] ?? '' ) ) . '</td>';
-			echo '<td class="column-date">' . esc_html( (string) ( $r['created_at'] ?? '' ) ) . '</td>';
-			echo '<td class="column-email">' . esc_html( (string) ( $r['email'] ?? '' ) ) . '</td>';
-			echo '<td class="column-consent">' . esc_html( ( 1 === (int) ( $r['accepted'] ?? 0 ) ) ? __( 'yes', 'uve-mailrelay-newsletter' ) : __( 'no', 'uve-mailrelay-newsletter' ) ) . '</td>';
-			echo '<td class="column-ip"><code>' . esc_html( (string) $ip ) . '</code></td>';
-			echo '<td class="column-source">' . esc_html( (string) ( $r['page_url'] ?? '' ) ) . '</td>';
-			echo '<td class="column-signup">' . esc_html( $create ) . '</td>';
+			echo '<td class="column-email column-primary" data-colname="' . esc_attr( (string) $header_cols['email'] ) . '">' . esc_html( $email ) . '<button type="button" class="toggle-row"><span class="screen-reader-text">' . esc_html__( 'Show more details', 'uve-mailrelay-newsletter' ) . '</span></button></td>';
+			echo '<td class="column-date" data-colname="' . esc_attr( (string) $header_cols['created_at'] ) . '">' . esc_html( (string) ( $r['created_at'] ?? '' ) ) . '</td>';
+			echo '<td class="column-id" data-colname="' . esc_attr( (string) $header_cols['id'] ) . '">' . esc_html( (string) ( $r['id'] ?? '' ) ) . '</td>';
+			echo '<td class="column-consent" data-colname="' . esc_attr( (string) $header_cols['accepted'] ) . '">' . esc_html( ( 1 === (int) ( $r['accepted'] ?? 0 ) ) ? __( 'yes', 'uve-mailrelay-newsletter' ) : __( 'no', 'uve-mailrelay-newsletter' ) ) . '</td>';
+			echo '<td class="column-ip" data-colname="' . esc_attr( (string) $header_cols['ip'] ) . '"><code>' . esc_html( (string) $ip ) . '</code></td>';
+			echo '<td class="column-source" data-colname="' . esc_attr( (string) $header_cols['page_url'] ) . '">' . esc_html( (string) ( $r['page_url'] ?? '' ) ) . '</td>';
+			echo '<td class="column-signup" data-colname="' . esc_attr( (string) $header_cols['mailrelay_http_code'] ) . '">' . esc_html( $create ) . '</td>';
 			if ( $has_confirm ) {
-				echo '<td class="column-confirmation">' . esc_html( $confirm_text ) . '</td>';
+				echo '<td class="column-confirmation" data-colname="' . esc_attr( (string) $header_cols['confirmation_requested_at'] ) . '">' . esc_html( $confirm_text ) . '</td>';
 			}
 			echo '</tr>';
 		}
 
 		echo '</tbody></table>';
+		echo '</div>';
 
 		if ( $pagination_links ) {
 			echo '<div class="tablenav bottom"><div class="tablenav-pages">';

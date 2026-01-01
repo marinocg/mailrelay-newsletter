@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: MR4WP 1.7.1"
+"Project-Id-Version: MR4WP 1.7.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-01 00:00+0000\n"
+"POT-Creation-Date: 2026-01-01 14:05+0100\n"
 "PO-Revision-Date: 2025-01-01 00:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -12,205 +12,903 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: class-uve-mailrelay-newsletter.php:113
 msgid "Newsletter"
 msgstr "Newsletter"
 
+#: class-uve-mailrelay-newsletter.php:114
 msgid "Subscribe and stay up to date with our news"
 msgstr "Suscríbete y estarás al tanto de nuestras novedades"
 
+#: class-uve-mailrelay-newsletter.php:115
+#: includes/class-uve-mr-frontend.php:278
 msgid "Email..."
 msgstr "Email..."
 
+#: class-uve-mailrelay-newsletter.php:116
+#: includes/class-uve-mr-frontend.php:281
 msgid "Subscribe"
 msgstr "Suscribir"
 
+#: class-uve-mailrelay-newsletter.php:121
 msgid "I agree to receive the newsletter and have read the privacy policy"
 msgstr "Acepto recibir la newsletter y he leído la política de privacidad"
 
-msgid "Purged %s records."
-msgstr "Purgados %s registros."
+#: class-uve-mailrelay-newsletter.php:195 includes/class-uve-mr-admin.php:34
+#: includes/class-uve-mr-admin.php:35
+#: includes/admin/forms/class-uve-mr-forms-admin.php:179
+msgid "Settings"
+msgstr "Ajustes"
 
-msgid "MR4WP"
-msgstr "MR4WP"
-
-msgid "Mailrelay API base URL"
-msgstr "Mailrelay API base URL"
-
-msgid "Mailrelay API token"
-msgstr "Mailrelay API token"
-
-msgid "Group IDs"
-msgstr "Group IDs"
-
-msgid "Subscription mode"
-msgstr "Modo suscripción"
-
-msgid "Double opt-in (inactive + confirmation)"
-msgstr "Double opt-in (inactive + confirmación)"
-
-msgid "Single opt-in (active)"
-msgstr "Single opt-in (active)"
-
-msgid "Turnstile Site Key"
-msgstr "Turnstile Site Key"
-
-msgid "Turnstile Secret Key"
-msgstr "Turnstile Secret Key"
-
-msgid "Texts"
-msgstr "Textos"
-
-msgid "Title"
-msgstr "Título"
-
-msgid "Description"
-msgstr "Descripción"
-
-msgid "Email placeholder"
-msgstr "Placeholder email"
-
-msgid "Button text"
-msgstr "Texto botón"
-
-msgid "Enable AJAX submissions"
-msgstr "Activar envíos por AJAX"
-
-msgid "Yes"
-msgstr "Sí"
-
-msgid "No"
-msgstr "No"
-msgid "GDPR + Logs"
-msgstr "RGPD + Logs"
-
-msgid "Privacy policy URL"
-msgstr "URL política de privacidad"
-
-msgid "Checkbox text"
-msgstr "Texto del checkbox"
-
-msgid "Store log in database"
-msgstr "Guardar log en BD"
-
-msgid "Store IP as hash"
-msgstr "Guardar IP como hash"
-
-msgid "Retention (days)"
-msgstr "Retención (días)"
-
-msgid "Rate limit"
-msgstr "Rate limit"
-
-msgid "Max attempts per IP+email"
-msgstr "Máx intentos por IP+email"
-
-msgid "Window (seconds)"
-msgstr "Ventana (segundos)"
-
-msgid "Max confirmation resends per IP+email (0 = disable)"
-msgstr "Máx reenvíos confirmación por IP+email (0 = desactivar)"
-
-msgid "Confirmation window (seconds)"
-msgstr "Ventana confirmación (segundos)"
-
-msgid "Shortcode"
-msgstr "Shortcode"
-
-msgid "Recent logs"
-msgstr "Logs recientes"
-
-msgid "Purge now"
-msgstr "Purgar ahora"
-
-msgid "The logs table does not exist yet. Deactivate and reactivate the plugin to create it."
-msgstr "No existe la tabla de logs todavía. Desactiva y reactiva el plugin para crearla."
-
-msgid "The table exists but columns could not be read."
-msgstr "La tabla existe pero no se pudieron leer columnas."
-
-msgid "No records yet."
-msgstr "Sin registros aún."
-
-msgid "ID"
-msgstr "ID"
-
-msgid "Date"
-msgstr "Fecha"
-
-msgid "Email"
-msgstr "Email"
-
-msgid "Consent"
-msgstr "Consentimiento"
-
-msgid "IP"
-msgstr "IP"
-
-msgid "Source"
-msgstr "Origen"
-
-msgid "Signup"
-msgstr "Alta"
-
-msgid "Confirmation email"
-msgstr "Confirmación email"
-
-msgid "yes"
-msgstr "sí"
-
-msgid "no"
-msgstr "no"
-
-msgid "Confirmation columns do not exist yet. The plugin should add them automatically on activation (dbDelta)."
-msgstr "Aún no existen columnas de confirmación. El plugin debería añadirlas automáticamente al activarse (dbDelta)."
-
-msgid "I accept the privacy policy"
-msgstr "Acepto la política de privacidad"
-
-msgid "Thanks. If the email is valid, you will receive a confirmation email (or you were already subscribed)."
-msgstr "Gracias. Si el email es válido, recibirás un correo para confirmar (o ya estabas suscrito)."
-
-msgid "Please verify you are human."
-msgstr "Por favor, verifica que eres humano."
-
-msgid "You must accept the privacy policy."
-msgstr "Debes aceptar la política de privacidad."
-
-msgid "We could not complete the request. Please try again."
-msgstr "No se pudo completar la solicitud. Inténtalo de nuevo."
-
+#: templates/form.php:85
 msgid "Leave this field empty"
 msgstr "Deja este campo vacío"
 
+#: templates/form.php:96
 msgid "view"
 msgstr "ver"
 
+#: templates/form.php:98
 msgid "You can unsubscribe at any time using the link in each email."
-msgstr "Puedes darte de baja en cualquier momento desde el enlace de cada email."
+msgstr ""
+"Puedes darte de baja en cualquier momento desde el enlace de cada email."
 
+#: templates/form.php:106
 msgid "Enable JavaScript to subscribe."
 msgstr "Activa JavaScript para poder suscribirte."
 
+#: templates/form.php:109
 msgid "Turnstile is not configured (Site Key)."
 msgstr "Falta configurar Turnstile (Site Key)."
 
-msgid "Newsletter form with Turnstile + Mailrelay API + double opt-in (neutral message) and logs."
-msgstr "Formulario de newsletter con Turnstile + Mailrelay API + double opt-in (mensaje neutro) y logs."
+#: includes/class-uve-mr-frontend.php:284
+msgid "I accept the privacy policy"
+msgstr "Acepto la política de privacidad"
 
+#: includes/class-uve-mr-frontend.php:287
+#: includes/domain/forms/class-uve-mr-form-config.php:106
+msgid "We could not complete the request. Please try again."
+msgstr "No se pudo completar la solicitud. Inténtalo de nuevo."
+
+#: includes/class-uve-mr-admin.php:24 includes/class-uve-mr-admin.php:25
+#: includes/class-uve-mr-admin.php:146
+#: includes/class-uve-mr-newsletter-widget.php:23
+#: includes/class-uve-mr-elementor-newsletter-widget.php:36
+msgid "MR4WP"
+msgstr "MR4WP"
+
+#: includes/class-uve-mr-admin.php:43 includes/class-uve-mr-admin.php:44
+msgid "Logs"
+msgstr "Registros"
+
+#: includes/class-uve-mr-admin.php:153
+msgid "Mailrelay API"
+msgstr "API de Mailrelay"
+
+#: includes/class-uve-mr-admin.php:156
+msgid "Mailrelay API base URL"
+msgstr "URL base de la API de Mailrelay"
+
+#: includes/class-uve-mr-admin.php:162
+msgid "Format example: https://YOURACCOUNT.ipzmarketing.com/api/v1"
+msgstr "Ejemplo de formato: https://YOURACCOUNT.ipzmarketing.com/api/v1"
+
+#: includes/class-uve-mr-admin.php:167
+msgid "Mailrelay API token"
+msgstr "Token de la API de Mailrelay"
+
+#: includes/class-uve-mr-admin.php:173
+msgid "API key documentation"
+msgstr "Documentación de la clave de la API"
+
+#: includes/class-uve-mr-admin.php:174
+msgid "(opens in a new tab)"
+msgstr "(se abre en una nueva pestaña)"
+
+#: includes/class-uve-mr-admin.php:184
+msgid "Defaults for new forms"
+msgstr "Valores por defecto para nuevos formularios"
+
+#: includes/class-uve-mr-admin.php:187
+msgid "Default groups"
+msgstr "Grupos por defecto"
+
+#: includes/class-uve-mr-admin.php:206
+#: includes/admin/forms/class-uve-mr-forms-admin.php:210
+msgid "Available groups"
+msgstr "Grupos disponibles"
+
+#: includes/class-uve-mr-admin.php:219
+#: includes/admin/forms/class-uve-mr-forms-admin.php:223
+msgid "Available"
+msgstr "Disponibles"
+
+#: includes/class-uve-mr-admin.php:222
+#: includes/admin/forms/class-uve-mr-forms-admin.php:226
+msgid "Add →"
+msgstr "Añadir →"
+
+#: includes/class-uve-mr-admin.php:223
+#: includes/admin/forms/class-uve-mr-forms-admin.php:227
+msgid "← Remove"
+msgstr "← Quitar"
+
+#: includes/class-uve-mr-admin.php:226
+#: includes/admin/forms/class-uve-mr-forms-admin.php:230
+msgid "Selected groups"
+msgstr "Grupos seleccionados"
+
+#: includes/class-uve-mr-admin.php:239
+#: includes/admin/forms/class-uve-mr-forms-admin.php:243
+msgid "Selected"
+msgstr "Seleccionados"
+
+#: includes/class-uve-mr-admin.php:243
+msgid "These groups will be preselected when creating a new form."
+msgstr "Estos grupos se preseleccionarán al crear un nuevo formulario."
+
+#: includes/class-uve-mr-admin.php:244
+#: includes/admin/forms/class-uve-mr-forms-admin.php:247
+msgid "Refresh groups"
+msgstr "Actualizar grupos"
+
+#: includes/class-uve-mr-admin.php:247
+#: includes/admin/forms/class-uve-mr-forms-admin.php:250
+msgid "No groups found or API not configured."
+msgstr "No se encontraron grupos o la API no está configurada."
+
+#: includes/class-uve-mr-admin.php:252
+msgid "Subscription mode"
+msgstr "Modo suscripción"
+
+#: includes/class-uve-mr-admin.php:255
+msgid "Double opt-in (inactive + confirmation)"
+msgstr "Double opt-in (inactive + confirmación)"
+
+#: includes/class-uve-mr-admin.php:256
+msgid "Single opt-in (active)"
+msgstr "Single opt-in (active)"
+
+#: includes/class-uve-mr-admin.php:264
+#: includes/admin/forms/class-uve-mr-forms-admin.php:426
+msgid "Spam protection"
+msgstr "Protección anti-spam"
+
+#: includes/class-uve-mr-admin.php:267
+msgid "Turnstile Site Key"
+msgstr "Turnstile Site Key"
+
+#: includes/class-uve-mr-admin.php:274
+msgid "Turnstile Secret Key"
+msgstr "Turnstile Secret Key"
+
+#: includes/class-uve-mr-admin.php:284
+msgid "Text defaults"
+msgstr "Textos por defecto"
+
+#: includes/class-uve-mr-admin.php:287
+#: includes/class-uve-mr-newsletter-widget.php:94
+#: includes/admin/forms/class-uve-mr-forms-admin.php:343
+#: includes/class-uve-mr-elementor-newsletter-widget.php:96
+msgid "Title"
+msgstr "Título"
+
+#: includes/class-uve-mr-admin.php:293
+#: includes/class-uve-mr-newsletter-widget.php:97
+#: includes/admin/forms/class-uve-mr-forms-admin.php:349
+#: includes/class-uve-mr-elementor-newsletter-widget.php:106
+msgid "Description"
+msgstr "Descripción"
+
+#: includes/class-uve-mr-admin.php:299
+#: includes/class-uve-mr-newsletter-widget.php:100
+#: includes/class-uve-mr-elementor-newsletter-widget.php:116
+msgid "Email placeholder"
+msgstr "Placeholder email"
+
+#: includes/class-uve-mr-admin.php:305
+#: includes/class-uve-mr-newsletter-widget.php:103
+#: includes/class-uve-mr-elementor-newsletter-widget.php:126
+msgid "Button text"
+msgstr "Texto botón"
+
+#: includes/class-uve-mr-admin.php:311
+#: includes/class-uve-mr-elementor-newsletter-widget.php:176
+msgid "Enable AJAX submissions"
+msgstr "Activar envíos por AJAX"
+
+#: includes/class-uve-mr-admin.php:314
+#: includes/admin/forms/class-uve-mr-forms-admin.php:472
+msgid "Submit via AJAX"
+msgstr "Enviar vía AJAX"
+
+#: includes/class-uve-mr-admin.php:321
+msgid "GDPR + Logs"
+msgstr "RGPD + Logs"
+
+#: includes/class-uve-mr-admin.php:324
+msgid "Privacy policy URL"
+msgstr "URL política de privacidad"
+
+#: includes/class-uve-mr-admin.php:331
+msgid "Checkbox text"
+msgstr "Texto del checkbox"
+
+#: includes/class-uve-mr-admin.php:338
+msgid "Consent logging"
+msgstr "Registro del consentimiento"
+
+#: includes/class-uve-mr-admin.php:341
+msgid "Store log in database"
+msgstr "Guardar log en BD"
+
+#: includes/class-uve-mr-admin.php:343
+msgid "Store IP as hash"
+msgstr "Guardar IP como hash"
+
+#: includes/class-uve-mr-admin.php:347
+msgid "Retention (days)"
+msgstr "Retención (días)"
+
+#: includes/class-uve-mr-admin.php:357
+msgid "Rate limit"
+msgstr "Rate limit"
+
+#: includes/class-uve-mr-admin.php:360
+msgid "Max attempts per IP+email"
+msgstr "Máx intentos por IP+email"
+
+#: includes/class-uve-mr-admin.php:367
+#: includes/admin/forms/class-uve-mr-forms-admin.php:464
+msgid "Window (seconds)"
+msgstr "Ventana (segundos)"
+
+#: includes/class-uve-mr-admin.php:374
+msgid "Max confirmation resends per IP+email (0 = disable)"
+msgstr "Máx reenvíos confirmación por IP+email (0 = desactivar)"
+
+#: includes/class-uve-mr-admin.php:381
+msgid "Confirmation window (seconds)"
+msgstr "Ventana confirmación (segundos)"
+
+#: includes/class-uve-mr-admin.php:393
+msgid "How settings are used"
+msgstr "Cómo se usan los ajustes"
+
+#: includes/class-uve-mr-admin.php:395
+msgid "API credentials are required to load groups and send subscribers."
+msgstr ""
+"Las credenciales de la API son necesarias para cargar grupos y enviar "
+"suscriptores."
+
+#: includes/class-uve-mr-admin.php:396
+msgid ""
+"These defaults are applied when creating new forms, but each form can "
+"override them."
+msgstr ""
+"Estos valores por defecto se aplican al crear nuevos formularios, pero cada "
+"formulario puede sobrescribirlos."
+
+#: includes/class-uve-mr-admin.php:397
+msgid "Turnstile keys are shared across all forms."
+msgstr "Las claves de Turnstile se comparten en todos los formularios."
+
+#: includes/class-uve-mr-admin.php:398
+msgid "Rate limit values reduce abuse but can block repeated tests."
+msgstr ""
+"Los límites de tasa reducen el abuso, pero pueden bloquear pruebas repetidas."
+
+#: includes/class-uve-mr-admin.php:403
+msgid "Shortcodes"
+msgstr "Shortcodes"
+
+#: includes/class-uve-mr-admin.php:404
+msgid "Use a form shortcode from the Forms screen, for example:"
+msgstr ""
+"Usa un shortcode de formulario desde la pantalla de Formularios, por ejemplo:"
+
+#: includes/class-uve-mr-admin.php:411
+msgid "Save Changes"
+msgstr "Guardar cambios"
+
+#. translators: %s: number of records deleted.
+#: includes/class-uve-mr-admin.php:592
+#, php-format
+msgid "Purged %s records."
+msgstr "Purgados %s registros."
+
+#: includes/class-uve-mr-admin.php:596
+msgid "MR4WP Logs"
+msgstr "Registros de MR4WP"
+
+#: includes/class-uve-mr-admin.php:602
+msgid "Purge now"
+msgstr "Purgar ahora"
+
+#: includes/class-uve-mr-newsletter-widget.php:24
+msgid ""
+"Newsletter form with Turnstile + Mailrelay API + double opt-in (neutral "
+"message) and logs."
+msgstr ""
+"Formulario de newsletter con Turnstile + Mailrelay API + double opt-in "
+"(mensaje neutro) y logs."
+
+#: includes/class-uve-mr-newsletter-widget.php:84
+#: includes/class-uve-mr-elementor-newsletter-widget.php:86
+#, fuzzy
+msgid "Form"
+msgstr "Formularios"
+
+#: includes/class-uve-mr-newsletter-widget.php:86
+#: includes/class-uve-mr-elementor-newsletter-widget.php:66
+msgid "Use legacy overrides"
+msgstr ""
+
+#: includes/class-uve-mr-newsletter-widget.php:106
+#: includes/class-uve-mr-elementor-newsletter-widget.php:136
+msgid "Group IDs"
+msgstr "Group IDs"
+
+#: includes/class-uve-mr-newsletter-widget.php:109
+#: includes/admin/forms/class-uve-mr-forms-admin.php:417
+#: includes/class-uve-mr-elementor-newsletter-widget.php:146
 msgid "Privacy URL"
 msgstr "URL privacidad"
 
+#: includes/class-uve-mr-newsletter-widget.php:112
+#: includes/class-uve-mr-elementor-newsletter-widget.php:156
 msgid "Consent text"
 msgstr "Texto consentimiento"
 
+#: includes/class-uve-mr-newsletter-widget.php:115
 msgid "Extra CSS class (optional)"
 msgstr "Clase CSS extra (opcional)"
 
+#: includes/domain/forms/class-uve-mr-form-config.php:40
+#: includes/class-uve-mr-logs.php:188 includes/class-uve-mr-logs.php:304
+msgid "Email"
+msgstr "Email"
+
+#: includes/domain/forms/class-uve-mr-form-config.php:47
+#: includes/admin/forms/class-uve-mr-forms-admin.php:157
+#: includes/admin/forms/class-uve-mr-forms-table.php:103
+msgid "Name"
+msgstr "Nombre"
+
+#: includes/domain/forms/class-uve-mr-form-config.php:54
+msgid "Address"
+msgstr ""
+
+#: includes/domain/forms/class-uve-mr-form-config.php:61
+msgid "City"
+msgstr ""
+
+#: includes/domain/forms/class-uve-mr-form-config.php:68
+#, fuzzy
+msgid "State"
+msgstr "Estado"
+
+#: includes/domain/forms/class-uve-mr-form-config.php:75
+msgid "Birthday"
+msgstr ""
+
+#: includes/domain/forms/class-uve-mr-form-config.php:82
+msgid "Website"
+msgstr ""
+
+#: includes/domain/forms/class-uve-mr-form-config.php:89
+msgid "Phone"
+msgstr ""
+
+#: includes/domain/forms/class-uve-mr-form-config.php:103
+msgid ""
+"Thanks. If the email is valid, you will receive a confirmation email (or you "
+"were already subscribed)."
+msgstr ""
+"Gracias. Si el email es válido, recibirás un correo para confirmar (o ya "
+"estabas suscrito)."
+
+#: includes/domain/forms/class-uve-mr-form-config.php:104
+msgid "Please verify you are human."
+msgstr "Por favor, verifica que eres humano."
+
+#: includes/domain/forms/class-uve-mr-form-config.php:105
+msgid "You must accept the privacy policy."
+msgstr "Debes aceptar la política de privacidad."
+
+#: includes/domain/forms/class-uve-mr-forms.php:28
+#, fuzzy
+msgid "MR4WP Forms"
+msgstr "MR4WP"
+
+#: includes/domain/forms/class-uve-mr-forms.php:29
+#, fuzzy
+msgid "MR4WP Form"
+msgstr "MR4WP"
+
+#: includes/domain/forms/class-uve-mr-forms.php:70
+msgid "Default Form"
+msgstr ""
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:24
+#: includes/admin/forms/class-uve-mr-forms-admin.php:25
+#: includes/admin/forms/class-uve-mr-forms-admin.php:117
+msgid "Forms"
+msgstr "Formularios"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:105
+msgid "Form saved."
+msgstr "Formulario guardado."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:107
+msgid "Form duplicated."
+msgstr "Formulario duplicado."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:109
+msgid "Form moved to trash."
+msgstr "Formulario movido a la papelera."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:111
+msgid "Forms updated."
+msgstr "Formularios actualizados."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:113
+msgid "Something went wrong."
+msgstr "Algo salió mal."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:118
+msgid "Add New"
+msgstr "Añadir nuevo"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:151
+msgid "Edit Form"
+msgstr "Editar formulario"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:151
+msgid "Add New Form"
+msgstr "Añadir nuevo formulario"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:163
+#: includes/admin/forms/class-uve-mr-forms-table.php:104
+msgid "Shortcode"
+msgstr "Shortcode"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:167
+msgid "Paste this shortcode in posts, pages, or widgets."
+msgstr "Pega este shortcode en entradas, páginas o widgets."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:170
+msgid "Save the form to generate the shortcode."
+msgstr "Guarda el formulario para generar el shortcode."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:177
+msgid "Fields"
+msgstr "Campos"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:178
+msgid "Messages"
+msgstr "Mensajes"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:186
+msgid "Destination"
+msgstr "Destino"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:189
+msgid "Groups"
+msgstr "Grupos"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:255
+msgid "Subscriber status"
+msgstr "Estado del suscriptor"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:258
+msgid "Inactive (double opt-in)"
+msgstr "Inactivo (doble opt-in)"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:259
+msgid "Active (single opt-in)"
+msgstr "Activo (single opt-in)"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:267
+msgid "Subscriber fields"
+msgstr "Campos del suscriptor"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:272
+msgid "Field"
+msgstr "Campo"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:273
+msgid "Enable"
+msgstr "Activar"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:274
+msgid "Required"
+msgstr "Obligatorio"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:275
+msgid "Label"
+msgstr "Etiqueta"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:276
+msgid "Placeholder"
+msgstr "Marcador"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:309
+msgid "Email is required by Mailrelay."
+msgstr "El email es obligatorio en Mailrelay."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:315
+msgid ""
+"Use E.164 format (e.g., +34666666666). Sent to both SMS and WhatsApp in "
+"Mailrelay."
+msgstr ""
+"Usa el formato E.164 (p. ej., +34666666666). Se envía a SMS y WhatsApp en "
+"Mailrelay."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:326
+msgid "Quick guide"
+msgstr "Guía rápida"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:328
+msgid "Pick one or more groups so subscribers land in the right lists."
+msgstr ""
+"Selecciona uno o más grupos para que los suscriptores lleguen a las listas "
+"correctas."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:329
+msgid ""
+"Keep fields minimal to reduce drop-offs. Email is required by Mailrelay."
+msgstr ""
+"Mantén pocos campos para reducir abandonos. El email es obligatorio en "
+"Mailrelay."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:330
+msgid "Use E.164 for Phone (for example, +34666666666) to avoid API errors."
+msgstr ""
+"Usa E.164 para el teléfono (por ejemplo, +34666666666) para evitar errores "
+"de la API."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:331
+msgid "Phone populates both SMS and WhatsApp fields in Mailrelay."
+msgstr "El teléfono rellena los campos de SMS y WhatsApp en Mailrelay."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:355
+msgid "Submit button text"
+msgstr "Texto del botón"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:361
+msgid "Success message"
+msgstr "Mensaje de éxito"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:367
+msgid "Captcha error"
+msgstr "Error de captcha"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:373
+msgid "Consent error"
+msgstr "Error de consentimiento"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:379
+msgid "Generic error"
+msgstr "Error genérico"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:388
+msgid "Tone and clarity"
+msgstr "Tono y claridad"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:390
+msgid "Keep messages short; they appear inline under the form."
+msgstr ""
+"Mantén los mensajes cortos; se muestran en línea debajo del formulario."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:391
+msgid "Avoid technical wording. Tell users what to do next."
+msgstr "Evita lenguaje técnico. Indica al usuario qué hacer a continuación."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:392
+msgid "Match your site voice (formal, friendly, or direct)."
+msgstr "Mantén el tono de tu sitio (formal, cercano o directo)."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:402
+#: includes/class-uve-mr-logs.php:189 includes/class-uve-mr-logs.php:305
+msgid "Consent"
+msgstr "Consentimiento"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:405
+msgid "Use default consent settings"
+msgstr "Usar ajustes de consentimiento por defecto"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:407
+msgid "Inherit global consent text and URL"
+msgstr "Heredar texto y URL globales de consentimiento"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:411
+msgid "Consent label"
+msgstr "Etiqueta de consentimiento"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:429
+msgid "Turnstile"
+msgstr "Turnstile"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:433
+msgid "Inherit global setting"
+msgstr "Heredar configuración global"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:436
+msgid "Enabled"
+msgstr "Activado"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:439
+msgid "Disabled"
+msgstr "Desactivado"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:442
+msgid "Choose how this form handles spam protection."
+msgstr "Elige cómo gestionar la protección anti-spam en este formulario."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:449
+msgid "Advanced"
+msgstr "Avanzado"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:452
+msgid "Use default rate limit"
+msgstr "Usar límite de tasa por defecto"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:454
+msgid "Inherit global rate limits"
+msgstr "Heredar límites globales"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:458
+msgid "Max attempts"
+msgstr "Máximo de intentos"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:470
+msgid "Enable AJAX"
+msgstr "Activar AJAX"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:479
+msgid "Defaults and overrides"
+msgstr "Valores por defecto y ajustes"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:481
+msgid ""
+"Inherited settings use the global defaults from the main plugin settings "
+"page."
+msgstr ""
+"Los ajustes heredados usan los valores globales de la página principal del "
+"plugin."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:482
+msgid "Override only when this form needs different behavior."
+msgstr ""
+"Cambia solo cuando este formulario necesite un comportamiento distinto."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:483
+msgid "Turning off Turnstile disables it for this form only."
+msgstr "Desactivar Turnstile lo deshabilita solo en este formulario."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:490
+msgid "Save Form"
+msgstr "Guardar formulario"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:491
+msgid "Back to list"
+msgstr "Volver a la lista"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:92
+msgid "No forms found."
+msgstr "No se encontraron formularios."
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:105
+msgid "Group"
+msgstr "Grupo"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:106
+msgid "Status"
+msgstr "Estado"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:107
+msgid "Updated"
+msgstr "Actualizado"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:190
+#: includes/admin/forms/class-uve-mr-forms-table.php:269
+msgid "Restore"
+msgstr "Restaurar"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:191
+#: includes/admin/forms/class-uve-mr-forms-table.php:270
+msgid "Delete Permanently"
+msgstr "Eliminar permanentemente"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:195
+msgid "Edit"
+msgstr "Editar"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:196
+msgid "Duplicate"
+msgstr "Duplicar"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:197
+msgid "Trash"
+msgstr "Papelera"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:275
+msgid "Move to Trash"
+msgstr "Mover a la papelera"
+
+#. translators: %d: number of forms.
+#: includes/admin/forms/class-uve-mr-forms-table.php:299
+#, php-format
+msgid "All (%d)"
+msgstr "Todo (%d)"
+
+#. translators: %d: number of forms.
+#: includes/admin/forms/class-uve-mr-forms-table.php:307
+#, php-format
+msgid "Active (%d)"
+msgstr "Activos (%d)"
+
+#. translators: %d: number of forms.
+#: includes/admin/forms/class-uve-mr-forms-table.php:315
+#, php-format
+msgid "Trash (%d)"
+msgstr "Papelera (%d)"
+
+#: includes/class-uve-mr-logs.php:127
+msgid ""
+"The logs table does not exist yet. Deactivate and reactivate the plugin to "
+"create it."
+msgstr ""
+"No existe la tabla de logs todavía. Desactiva y reactiva el plugin para "
+"crearla."
+
+#: includes/class-uve-mr-logs.php:154
+msgid "The table exists but columns could not be read."
+msgstr "La tabla existe pero no se pudieron leer columnas."
+
+#: includes/class-uve-mr-logs.php:186 includes/class-uve-mr-logs.php:302
+msgid "ID"
+msgstr "ID"
+
+#: includes/class-uve-mr-logs.php:187 includes/class-uve-mr-logs.php:303
+msgid "Date"
+msgstr "Fecha"
+
+#: includes/class-uve-mr-logs.php:190 includes/class-uve-mr-logs.php:308
+msgid "Signup"
+msgstr "Alta"
+
+#: includes/class-uve-mr-logs.php:191 includes/class-uve-mr-logs.php:311
+msgid "Confirmation email"
+msgstr "Confirmación email"
+
+#: includes/class-uve-mr-logs.php:227
+msgid "No records match your search."
+msgstr "No hay registros que coincidan con tu búsqueda."
+
+#: includes/class-uve-mr-logs.php:229
+msgid "No records yet."
+msgstr "Sin registros aún."
+
+#: includes/class-uve-mr-logs.php:255
+msgid "First page"
+msgstr "Primera página"
+
+#: includes/class-uve-mr-logs.php:256
+msgid "Previous page"
+msgstr "Página anterior"
+
+#. translators: %1$s: current page, %2$s: total pages.
+#: includes/class-uve-mr-logs.php:262
+#, php-format
+msgid "%1$s of %2$s"
+msgstr "%1$s de %2$s"
+
+#: includes/class-uve-mr-logs.php:264
+msgid "Next page"
+msgstr "Página siguiente"
+
+#: includes/class-uve-mr-logs.php:265
+msgid "Last page"
+msgstr "Última página"
+
+#: includes/class-uve-mr-logs.php:278
+msgid "Items per page"
+msgstr "Elementos por página"
+
+#: includes/class-uve-mr-logs.php:284
+msgid "Apply"
+msgstr "Aplicar"
+
+#: includes/class-uve-mr-logs.php:287
+msgid "Search logs"
+msgstr "Buscar registros"
+
+#: includes/class-uve-mr-logs.php:289
+msgid "Search"
+msgstr "Buscar"
+
+#. translators: %1$s: number of items.
+#: includes/class-uve-mr-logs.php:293 includes/class-uve-mr-logs.php:391
+#, php-format
+msgid "%1$s items"
+msgstr "%1$s elementos"
+
+#: includes/class-uve-mr-logs.php:306
+msgid "IP"
+msgstr "IP"
+
+#: includes/class-uve-mr-logs.php:307
+msgid "Source"
+msgstr "Origen"
+
+#: includes/class-uve-mr-logs.php:333
+msgid "Sort ascending."
+msgstr "Orden ascendente."
+
+#: includes/class-uve-mr-logs.php:333
+msgid "Sort descending."
+msgstr "Orden descendente."
+
+#: includes/class-uve-mr-logs.php:374
+msgid "Show more details"
+msgstr "Mostrar más detalles"
+
+#: includes/class-uve-mr-logs.php:375
+msgid "yes"
+msgstr "sí"
+
+#: includes/class-uve-mr-logs.php:375
+msgid "no"
+msgstr "no"
+
+#: includes/class-uve-mr-logs.php:397
+msgid ""
+"Confirmation columns do not exist yet. The plugin should add them "
+"automatically on activation (dbDelta)."
+msgstr ""
+"Aún no existen columnas de confirmación. El plugin debería añadirlas "
+"automáticamente al activarse (dbDelta)."
+
+#: includes/class-uve-mr-elementor.php:31
+msgid "Uve Mailrelay"
+msgstr "Uve Mailrelay"
+
+#: includes/class-uve-mr-elementor-newsletter-widget.php:78
 msgid "Content"
 msgstr "Contenido"
 
+#: includes/class-uve-mr-elementor-newsletter-widget.php:166
 msgid "Extra CSS class"
 msgstr "Clase CSS extra"
 
-msgid "Uve Mailrelay"
-msgstr "Uve Mailrelay"
+#: includes/class-uve-mr-elementor-newsletter-widget.php:178
+msgid "Yes"
+msgstr "Sí"
+
+#: includes/class-uve-mr-elementor-newsletter-widget.php:179
+msgid "No"
+msgstr "No"
+
+#~ msgid ""
+#~ "Copy the API base URL from your Mailrelay account (API/Developers "
+#~ "section)."
+#~ msgstr ""
+#~ "Copia la URL base de la API desde tu cuenta de Mailrelay (sección API/"
+#~ "Desarrolladores)."
+
+#~ msgid "Use comma-separated IDs to prefill new forms."
+#~ msgstr "Usa IDs separados por comas para prellenar nuevos formularios."
+
+#~ msgid "Texts"
+#~ msgstr "Textos"
+
+#~ msgid "Tips"
+#~ msgstr "Consejos"
+
+#~ msgid "Tone"
+#~ msgstr "Tono"
+
+#~ msgid "Notes"
+#~ msgstr "Notas"

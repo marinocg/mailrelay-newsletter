@@ -29,6 +29,13 @@ final class UVE_MR_Frontend {
 	private static bool $ajax_requested = false;
 
 	/**
+	 * Whether Turnstile assets were requested on the current request.
+	 *
+	 * @var bool
+	 */
+	private static bool $turnstile_requested = false;
+
+	/**
 	 * Fallback error message for AJAX responses.
 	 *
 	 * @var string
@@ -51,30 +58,47 @@ final class UVE_MR_Frontend {
 	 * @return string
 	 */
 	public static function shortcode( $atts = array() ): string {
-		$opts = UVE_Mailrelay_Newsletter::get_options();
-		$atts = shortcode_atts(
+		$opts     = UVE_Mailrelay_Newsletter::get_options();
+		$defaults = UVE_MR_Form_Config::defaults( $opts );
+		$raw_atts = is_array( $atts ) ? $atts : array();
+		$atts     = shortcode_atts(
 			array(
-				'title'             => $opts['title'],
-				'description'       => $opts['description'],
-				'email_placeholder' => $opts['email_placeholder'],
-				'submit_label'      => $opts['submit_label'],
-				'group_ids'         => $opts['group_ids'],
-				'privacy_url'       => $opts['privacy_url'],
-				'consent_label'     => $opts['consent_label'],
+				'id'                => '',
+				'title'             => '',
+				'description'       => '',
+				'email_placeholder' => '',
+				'submit_label'      => '',
+				'group_ids'         => '',
+				'privacy_url'       => '',
+				'consent_label'     => '',
 				'class'             => '',
-				'ajax'              => $opts['ajax_mode'] ?? '0',
+				'ajax'              => '',
 			),
-			is_array( $atts ) ? $atts : array()
+			$raw_atts
 		);
-		return self::render_form( $atts );
+
+		$form_id = isset( $atts['id'] ) ? (int) $atts['id'] : 0;
+		$form    = UVE_MR_Form_Use_Cases::get_form_for_render( $form_id );
+		if ( $form_id && ! $form ) {
+			return '';
+		}
+		$config = $form ? $form->merge_config( $defaults ) : $defaults;
+		$config = self::apply_legacy_overrides( $config, $raw_atts );
+
+		$extra_class = sanitize_text_field( (string) ( $atts['class'] ?? '' ) );
+		$render_id   = $form ? $form->id : 0;
+
+		return self::render_form( $config, $extra_class, $render_id );
 	}
 
 	/**
 	 * Enqueue frontend assets if needed.
 	 *
+	 * @param bool $needs_turnstile Whether Turnstile assets are required.
 	 * @return void
 	 */
-	private static function ensure_assets(): void {
+	private static function ensure_assets( bool $needs_turnstile ): void {
+		self::$turnstile_requested = self::$turnstile_requested || $needs_turnstile;
 		if ( self::$assets_requested ) {
 			return;
 		}
@@ -83,6 +107,9 @@ final class UVE_MR_Frontend {
 		add_action(
 			'wp_footer',
 			function () {
+				if ( ! self::$turnstile_requested ) {
+					return;
+				}
 				if ( ! wp_script_is( 'cf-turnstile', 'enqueued' ) && ! wp_script_is( 'cf-turnstile', 'done' ) ) {
 					wp_enqueue_script(
 						'cf-turnstile',
@@ -99,6 +126,9 @@ final class UVE_MR_Frontend {
 		add_action(
 			'wp_footer',
 			function () {
+				if ( ! self::$turnstile_requested ) {
+					return;
+				}
 				$site_key = UVE_MR_Turnstile::get_site_key();
 				if ( ! $site_key ) {
 					return;
@@ -239,47 +269,53 @@ final class UVE_MR_Frontend {
 	/**
 	 * Render the subscription form.
 	 *
-	 * @param array $args Shortcode arguments.
+	 * @param array  $config Form config.
+	 * @param string $extra_class Extra wrapper class.
+	 * @param int    $form_id Form ID.
 	 * @return string
 	 */
-	private static function render_form( array $args ): string {
-		$email_placeholder = $args['email_placeholder'] ?? __( 'Email...', 'uve-mailrelay-newsletter' );
-		$title             = $args['title'] ?? '';
-		$desc              = $args['description'] ?? '';
-		$submit            = $args['submit_label'] ?? __( 'Subscribe', 'uve-mailrelay-newsletter' );
-		$group_ids         = $args['group_ids'] ?? '';
-		$privacy_url       = $args['privacy_url'] ?? '';
-		$consent_label     = $args['consent_label'] ?? __( 'I accept the privacy policy', 'uve-mailrelay-newsletter' );
-		$class             = $args['class'] ?? '';
-		$ajax_enabled      = '1' === (string) ( $args['ajax'] ?? '0' );
-		$ajax_error_msg    = __( 'We could not complete the request. Please try again.', 'uve-mailrelay-newsletter' );
+	private static function render_form( array $config, string $extra_class, int $form_id ): string {
+		$email_placeholder = (string) ( $config['fields']['email']['placeholder'] ?? $config['basics']['email_placeholder'] ?? __( 'Email...', 'uve-mailrelay-newsletter' ) );
+		$title             = (string) ( $config['basics']['title'] ?? '' );
+		$desc              = (string) ( $config['basics']['description'] ?? '' );
+		$submit            = (string) ( $config['basics']['submit_label'] ?? __( 'Subscribe', 'uve-mailrelay-newsletter' ) );
+		$group_ids         = (string) ( $config['destination']['group_ids'] ?? '' );
+		$privacy_url       = (string) ( $config['consent']['privacy_url'] ?? '' );
+		$consent_label     = (string) ( $config['consent']['label'] ?? __( 'I accept the privacy policy', 'uve-mailrelay-newsletter' ) );
+		$ajax_enabled      = '1' === (string) ( $config['ajax'] ?? '0' );
+		$messages          = $config['messages'] ?? array();
+		$ajax_error_msg    = (string) ( $messages['error'] ?? __( 'We could not complete the request. Please try again.', 'uve-mailrelay-newsletter' ) );
+		$turnstile_enabled = self::turnstile_enabled( $config );
+		$site_key          = $turnstile_enabled ? UVE_MR_Turnstile::get_site_key() : '';
 
-		$site_key = UVE_MR_Turnstile::get_site_key();
 		$action   = admin_url( 'admin-post.php' );
 		$ajax_url = admin_url( 'admin-ajax.php' );
 
-		$msg_html = '';
-		if ( isset( $_GET['uve_mr_status'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$msg_html    = '';
+		$form_marker = isset( $_GET['uve_mr_form_id'] ) ? absint( wp_unslash( $_GET['uve_mr_form_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( $form_marker && $form_marker !== $form_id ) {
+			$msg_html = '';
+		} elseif ( isset( $_GET['uve_mr_status'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$st = sanitize_text_field( (string) wp_unslash( $_GET['uve_mr_status'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			if ( 'ok' === $st ) {
 				$msg_html = sprintf(
 					'<p class="uve-mr-msg uve-mr-ok">%s</p>',
-					esc_html__( 'Thanks. If the email is valid, you will receive a confirmation email (or you were already subscribed).', 'uve-mailrelay-newsletter' )
+					esc_html( (string) ( $messages['success'] ?? '' ) )
 				);
 			} elseif ( 'captcha' === $st ) {
 				$msg_html = sprintf(
 					'<p class="uve-mr-msg uve-mr-err">%s</p>',
-					esc_html__( 'Please verify you are human.', 'uve-mailrelay-newsletter' )
+					esc_html( (string) ( $messages['captcha'] ?? '' ) )
 				);
 			} elseif ( 'consent' === $st ) {
 				$msg_html = sprintf(
 					'<p class="uve-mr-msg uve-mr-err">%s</p>',
-					esc_html__( 'You must accept the privacy policy.', 'uve-mailrelay-newsletter' )
+					esc_html( (string) ( $messages['consent'] ?? '' ) )
 				);
 			} else {
 				$msg_html = sprintf(
 					'<p class="uve-mr-msg uve-mr-err">%s</p>',
-					esc_html__( 'We could not complete the request. Please try again.', 'uve-mailrelay-newsletter' )
+					esc_html( (string) ( $messages['error'] ?? '' ) )
 				);
 			}
 		}
@@ -289,9 +325,10 @@ final class UVE_MR_Frontend {
 			self::$ajax_requested = true;
 		}
 		self::$ajax_error_msg = $ajax_error_msg;
-		self::ensure_assets();
+		self::ensure_assets( $turnstile_enabled );
 
 		$context = array(
+			'form_id'           => $form_id,
 			'email_placeholder' => $email_placeholder,
 			'title'             => $title,
 			'desc'              => $desc,
@@ -299,8 +336,10 @@ final class UVE_MR_Frontend {
 			'group_ids'         => $group_ids,
 			'privacy_url'       => $privacy_url,
 			'consent_label'     => $consent_label,
-			'class'             => $class,
+			'class'             => $extra_class,
+			'fields'            => $config['fields'] ?? array(),
 			'site_key'          => $site_key,
+			'turnstile_enabled' => $turnstile_enabled,
 			'action'            => $action,
 			'msg_html'          => $msg_html,
 			'ajax_enabled'      => $ajax_enabled,
@@ -317,14 +356,73 @@ final class UVE_MR_Frontend {
 		$privacy_url       = $context['privacy_url'];
 		$consent_label     = $context['consent_label'];
 		$class             = $context['class'];
+		$fields            = $context['fields'];
 		$site_key          = $context['site_key'];
+		$turnstile_enabled = $context['turnstile_enabled'];
 		$action            = $context['action'];
 		$msg_html          = $context['msg_html'];
 		$ajax_enabled      = $context['ajax_enabled'];
 		$ajax_url          = $context['ajax_url'];
 		$ajax_error_msg    = $context['ajax_error_msg'];
+		$form_id           = $context['form_id'];
 		require $template_path;
 		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Apply legacy shortcode overrides to config.
+	 *
+	 * @param array $config Form config.
+	 * @param array $raw_atts Raw shortcode attributes.
+	 * @return array
+	 */
+	private static function apply_legacy_overrides( array $config, array $raw_atts ): array {
+		if ( array_key_exists( 'title', $raw_atts ) ) {
+			$config['basics']['title'] = (string) $raw_atts['title'];
+		}
+		if ( array_key_exists( 'description', $raw_atts ) ) {
+			$config['basics']['description'] = (string) $raw_atts['description'];
+		}
+		if ( array_key_exists( 'email_placeholder', $raw_atts ) ) {
+			$config['basics']['email_placeholder'] = (string) $raw_atts['email_placeholder'];
+		}
+		if ( array_key_exists( 'submit_label', $raw_atts ) ) {
+			$config['basics']['submit_label'] = (string) $raw_atts['submit_label'];
+		}
+		if ( array_key_exists( 'group_ids', $raw_atts ) ) {
+			$config['destination']['group_ids'] = (string) $raw_atts['group_ids'];
+		}
+		if ( array_key_exists( 'privacy_url', $raw_atts ) ) {
+			$config['consent']['privacy_url'] = (string) $raw_atts['privacy_url'];
+			$config['consent']['inherit']     = false;
+		}
+		if ( array_key_exists( 'consent_label', $raw_atts ) ) {
+			$config['consent']['label']   = (string) $raw_atts['consent_label'];
+			$config['consent']['inherit'] = false;
+		}
+		if ( array_key_exists( 'ajax', $raw_atts ) ) {
+			$config['ajax'] = (string) $raw_atts['ajax'];
+		}
+
+		return $config;
+	}
+
+	/**
+	 * Determine if Turnstile should be enabled for the form config.
+	 *
+	 * @param array $config Form config.
+	 * @return bool
+	 */
+	private static function turnstile_enabled( array $config ): bool {
+		$turnstile = $config['turnstile'] ?? array();
+		$mode      = (string) ( $turnstile['mode'] ?? 'inherit' );
+		if ( 'off' === $mode ) {
+			return false;
+		}
+		if ( 'on' === $mode ) {
+			return true;
+		}
+		return true;
 	}
 
 	/**

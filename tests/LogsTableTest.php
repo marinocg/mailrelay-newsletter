@@ -64,4 +64,55 @@ final class LogsTableTest extends TestCase {
 		$this->assertStringContainsString( 'column-id', $html );
 		$this->assertStringContainsString( 'column-source', $html );
 	}
+
+	public function test_logs_table_renders_email_primary_first_with_toggle(): void {
+		$table = $GLOBALS['wpdb']->prefix . UVE_Mailrelay_Newsletter::TABLE;
+
+		$GLOBALS['uve_mr_test_wpdb_tables_like'] = $table;
+		$GLOBALS['uve_mr_test_wpdb_columns']     = array(
+			array( 'Field' => 'id' ),
+			array( 'Field' => 'created_at' ),
+			array( 'Field' => 'email' ),
+			array( 'Field' => 'accepted' ),
+			array( 'Field' => 'ip_hash' ),
+			array( 'Field' => 'ip_raw' ),
+			array( 'Field' => 'page_url' ),
+			array( 'Field' => 'mailrelay_http_code' ),
+		);
+		$GLOBALS['uve_mr_test_wpdb_get_results'] = array(
+			array(
+				'id'                  => 5,
+				'created_at'          => '2026-01-01 10:00:00',
+				'email'               => 'mobile@example.test',
+				'accepted'            => 1,
+				'ip_hash'             => 'abc',
+				'ip_raw'              => '',
+				'page_url'            => 'https://example.test/source',
+				'mailrelay_http_code' => 201,
+			),
+		);
+		$GLOBALS['uve_mr_test_wpdb_count'] = 1;
+
+		$_GET = array(
+			'_wpnonce' => 'testnonce',
+			'paged'    => '1',
+			'per_page' => '20',
+		);
+
+		ob_start();
+		UVE_MR_Logs::render_logs_table_safe();
+		$html = (string) ob_get_clean();
+
+		$pos_email = strpos( $html, 'column-email' );
+		$pos_date  = strpos( $html, 'column-date' );
+		$pos_id    = strpos( $html, 'column-id' );
+
+		$this->assertNotFalse( $pos_email );
+		$this->assertNotFalse( $pos_date );
+		$this->assertNotFalse( $pos_id );
+		$this->assertTrue( $pos_email < $pos_date );
+		$this->assertTrue( $pos_date < $pos_id );
+		$this->assertStringContainsString( 'toggle-row', $html );
+		$this->assertStringContainsString( 'data-colname="Email"', $html );
+	}
 }
