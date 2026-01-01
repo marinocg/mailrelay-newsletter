@@ -45,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<input type="hidden" name="uve_mr_group_ids" value="<?php echo esc_attr( $group_ids ); ?>">
 		<input type="hidden" name="uve_mr_page_url" value="<?php echo esc_attr( UVE_MR_Utils::current_url() ); ?>">
 
-		<div class="mc4wp-form-fields">
+		<div class="mc4wp-form-fields uve-mr-form-fields">
 			<?php
 			if ( $desc ) :
 				?>
@@ -57,18 +57,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 					if ( ! is_array( $field ) || empty( $field['enabled'] ) ) {
 						continue;
 					}
-					$type        = (string) ( $field['type'] ?? 'text' );
+					$field_type  = (string) ( $field['type'] ?? 'text' );
 					$label       = (string) ( $field['label'] ?? '' );
 					$placeholder = (string) ( $field['placeholder'] ?? '' );
-					$required    = ( 'email' === $key );
+					$required    = ! empty( $field['required'] );
 					$name_attr   = 'subscriber[' . $key . ']';
 					if ( 'email' === $key ) {
-						$type        = 'email';
+						$field_type  = 'email';
 						$placeholder = $email_placeholder;
 					}
+					$label_text       = '' === $label ? ucfirst( (string) $key ) : $label;
+					$placeholder_text = '' === $placeholder ? $label : $placeholder;
 					?>
 					<p class="mfield mfield-<?php echo esc_attr( $key ); ?>">
-						<input type="<?php echo esc_attr( $type ); ?>" name="<?php echo esc_attr( $name_attr ); ?>" placeholder="<?php echo esc_attr( $placeholder ?: $label ); ?>" <?php echo $required ? 'required' : ''; ?>>
+						<label class="uve-mr-field-label" for="uve-mr-<?php echo esc_attr( $key ); ?>">
+							<?php echo esc_html( $label_text ); ?>
+							<?php if ( $required ) : ?>
+								<span class="uve-mr-required" aria-hidden="true">*</span>
+							<?php endif; ?>
+						</label>
+						<input type="<?php echo esc_attr( $field_type ); ?>" id="uve-mr-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name_attr ); ?>" placeholder="<?php echo esc_attr( $placeholder_text ); ?>" <?php echo $required ? 'required' : ''; ?>>
 					</p>
 				<?php endforeach; ?>
 			<?php endif; ?>
@@ -78,9 +86,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<input type="text" name="uve_mr_hp" tabindex="-1" autocomplete="off" value="">
 			</div>
 
-			<p class="mconsent" style="margin: 8px 0;">
+			<p class="mconsent">
 				<input value="0" type="hidden" name="subscriber[subscribed_with_acceptance]">
-				<label style="display:flex; gap:8px; align-items:flex-start;">
+				<label class="uve-mr-consent-label">
 					<input type="checkbox" value="1" name="subscriber[subscribed_with_acceptance]" required>
 					<span>
 						<?php echo esc_html( $consent_label ); ?>
@@ -101,25 +109,102 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<p class="uve-mr-msg uve-mr-err"><?php echo esc_html__( 'Turnstile is not configured (Site Key).', 'uve-mailrelay-newsletter' ); ?></p>
 			<?php endif; ?>
 
-			<p class="msubmit" style="margin-top: 10px;">
+			<p class="msubmit">
 				<input type="submit" value="<?php echo esc_attr( $submit ); ?>">
 			</p>
 		</div>
 	</form>
 
 	<style>
+		.uve-mr-newsletter .widgettitle {
+			margin-top: 0;
+			margin-bottom: 8px;
+			font-size: clamp(22px, 2.2vw, 28px);
+		}
+
+		.uve-mr-form-fields {
+			display: grid;
+			gap: 20px;
+		}
+
+		.uve-mr-form-fields .mdes {
+			margin: 0;
+			color: var(--wp--preset--color--contrast-2, #555);
+		}
+
+		.uve-mr-field-label {
+			display: inline-block;
+			margin-bottom: 6px;
+			font-weight: 600;
+			color: var(--wp--preset--color--contrast, #111);
+		}
+
+		.uve-mr-required {
+			color: #c31919;
+			margin-left: 4px;
+		}
+
+		.uve-mr-form-fields input[type="text"],
+		.uve-mr-form-fields input[type="email"],
+		.uve-mr-form-fields input[type="url"],
+		.uve-mr-form-fields input[type="tel"],
+		.uve-mr-form-fields input[type="date"] {
+			width: 100%;
+			padding: 14px 16px;
+			border-radius: 10px;
+			border: 1px solid #7a7a7a;
+			background: var(--wp--preset--color--base, #fff);
+		}
+
+		.uve-mr-form-fields input[type="text"]:focus,
+		.uve-mr-form-fields input[type="email"]:focus,
+			.uve-mr-form-fields input[type="url"]:focus,
+		.uve-mr-form-fields input[type="tel"]:focus,
+		.uve-mr-form-fields input[type="date"]:focus {
+			border-color: #111;
+			box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.2);
+			outline: none;
+		}
+
+		.uve-mr-consent-label {
+			display: flex;
+			gap: 10px;
+			align-items: flex-start;
+			font-size: 0.95em;
+		}
+
+		.uve-mr-consent-label small {
+			color: var(--wp--preset--color--contrast-2, #666);
+		}
+
+		.msubmit input[type="submit"] {
+			width: 100%;
+			padding: 14px 18px;
+			border-radius: 10px;
+			border: 1px solid #111;
+			background: #111;
+			color: #fff;
+			font-weight: 600;
+			cursor: pointer;
+		}
+
+		.msubmit input[type="submit"]:hover {
+			opacity: 0.92;
+		}
+
 		.uve-mr-msg {
 			margin: 0 0 10px;
 			padding: 10px 12px;
-			border-radius: 6px;
+			border-radius: 10px;
+			font-size: 0.95em;
 		}
 
 		.uve-mr-ok {
-			background: rgba(0, 128, 0, .08);
+			background: rgba(0, 128, 0, 0.08);
 		}
 
 		.uve-mr-err {
-			background: rgba(200, 0, 0, .08);
+			background: rgba(200, 0, 0, 0.08);
 		}
 
 		.uve-mr-loading .msubmit input,

@@ -6,6 +6,18 @@ if [ ! -f phpunit.xml ] && [ -f phpunit.xml.dist ]; then
   cp phpunit.xml.dist phpunit.xml
 fi
 
+if ! command -v msgfmt >/dev/null 2>&1; then
+  echo "msgfmt is required to compile translation files." >&2
+  exit 1
+fi
+
+for po_file in languages/*.po; do
+  [ -f "$po_file" ] || continue
+  mo_file="${po_file%.po}.mo"
+  echo "Compiling ${po_file}..."
+  msgfmt -o "$mo_file" "$po_file"
+done
+
 echo "Running PHPCBF (auto-fix)..."
 php vendor/bin/phpcbf || true
 

@@ -415,10 +415,14 @@ final class UVE_MR_Frontend {
 	 */
 	private static function turnstile_enabled( array $config ): bool {
 		$turnstile = $config['turnstile'] ?? array();
-		if ( ! empty( $turnstile['inherit'] ) ) {
+		$mode      = (string) ( $turnstile['mode'] ?? 'inherit' );
+		if ( 'off' === $mode ) {
+			return false;
+		}
+		if ( 'on' === $mode ) {
 			return true;
 		}
-		return ! empty( $turnstile['enabled'] );
+		return true;
 	}
 
 	/**

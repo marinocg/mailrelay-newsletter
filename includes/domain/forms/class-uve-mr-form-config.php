@@ -34,50 +34,58 @@ final class UVE_MR_Form_Config {
 				'subscriber_status' => (string) ( $opts['subscriber_status'] ?? 'inactive' ),
 			),
 			'fields'      => array(
-				'email'   => array(
+				'email'    => array(
 					'enabled'     => true,
+					'required'    => true,
 					'label'       => __( 'Email', 'uve-mailrelay-newsletter' ),
 					'placeholder' => (string) ( $opts['email_placeholder'] ?? '' ),
 					'type'        => 'email',
 				),
-				'name'    => array(
+				'name'     => array(
 					'enabled'     => false,
+					'required'    => false,
 					'label'       => __( 'Name', 'uve-mailrelay-newsletter' ),
 					'placeholder' => '',
 					'type'        => 'text',
 				),
-				'address' => array(
+				'address'  => array(
 					'enabled'     => false,
+					'required'    => false,
 					'label'       => __( 'Address', 'uve-mailrelay-newsletter' ),
 					'placeholder' => '',
 					'type'        => 'text',
 				),
-				'city'    => array(
+				'city'     => array(
 					'enabled'     => false,
+					'required'    => false,
 					'label'       => __( 'City', 'uve-mailrelay-newsletter' ),
 					'placeholder' => '',
 					'type'        => 'text',
 				),
-				'state'   => array(
+				'state'    => array(
 					'enabled'     => false,
+					'required'    => false,
 					'label'       => __( 'State', 'uve-mailrelay-newsletter' ),
 					'placeholder' => '',
 					'type'        => 'text',
 				),
 				'birthday' => array(
 					'enabled'     => false,
+					'required'    => false,
 					'label'       => __( 'Birthday', 'uve-mailrelay-newsletter' ),
 					'placeholder' => '',
 					'type'        => 'date',
 				),
-				'website' => array(
+				'website'  => array(
 					'enabled'     => false,
+					'required'    => false,
 					'label'       => __( 'Website', 'uve-mailrelay-newsletter' ),
 					'placeholder' => '',
 					'type'        => 'url',
 				),
-				'phone'   => array(
+				'phone'    => array(
 					'enabled'     => false,
+					'required'    => false,
 					'label'       => __( 'Phone', 'uve-mailrelay-newsletter' ),
 					'placeholder' => '',
 					'type'        => 'tel',
@@ -89,8 +97,7 @@ final class UVE_MR_Form_Config {
 				'privacy_url' => (string) ( $opts['privacy_url'] ?? '' ),
 			),
 			'turnstile'   => array(
-				'inherit' => true,
-				'enabled' => true,
+				'mode' => 'inherit',
 			),
 			'messages'    => array(
 				'success' => __( 'Thanks. If the email is valid, you will receive a confirmation email (or you were already subscribed).', 'uve-mailrelay-newsletter' ),
@@ -171,12 +178,16 @@ final class UVE_MR_Form_Config {
 				}
 				$out['fields'][ $key ] = array(
 					'enabled'     => $enabled,
+					'required'    => ! empty( $raw_field['required'] ),
 					'label'       => UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw_field['label'] ?? $field['label'] ) ) ),
 					'placeholder' => UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw_field['placeholder'] ?? $field['placeholder'] ) ) ),
 					'type'        => (string) ( $field['type'] ?? 'text' ),
 				);
 				if ( 'email' === $key ) {
-					$out['fields'][ $key ]['placeholder'] = $out['fields'][ $key ]['placeholder'] ?: $out['basics']['email_placeholder'];
+					if ( '' === $out['fields'][ $key ]['placeholder'] ) {
+						$out['fields'][ $key ]['placeholder'] = $out['basics']['email_placeholder'];
+					}
+					$out['fields'][ $key ]['required'] = true;
 				}
 			}
 		}
@@ -189,8 +200,8 @@ final class UVE_MR_Form_Config {
 		$out['consent']['label']       = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['consent']['label'] ?? $defaults['consent']['label'] ) ) );
 		$out['consent']['privacy_url'] = esc_url_raw( (string) ( $raw['consent']['privacy_url'] ?? $defaults['consent']['privacy_url'] ) );
 
-		$out['turnstile']['inherit'] = ! empty( $raw['turnstile']['inherit'] );
-		$out['turnstile']['enabled'] = ! empty( $raw['turnstile']['enabled'] );
+		$mode                     = sanitize_text_field( (string) ( $raw['turnstile']['mode'] ?? $defaults['turnstile']['mode'] ?? 'inherit' ) );
+		$out['turnstile']['mode'] = in_array( $mode, array( 'inherit', 'on', 'off' ), true ) ? $mode : 'inherit';
 
 		$out['messages']['success'] = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['messages']['success'] ?? $defaults['messages']['success'] ) ) );
 		$out['messages']['captcha'] = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['messages']['captcha'] ?? $defaults['messages']['captcha'] ) ) );
@@ -204,6 +215,12 @@ final class UVE_MR_Form_Config {
 		$out['ajax'] = ! empty( $raw['ajax'] ) ? '1' : '0';
 
 		$out['version'] = UVE_MR_Form::CONFIG_VERSION;
+
+		if ( isset( $raw['turnstile']['inherit'] ) ) {
+			$out['turnstile']['mode'] = ! empty( $raw['turnstile']['inherit'] ) ? 'inherit' : 'off';
+		} elseif ( isset( $raw['turnstile']['enabled'] ) ) {
+			$out['turnstile']['mode'] = ! empty( $raw['turnstile']['enabled'] ) ? 'on' : 'off';
+		}
 
 		return $out;
 	}
@@ -231,13 +248,20 @@ final class UVE_MR_Form_Config {
 			}
 			$out[ $key ] = array(
 				'enabled'     => $enabled,
+				'required'    => ! empty( $current['required'] ),
 				'label'       => (string) ( $current['label'] ?? $field['label'] ?? '' ),
 				'placeholder' => (string) ( $current['placeholder'] ?? $field['placeholder'] ?? '' ),
 				'type'        => (string) ( $field['type'] ?? 'text' ),
 			);
+			if ( 'email' === $key ) {
+				$out[ $key ]['required'] = true;
+			}
 		}
 		if ( ! empty( $fields['email']['placeholder'] ) ) {
 			$out['email']['placeholder'] = (string) $fields['email']['placeholder'];
+		}
+		if ( ! empty( $fields['email']['required'] ) ) {
+			$out['email']['required'] = true;
 		}
 		return $out;
 	}

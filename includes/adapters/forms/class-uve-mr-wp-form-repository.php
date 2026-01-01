@@ -48,7 +48,7 @@ final class UVE_MR_WP_Form_Repository implements UVE_MR_Form_Repository_Interfac
 		}
 		$defaults   = array(
 			'post_type'      => UVE_MR_Form::POST_TYPE,
-			'post_status'    => array( 'publish', 'draft', 'private' ),
+			'post_status'    => array( 'publish' ),
 			'posts_per_page' => 50,
 			'orderby'        => 'modified',
 			'order'          => 'DESC',
@@ -60,7 +60,7 @@ final class UVE_MR_WP_Form_Repository implements UVE_MR_Form_Repository_Interfac
 			$query_args['post_status'] = 'any';
 			$posts                     = get_posts( $query_args );
 		}
-		$forms      = array();
+		$forms = array();
 		foreach ( $posts as $post ) {
 			if ( $post instanceof WP_Post ) {
 				$forms[] = UVE_MR_Form::from_post( $post );
@@ -119,8 +119,9 @@ final class UVE_MR_WP_Form_Repository implements UVE_MR_Form_Repository_Interfac
 
 		$post_id = wp_update_post(
 			array(
-				'ID'         => $id,
-				'post_title' => $name,
+				'ID'          => $id,
+				'post_title'  => $name,
+				'post_status' => 'publish',
 			),
 			true
 		);

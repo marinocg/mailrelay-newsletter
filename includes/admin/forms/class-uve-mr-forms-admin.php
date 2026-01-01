@@ -58,7 +58,7 @@ final class UVE_MR_Forms_Admin {
 			}
 			$action  = sanitize_text_field( (string) wp_unslash( $_GET['action'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$form_id = absint( wp_unslash( $_GET['form_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			if ( in_array( $action, array( 'duplicate', 'trash' ), true ) ) {
+			if ( in_array( $action, array( 'duplicate', 'trash', 'restore', 'delete' ), true ) ) {
 				self::handle_row_action( $action, $form_id );
 			}
 		}
@@ -90,6 +90,7 @@ final class UVE_MR_Forms_Admin {
 	 */
 	private static function render_forms_list(): void {
 		$table = new UVE_MR_Forms_Table();
+		$table->process_bulk_action();
 		$table->prepare_items();
 		$add_url = add_query_arg(
 			array(
@@ -106,6 +107,8 @@ final class UVE_MR_Forms_Admin {
 			echo '<div class="notice notice-success"><p>' . esc_html__( 'Form duplicated.', 'uve-mailrelay-newsletter' ) . '</p></div>';
 		} elseif ( 'trashed' === $notice ) {
 			echo '<div class="notice notice-success"><p>' . esc_html__( 'Form moved to trash.', 'uve-mailrelay-newsletter' ) . '</p></div>';
+		} elseif ( 'bulk-updated' === $notice ) {
+			echo '<div class="notice notice-success"><p>' . esc_html__( 'Forms updated.', 'uve-mailrelay-newsletter' ) . '</p></div>';
 		} elseif ( 'error' === $notice ) {
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'Something went wrong.', 'uve-mailrelay-newsletter' ) . '</p></div>';
 		}
@@ -115,6 +118,8 @@ final class UVE_MR_Forms_Admin {
 			<a href="<?php echo esc_url( $add_url ); ?>" class="page-title-action"><?php echo esc_html__( 'Add New', 'uve-mailrelay-newsletter' ); ?></a>
 			<hr class="wp-header-end">
 			<form method="post">
+				<?php wp_nonce_field( 'bulk-uve-mr-forms' ); ?>
+				<?php $table->views(); ?>
 				<?php $table->display(); ?>
 			</form>
 		</div>
@@ -147,19 +152,26 @@ final class UVE_MR_Forms_Admin {
 			<form method="post">
 				<?php wp_nonce_field( 'uve_mr_form_save' ); ?>
 				<input type="hidden" name="form_id" value="<?php echo esc_attr( (string) $form_id ); ?>">
-				<table class="form-table" role="presentation">
-					<tr>
-						<th scope="row"><?php echo esc_html__( 'Name', 'uve-mailrelay-newsletter' ); ?></th>
-						<td><input type="text" class="regular-text" name="form_name" value="<?php echo esc_attr( $name ); ?>" required></td>
-					</tr>
-					<tr>
-						<th scope="row"><?php echo esc_html__( 'Shortcode', 'uve-mailrelay-newsletter' ); ?></th>
-						<td>
-							<code>[uve_mailrelay_newsletter id="<?php echo esc_attr( (string) $form_id ); ?>"]</code>
-							<p class="description"><?php echo esc_html__( 'Paste this shortcode in posts, pages, or widgets.', 'uve-mailrelay-newsletter' ); ?></p>
-						</td>
-					</tr>
-				</table>
+				<div class="uve-mr-form-grid">
+					<div class="uve-mr-field-row">
+						<label class="uve-mr-field-label" for="uve-mr-form-name"><?php echo esc_html__( 'Name', 'uve-mailrelay-newsletter' ); ?></label>
+						<div class="uve-mr-field-control">
+							<input id="uve-mr-form-name" type="text" class="regular-text" name="form_name" value="<?php echo esc_attr( $name ); ?>" required>
+						</div>
+					</div>
+					<div class="uve-mr-field-row">
+						<span class="uve-mr-field-label"><?php echo esc_html__( 'Shortcode', 'uve-mailrelay-newsletter' ); ?></span>
+						<div class="uve-mr-field-control">
+							<?php if ( $form_id ) : ?>
+								<code>[uve_mailrelay_newsletter id="<?php echo esc_attr( (string) $form_id ); ?>"]</code>
+								<p class="description"><?php echo esc_html__( 'Paste this shortcode in posts, pages, or widgets.', 'uve-mailrelay-newsletter' ); ?></p>
+							<?php else : ?>
+								<code>[uve_mailrelay_newsletter id="…"]</code>
+								<p class="description"><?php echo esc_html__( 'Save the form to generate the shortcode.', 'uve-mailrelay-newsletter' ); ?></p>
+							<?php endif; ?>
+						</div>
+					</div>
+				</div>
 
 				<h2 class="nav-tab-wrapper uve-mr-tabs">
 					<a href="#uve-mr-tab-fields" class="nav-tab nav-tab-active"><?php echo esc_html__( 'Fields', 'uve-mailrelay-newsletter' ); ?></a>
@@ -169,21 +181,22 @@ final class UVE_MR_Forms_Admin {
 
 				<div id="uve-mr-tab-fields" class="uve-mr-tab-panel is-active">
 					<div class="uve-mr-tab-grid">
-						<div>
-							<h3><?php echo esc_html__( 'Destination', 'uve-mailrelay-newsletter' ); ?></h3>
-					<table class="form-table" role="presentation">
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Groups', 'uve-mailrelay-newsletter' ); ?></th>
-							<td>
+						<div class="uve-mr-tab-main">
+							<div class="uve-mr-panel">
+								<h3><?php echo esc_html__( 'Destination', 'uve-mailrelay-newsletter' ); ?></h3>
+								<div class="uve-mr-form-grid">
+									<div class="uve-mr-field-row">
+										<label class="uve-mr-field-label" for="uve-mr-groups-available"><?php echo esc_html__( 'Groups', 'uve-mailrelay-newsletter' ); ?></label>
+										<div class="uve-mr-field-control">
 								<?php
 								$group_ids   = UVE_MR_Utils::parse_group_ids( (string) ( $config['destination']['group_ids'] ?? '' ) );
-								$groups      = UVE_MR_Mailrelay::get_groups();
+								$groups      = UVE_MR_Container::mailrelay_client()->get_groups();
 								$refresh_url = wp_nonce_url(
 									add_query_arg(
 										array(
-											'page'                  => 'uve-mr-newsletter-forms',
-											'action'                => $form_id ? 'edit' : 'new',
-											'form_id'               => $form_id,
+											'page'    => 'uve-mr-newsletter-forms',
+											'action'  => $form_id ? 'edit' : 'new',
+											'form_id' => $form_id,
 											'uve_mr_refresh_groups' => 1,
 										),
 										admin_url( 'admin.php' )
@@ -236,25 +249,29 @@ final class UVE_MR_Forms_Admin {
 								<?php if ( empty( $groups ) ) : ?>
 									<p class="description"><?php echo esc_html__( 'No groups found or API not configured.', 'uve-mailrelay-newsletter' ); ?></p>
 								<?php endif; ?>
-							</td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Subscriber status', 'uve-mailrelay-newsletter' ); ?></th>
-							<td>
-								<select name="form_config[destination][subscriber_status]">
-									<option value="inactive" <?php selected( $config['destination']['subscriber_status'], 'inactive' ); ?>><?php echo esc_html__( 'Inactive (double opt-in)', 'uve-mailrelay-newsletter' ); ?></option>
-									<option value="active" <?php selected( $config['destination']['subscriber_status'], 'active' ); ?>><?php echo esc_html__( 'Active (single opt-in)', 'uve-mailrelay-newsletter' ); ?></option>
-								</select>
-							</td>
-						</tr>
-					</table>
+										</div>
+									</div>
+									<div class="uve-mr-field-row">
+										<label class="uve-mr-field-label" for="uve-mr-subscriber-status"><?php echo esc_html__( 'Subscriber status', 'uve-mailrelay-newsletter' ); ?></label>
+										<div class="uve-mr-field-control">
+											<select id="uve-mr-subscriber-status" name="form_config[destination][subscriber_status]">
+												<option value="inactive" <?php selected( $config['destination']['subscriber_status'], 'inactive' ); ?>><?php echo esc_html__( 'Inactive (double opt-in)', 'uve-mailrelay-newsletter' ); ?></option>
+												<option value="active" <?php selected( $config['destination']['subscriber_status'], 'active' ); ?>><?php echo esc_html__( 'Active (single opt-in)', 'uve-mailrelay-newsletter' ); ?></option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
 
-					<h3><?php echo esc_html__( 'Subscriber fields', 'uve-mailrelay-newsletter' ); ?></h3>
-					<table class="widefat striped" style="max-width:900px;">
+							<div class="uve-mr-panel">
+								<h3><?php echo esc_html__( 'Subscriber fields', 'uve-mailrelay-newsletter' ); ?></h3>
+								<div class="uve-mr-table-wrap">
+					<table class="widefat striped uve-mr-fields-table">
 						<thead>
 							<tr>
 								<th><?php echo esc_html__( 'Field', 'uve-mailrelay-newsletter' ); ?></th>
 								<th><?php echo esc_html__( 'Enable', 'uve-mailrelay-newsletter' ); ?></th>
+								<th><?php echo esc_html__( 'Required', 'uve-mailrelay-newsletter' ); ?></th>
 								<th><?php echo esc_html__( 'Label', 'uve-mailrelay-newsletter' ); ?></th>
 								<th><?php echo esc_html__( 'Placeholder', 'uve-mailrelay-newsletter' ); ?></th>
 							</tr>
@@ -267,6 +284,7 @@ final class UVE_MR_Forms_Admin {
 									continue;
 								}
 								$enabled     = ! empty( $field['enabled'] );
+								$required    = ! empty( $field['required'] );
 								$label       = $field['label'] ?? '';
 								$placeholder = $field['placeholder'] ?? '';
 								$disabled    = ( 'email' === $key );
@@ -277,6 +295,12 @@ final class UVE_MR_Forms_Admin {
 										<input type="checkbox" name="form_config[fields][<?php echo esc_attr( $key ); ?>][enabled]" value="1" <?php checked( $enabled ); ?> <?php disabled( $disabled ); ?>>
 										<?php if ( $disabled ) : ?>
 											<input type="hidden" name="form_config[fields][<?php echo esc_attr( $key ); ?>][enabled]" value="1">
+										<?php endif; ?>
+									</td>
+									<td>
+										<input type="checkbox" name="form_config[fields][<?php echo esc_attr( $key ); ?>][required]" value="1" <?php checked( $required ); ?> <?php disabled( $disabled ); ?>>
+										<?php if ( $disabled ) : ?>
+											<input type="hidden" name="form_config[fields][<?php echo esc_attr( $key ); ?>][required]" value="1">
 										<?php endif; ?>
 									</td>
 									<td>
@@ -295,110 +319,169 @@ final class UVE_MR_Forms_Admin {
 							<?php endforeach; ?>
 						</tbody>
 					</table>
+								</div>
+							</div>
 						</div>
 						<div class="uve-mr-tab-help">
-							<h4><?php echo esc_html__( 'Tips', 'uve-mailrelay-newsletter' ); ?></h4>
-							<p><?php echo esc_html__( 'Keep fields minimal to reduce drop-offs. Email is required by Mailrelay.', 'uve-mailrelay-newsletter' ); ?></p>
-							<p><?php echo esc_html__( 'Phone populates both SMS and WhatsApp fields in Mailrelay.', 'uve-mailrelay-newsletter' ); ?></p>
+							<h4><?php echo esc_html__( 'Quick guide', 'uve-mailrelay-newsletter' ); ?></h4>
+							<ul class="uve-mr-help-list">
+								<li><?php echo esc_html__( 'Pick one or more groups so subscribers land in the right lists.', 'uve-mailrelay-newsletter' ); ?></li>
+								<li><?php echo esc_html__( 'Keep fields minimal to reduce drop-offs. Email is required by Mailrelay.', 'uve-mailrelay-newsletter' ); ?></li>
+								<li><?php echo esc_html__( 'Use E.164 for Phone (for example, +34666666666) to avoid API errors.', 'uve-mailrelay-newsletter' ); ?></li>
+								<li><?php echo esc_html__( 'Phone populates both SMS and WhatsApp fields in Mailrelay.', 'uve-mailrelay-newsletter' ); ?></li>
+							</ul>
 						</div>
 					</div>
 				</div>
 
 				<div id="uve-mr-tab-messages" class="uve-mr-tab-panel">
 					<div class="uve-mr-tab-grid">
-						<div>
-					<table class="form-table" role="presentation">
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Title', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><input type="text" class="regular-text" name="form_config[basics][title]" value="<?php echo esc_attr( $config['basics']['title'] ); ?>"></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Description', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><input type="text" class="regular-text" name="form_config[basics][description]" value="<?php echo esc_attr( $config['basics']['description'] ); ?>"></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Submit button text', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><input type="text" class="regular-text" name="form_config[basics][submit_label]" value="<?php echo esc_attr( $config['basics']['submit_label'] ); ?>"></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Success message', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><input type="text" class="regular-text" name="form_config[messages][success]" value="<?php echo esc_attr( $config['messages']['success'] ); ?>"></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Captcha error', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><input type="text" class="regular-text" name="form_config[messages][captcha]" value="<?php echo esc_attr( $config['messages']['captcha'] ); ?>"></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Consent error', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><input type="text" class="regular-text" name="form_config[messages][consent]" value="<?php echo esc_attr( $config['messages']['consent'] ); ?>"></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Generic error', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><input type="text" class="regular-text" name="form_config[messages][error]" value="<?php echo esc_attr( $config['messages']['error'] ); ?>"></td>
-						</tr>
-					</table>
+						<div class="uve-mr-tab-main">
+							<div class="uve-mr-panel">
+								<div class="uve-mr-form-grid">
+									<div class="uve-mr-field-row">
+										<label class="uve-mr-field-label" for="uve-mr-title"><?php echo esc_html__( 'Title', 'uve-mailrelay-newsletter' ); ?></label>
+										<div class="uve-mr-field-control">
+											<input id="uve-mr-title" type="text" class="regular-text" name="form_config[basics][title]" value="<?php echo esc_attr( $config['basics']['title'] ); ?>">
+										</div>
+									</div>
+									<div class="uve-mr-field-row">
+										<label class="uve-mr-field-label" for="uve-mr-description"><?php echo esc_html__( 'Description', 'uve-mailrelay-newsletter' ); ?></label>
+										<div class="uve-mr-field-control">
+											<input id="uve-mr-description" type="text" class="regular-text" name="form_config[basics][description]" value="<?php echo esc_attr( $config['basics']['description'] ); ?>">
+										</div>
+									</div>
+									<div class="uve-mr-field-row">
+										<label class="uve-mr-field-label" for="uve-mr-submit-label"><?php echo esc_html__( 'Submit button text', 'uve-mailrelay-newsletter' ); ?></label>
+										<div class="uve-mr-field-control">
+											<input id="uve-mr-submit-label" type="text" class="regular-text" name="form_config[basics][submit_label]" value="<?php echo esc_attr( $config['basics']['submit_label'] ); ?>">
+										</div>
+									</div>
+									<div class="uve-mr-field-row">
+										<label class="uve-mr-field-label" for="uve-mr-success"><?php echo esc_html__( 'Success message', 'uve-mailrelay-newsletter' ); ?></label>
+										<div class="uve-mr-field-control">
+											<input id="uve-mr-success" type="text" class="regular-text" name="form_config[messages][success]" value="<?php echo esc_attr( $config['messages']['success'] ); ?>">
+										</div>
+									</div>
+									<div class="uve-mr-field-row">
+										<label class="uve-mr-field-label" for="uve-mr-captcha"><?php echo esc_html__( 'Captcha error', 'uve-mailrelay-newsletter' ); ?></label>
+										<div class="uve-mr-field-control">
+											<input id="uve-mr-captcha" type="text" class="regular-text" name="form_config[messages][captcha]" value="<?php echo esc_attr( $config['messages']['captcha'] ); ?>">
+										</div>
+									</div>
+									<div class="uve-mr-field-row">
+										<label class="uve-mr-field-label" for="uve-mr-consent-error"><?php echo esc_html__( 'Consent error', 'uve-mailrelay-newsletter' ); ?></label>
+										<div class="uve-mr-field-control">
+											<input id="uve-mr-consent-error" type="text" class="regular-text" name="form_config[messages][consent]" value="<?php echo esc_attr( $config['messages']['consent'] ); ?>">
+										</div>
+									</div>
+									<div class="uve-mr-field-row">
+										<label class="uve-mr-field-label" for="uve-mr-generic-error"><?php echo esc_html__( 'Generic error', 'uve-mailrelay-newsletter' ); ?></label>
+										<div class="uve-mr-field-control">
+											<input id="uve-mr-generic-error" type="text" class="regular-text" name="form_config[messages][error]" value="<?php echo esc_attr( $config['messages']['error'] ); ?>">
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="uve-mr-tab-help">
-							<h4><?php echo esc_html__( 'Tone', 'uve-mailrelay-newsletter' ); ?></h4>
-							<p><?php echo esc_html__( 'Keep success and error messages short; they appear inline.', 'uve-mailrelay-newsletter' ); ?></p>
+							<h4><?php echo esc_html__( 'Tone and clarity', 'uve-mailrelay-newsletter' ); ?></h4>
+							<ul class="uve-mr-help-list">
+								<li><?php echo esc_html__( 'Keep messages short; they appear inline under the form.', 'uve-mailrelay-newsletter' ); ?></li>
+								<li><?php echo esc_html__( 'Avoid technical wording. Tell users what to do next.', 'uve-mailrelay-newsletter' ); ?></li>
+								<li><?php echo esc_html__( 'Match your site voice (formal, friendly, or direct).', 'uve-mailrelay-newsletter' ); ?></li>
+							</ul>
 						</div>
 					</div>
 				</div>
 
 				<div id="uve-mr-tab-settings" class="uve-mr-tab-panel">
 					<div class="uve-mr-tab-grid">
-						<div>
+						<div class="uve-mr-tab-main">
+							<div class="uve-mr-panel">
 					<h3><?php echo esc_html__( 'Consent', 'uve-mailrelay-newsletter' ); ?></h3>
-					<table class="form-table" role="presentation">
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Use default consent settings', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><label><input type="checkbox" name="form_config[consent][inherit]" value="1" <?php checked( $config['consent']['inherit'] ); ?>> <?php echo esc_html__( 'Inherit global consent text and URL', 'uve-mailrelay-newsletter' ); ?></label></td>
-						</tr>
-						<tr class="uve-mr-consent-fields">
-							<th scope="row"><?php echo esc_html__( 'Consent label', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><input type="text" class="regular-text" name="form_config[consent][label]" value="<?php echo esc_attr( $config['consent']['label'] ); ?>"></td>
-						</tr>
-						<tr class="uve-mr-consent-fields">
-							<th scope="row"><?php echo esc_html__( 'Privacy URL', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><input type="text" class="regular-text" name="form_config[consent][privacy_url]" value="<?php echo esc_attr( $config['consent']['privacy_url'] ); ?>"></td>
-						</tr>
-					</table>
+					<div class="uve-mr-form-grid">
+						<div class="uve-mr-field-row">
+							<span class="uve-mr-field-label"><?php echo esc_html__( 'Use default consent settings', 'uve-mailrelay-newsletter' ); ?></span>
+							<div class="uve-mr-field-control">
+								<label><input type="checkbox" name="form_config[consent][inherit]" value="1" <?php checked( $config['consent']['inherit'] ); ?>> <?php echo esc_html__( 'Inherit global consent text and URL', 'uve-mailrelay-newsletter' ); ?></label>
+							</div>
+						</div>
+						<div class="uve-mr-field-row uve-mr-consent-fields">
+							<label class="uve-mr-field-label" for="uve-mr-consent-label"><?php echo esc_html__( 'Consent label', 'uve-mailrelay-newsletter' ); ?></label>
+							<div class="uve-mr-field-control">
+								<input id="uve-mr-consent-label" type="text" class="regular-text" name="form_config[consent][label]" value="<?php echo esc_attr( $config['consent']['label'] ); ?>">
+							</div>
+						</div>
+						<div class="uve-mr-field-row uve-mr-consent-fields">
+							<label class="uve-mr-field-label" for="uve-mr-privacy-url"><?php echo esc_html__( 'Privacy URL', 'uve-mailrelay-newsletter' ); ?></label>
+							<div class="uve-mr-field-control">
+								<input id="uve-mr-privacy-url" type="text" class="regular-text" name="form_config[consent][privacy_url]" value="<?php echo esc_attr( $config['consent']['privacy_url'] ); ?>">
+							</div>
+						</div>
+					</div>
+							</div>
 
+							<div class="uve-mr-panel">
 					<h3><?php echo esc_html__( 'Spam protection', 'uve-mailrelay-newsletter' ); ?></h3>
-					<table class="form-table" role="presentation">
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Use default Turnstile settings', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><label><input type="checkbox" name="form_config[turnstile][inherit]" value="1" <?php checked( $config['turnstile']['inherit'] ); ?>> <?php echo esc_html__( 'Inherit global Turnstile keys', 'uve-mailrelay-newsletter' ); ?></label></td>
-						</tr>
-						<tr class="uve-mr-turnstile-fields">
-							<th scope="row"><?php echo esc_html__( 'Enable Turnstile on this form', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><label><input type="checkbox" name="form_config[turnstile][enabled]" value="1" <?php checked( $config['turnstile']['enabled'] ); ?>> <?php echo esc_html__( 'Enable spam protection', 'uve-mailrelay-newsletter' ); ?></label></td>
-						</tr>
-					</table>
+					<div class="uve-mr-form-grid">
+						<div class="uve-mr-field-row">
+							<label class="uve-mr-field-label" for="uve-mr-turnstile-mode"><?php echo esc_html__( 'Turnstile', 'uve-mailrelay-newsletter' ); ?></label>
+							<div class="uve-mr-field-control">
+								<select id="uve-mr-turnstile-mode" name="form_config[turnstile][mode]" class="uve-mr-turnstile-mode">
+									<option value="inherit" <?php selected( $config['turnstile']['mode'] ?? 'inherit', 'inherit' ); ?>>
+										<?php echo esc_html__( 'Inherit global setting', 'uve-mailrelay-newsletter' ); ?>
+									</option>
+									<option value="on" <?php selected( $config['turnstile']['mode'] ?? 'inherit', 'on' ); ?>>
+										<?php echo esc_html__( 'Enabled', 'uve-mailrelay-newsletter' ); ?>
+									</option>
+									<option value="off" <?php selected( $config['turnstile']['mode'] ?? 'inherit', 'off' ); ?>>
+										<?php echo esc_html__( 'Disabled', 'uve-mailrelay-newsletter' ); ?>
+									</option>
+								</select>
+								<p class="description"><?php echo esc_html__( 'Choose how this form handles spam protection.', 'uve-mailrelay-newsletter' ); ?></p>
+							</div>
+						</div>
+					</div>
+							</div>
 
+							<div class="uve-mr-panel">
 					<h3><?php echo esc_html__( 'Advanced', 'uve-mailrelay-newsletter' ); ?></h3>
-					<table class="form-table" role="presentation">
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Use default rate limit', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><label><input type="checkbox" name="form_config[rate_limit][inherit]" value="1" <?php checked( $config['rate_limit']['inherit'] ); ?>> <?php echo esc_html__( 'Inherit global rate limits', 'uve-mailrelay-newsletter' ); ?></label></td>
-						</tr>
-						<tr class="uve-mr-rate-limit-fields">
-							<th scope="row"><?php echo esc_html__( 'Max attempts', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><input type="number" min="1" class="small-text" name="form_config[rate_limit][max]" value="<?php echo esc_attr( (string) $config['rate_limit']['max'] ); ?>"></td>
-						</tr>
-						<tr class="uve-mr-rate-limit-fields">
-							<th scope="row"><?php echo esc_html__( 'Window (seconds)', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><input type="number" min="60" class="small-text" name="form_config[rate_limit][window_seconds]" value="<?php echo esc_attr( (string) $config['rate_limit']['window_seconds'] ); ?>"></td>
-						</tr>
-						<tr>
-							<th scope="row"><?php echo esc_html__( 'Enable AJAX', 'uve-mailrelay-newsletter' ); ?></th>
-							<td><label><input type="checkbox" name="form_config[ajax]" value="1" <?php checked( $config['ajax'], '1' ); ?>> <?php echo esc_html__( 'Submit via AJAX', 'uve-mailrelay-newsletter' ); ?></label></td>
-						</tr>
-					</table>
+					<div class="uve-mr-form-grid">
+						<div class="uve-mr-field-row">
+							<span class="uve-mr-field-label"><?php echo esc_html__( 'Use default rate limit', 'uve-mailrelay-newsletter' ); ?></span>
+							<div class="uve-mr-field-control">
+								<label><input type="checkbox" name="form_config[rate_limit][inherit]" value="1" <?php checked( $config['rate_limit']['inherit'] ); ?>> <?php echo esc_html__( 'Inherit global rate limits', 'uve-mailrelay-newsletter' ); ?></label>
+							</div>
+						</div>
+						<div class="uve-mr-field-row uve-mr-rate-limit-fields">
+							<label class="uve-mr-field-label" for="uve-mr-rate-limit-max"><?php echo esc_html__( 'Max attempts', 'uve-mailrelay-newsletter' ); ?></label>
+							<div class="uve-mr-field-control">
+								<input id="uve-mr-rate-limit-max" type="number" min="1" class="small-text" name="form_config[rate_limit][max]" value="<?php echo esc_attr( (string) $config['rate_limit']['max'] ); ?>">
+							</div>
+						</div>
+						<div class="uve-mr-field-row uve-mr-rate-limit-fields">
+							<label class="uve-mr-field-label" for="uve-mr-rate-limit-window"><?php echo esc_html__( 'Window (seconds)', 'uve-mailrelay-newsletter' ); ?></label>
+							<div class="uve-mr-field-control">
+								<input id="uve-mr-rate-limit-window" type="number" min="60" class="small-text" name="form_config[rate_limit][window_seconds]" value="<?php echo esc_attr( (string) $config['rate_limit']['window_seconds'] ); ?>">
+							</div>
+						</div>
+						<div class="uve-mr-field-row">
+							<span class="uve-mr-field-label"><?php echo esc_html__( 'Enable AJAX', 'uve-mailrelay-newsletter' ); ?></span>
+							<div class="uve-mr-field-control">
+								<label><input type="checkbox" name="form_config[ajax]" value="1" <?php checked( $config['ajax'], '1' ); ?>> <?php echo esc_html__( 'Submit via AJAX', 'uve-mailrelay-newsletter' ); ?></label>
+							</div>
+						</div>
+					</div>
+							</div>
 						</div>
 						<div class="uve-mr-tab-help">
-							<h4><?php echo esc_html__( 'Notes', 'uve-mailrelay-newsletter' ); ?></h4>
-							<p><?php echo esc_html__( 'Inherited settings use the global defaults from the main plugin settings page.', 'uve-mailrelay-newsletter' ); ?></p>
+							<h4><?php echo esc_html__( 'Defaults and overrides', 'uve-mailrelay-newsletter' ); ?></h4>
+							<ul class="uve-mr-help-list">
+								<li><?php echo esc_html__( 'Inherited settings use the global defaults from the main plugin settings page.', 'uve-mailrelay-newsletter' ); ?></li>
+								<li><?php echo esc_html__( 'Override only when this form needs different behavior.', 'uve-mailrelay-newsletter' ); ?></li>
+								<li><?php echo esc_html__( 'Turning off Turnstile disables it for this form only.', 'uve-mailrelay-newsletter' ); ?></li>
+							</ul>
 						</div>
 					</div>
 				</div>
@@ -453,7 +536,6 @@ final class UVE_MR_Forms_Admin {
 				}
 
 				toggleGroup('input[name="form_config[consent][inherit]"]', '.uve-mr-consent-fields');
-				toggleGroup('input[name="form_config[turnstile][inherit]"]', '.uve-mr-turnstile-fields');
 				toggleGroup('input[name="form_config[rate_limit][inherit]"]', '.uve-mr-rate-limit-fields');
 
 				var available = document.getElementById('uve-mr-groups-available');
@@ -497,28 +579,85 @@ final class UVE_MR_Forms_Admin {
 			}
 			.uve-mr-tab-grid {
 				display: grid;
-				grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-				gap: 20px;
+				grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
+				gap: 24px;
 				align-items: start;
+			}
+			.uve-mr-form-grid {
+				display: grid;
+				gap: 12px;
+			}
+			.uve-mr-field-row {
+				display: grid;
+				grid-template-columns: 220px minmax(0, 1fr);
+				gap: 16px;
+				align-items: start;
+			}
+			.uve-mr-field-label {
+				font-weight: 600;
+			}
+			.uve-mr-field-control .regular-text {
+				width: 100%;
+				max-width: 420px;
+			}
+			.uve-mr-field-control .small-text {
+				width: 140px;
+			}
+			.uve-mr-field-control select {
+				min-width: 220px;
+				max-width: 420px;
+			}
+			.uve-mr-tab-main {
+				min-width: 0;
+			}
+			.uve-mr-panel {
+				background: #fff;
+				border: 1px solid #dcdcde;
+				border-radius: 8px;
+				padding: 16px;
+				margin-bottom: 16px;
+			}
+			.uve-mr-panel h3 {
+				margin-top: 0;
 			}
 			.uve-mr-tab-help {
 				background: #f6f7f7;
 				border: 1px solid #dcdcde;
 				border-radius: 6px;
-				padding: 12px 14px;
+				padding: 14px 16px;
 			}
 			.uve-mr-tab-help h4 {
 				margin-top: 0;
 			}
+			.uve-mr-help-list {
+				margin: 0;
+				padding-left: 18px;
+			}
+			.uve-mr-help-list li {
+				margin-bottom: 8px;
+			}
 			.uve-mr-tab-panel .widefat input.regular-text {
 				width: 100%;
-				max-width: 320px;
+				max-width: 100%;
 			}
 			.uve-mr-tab-panel .widefat td {
 				vertical-align: top;
 			}
 			.uve-mr-tab-panel .widefat .description {
 				margin-top: 4px;
+			}
+			.uve-mr-fields-table {
+				width: 100%;
+			}
+			.uve-mr-table-wrap {
+				overflow-x: auto;
+			}
+			.uve-mr-fields-table th:nth-child(2),
+			.uve-mr-fields-table th:nth-child(3),
+			.uve-mr-fields-table td:nth-child(2),
+			.uve-mr-fields-table td:nth-child(3) {
+				text-align: center;
+				width: 80px;
 			}
 			.uve-mr-sticky-save {
 				position: sticky;
@@ -536,10 +675,10 @@ final class UVE_MR_Forms_Admin {
 			}
 			.uve-mr-dual-list {
 				display: grid;
-				grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
-				gap: 12px;
+				grid-template-columns: minmax(240px, 1fr) auto minmax(240px, 1fr);
+				gap: 16px;
 				align-items: center;
-				max-width: 700px;
+				max-width: 860px;
 			}
 			.uve-mr-dual-list select {
 				width: 100%;
@@ -550,9 +689,31 @@ final class UVE_MR_Forms_Admin {
 				flex-direction: column;
 				gap: 8px;
 			}
+			.uve-mr-dual-actions .button {
+				width: 100%;
+				justify-content: center;
+			}
 			@media (max-width: 960px) {
 				.uve-mr-tab-grid {
 					grid-template-columns: 1fr;
+				}
+			}
+			@media (max-width: 782px) {
+				.uve-mr-field-row {
+					grid-template-columns: 1fr;
+				}
+				.uve-mr-field-label {
+					margin-bottom: 4px;
+				}
+				.uve-mr-dual-list {
+					grid-template-columns: 1fr;
+				}
+				.uve-mr-dual-actions {
+					flex-direction: row;
+					justify-content: flex-start;
+				}
+				.uve-mr-dual-actions .button {
+					width: auto;
 				}
 			}
 		</style>
@@ -615,6 +776,21 @@ final class UVE_MR_Forms_Admin {
 		if ( 'trash' === $action ) {
 			$ok = UVE_MR_Form_Use_Cases::trash_form( $form_id );
 			self::redirect_with_notice( $ok ? 'trashed' : 'error' );
+		}
+
+		if ( 'restore' === $action ) {
+			$ok = wp_update_post(
+				array(
+					'ID'          => $form_id,
+					'post_status' => 'publish',
+				)
+			);
+			self::redirect_with_notice( $ok ? 'bulk-updated' : 'error' );
+		}
+
+		if ( 'delete' === $action ) {
+			$ok = wp_delete_post( $form_id, true );
+			self::redirect_with_notice( $ok ? 'bulk-updated' : 'error' );
 		}
 	}
 
