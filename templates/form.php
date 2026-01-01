@@ -158,7 +158,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		.uve-mr-form-fields input[type="text"]:focus,
 		.uve-mr-form-fields input[type="email"]:focus,
-			.uve-mr-form-fields input[type="url"]:focus,
+		.uve-mr-form-fields input[type="url"]:focus,
 		.uve-mr-form-fields input[type="tel"]:focus,
 		.uve-mr-form-fields input[type="date"]:focus {
 			border-color: #111;
