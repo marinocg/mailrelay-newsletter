@@ -159,4 +159,28 @@ final class UVE_MR_WP_Form_Repository implements UVE_MR_Form_Repository_Interfac
 		$res = wp_trash_post( $id );
 		return ( $res instanceof WP_Post );
 	}
+
+	/**
+	 * Count published forms, optionally excluding one ID.
+	 *
+	 * @param int|null $exclude_id Form ID to exclude.
+	 * @return int
+	 */
+	public function count_published( ?int $exclude_id = null ): int {
+		if ( ! function_exists( 'wp_count_posts' ) ) {
+			return 0;
+		}
+
+		$counts    = wp_count_posts( UVE_MR_Form::POST_TYPE );
+		$published = (int) ( $counts->publish ?? 0 );
+
+		if ( $exclude_id && function_exists( 'get_post' ) ) {
+			$post = get_post( $exclude_id );
+			if ( $post instanceof WP_Post && 'publish' === $post->post_status ) {
+				$published = max( 0, $published - 1 );
+			}
+		}
+
+		return $published;
+	}
 }

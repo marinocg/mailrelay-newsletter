@@ -57,4 +57,12 @@ interface UVE_MR_Form_Repository_Interface {
 	 * @return bool
 	 */
 	public function trash( int $id ): bool;
+
+	/**
+	 * Count published forms, optionally excluding one ID.
+	 *
+	 * @param int|null $exclude_id Form ID to exclude.
+	 * @return int
+	 */
+	public function count_published( ?int $exclude_id = null ): int;
 }

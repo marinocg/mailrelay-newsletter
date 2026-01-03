@@ -49,6 +49,27 @@ final class UVE_MR_Submit_Use_Case {
 	private $rate_limiter;
 
 	/**
+	 * Request context.
+	 *
+	 * @var UVE_MR_Request_Context
+	 */
+	private $request_context;
+
+	/**
+	 * Input sanitizer.
+	 *
+	 * @var UVE_MR_Input_Sanitizer
+	 */
+	private $sanitizer;
+
+	/**
+	 * Form repository.
+	 *
+	 * @var UVE_MR_Form_Repository_Interface
+	 */
+	private $forms;
+
+	/**
 	 * Create the use case with adapters.
 	 *
 	 * @param UVE_MR_Mailrelay_Client   $mailrelay Mailrelay client.
@@ -56,19 +77,28 @@ final class UVE_MR_Submit_Use_Case {
 	 * @param UVE_MR_Logs_Repository    $logs Logs repository.
 	 * @param UVE_MR_Turnstile_Verifier $turnstile Turnstile verifier.
 	 * @param UVE_MR_Rate_Limiter       $rate_limiter Rate limiter.
+	 * @param UVE_MR_Request_Context    $request_context Request context.
+	 * @param UVE_MR_Input_Sanitizer    $sanitizer Input sanitizer.
+	 * @param UVE_MR_Form_Repository_Interface $forms Form repository.
 	 */
 	public function __construct(
 		UVE_MR_Mailrelay_Client $mailrelay,
 		UVE_MR_Options_Repository $options,
 		UVE_MR_Logs_Repository $logs,
 		UVE_MR_Turnstile_Verifier $turnstile,
-		UVE_MR_Rate_Limiter $rate_limiter
+		UVE_MR_Rate_Limiter $rate_limiter,
+		UVE_MR_Request_Context $request_context,
+		UVE_MR_Input_Sanitizer $sanitizer,
+		UVE_MR_Form_Repository_Interface $forms
 	) {
-		$this->mailrelay    = $mailrelay;
-		$this->options      = $options;
-		$this->logs         = $logs;
-		$this->turnstile    = $turnstile;
-		$this->rate_limiter = $rate_limiter;
+		$this->mailrelay       = $mailrelay;
+		$this->options         = $options;
+		$this->logs            = $logs;
+		$this->turnstile       = $turnstile;
+		$this->rate_limiter    = $rate_limiter;
+		$this->request_context = $request_context;
+		$this->sanitizer       = $sanitizer;
+		$this->forms           = $forms;
 	}
 
 	/**
@@ -82,18 +112,20 @@ final class UVE_MR_Submit_Use_Case {
 		$config   = $context['config'];
 		$messages = $context['messages'];
 
-		$hp = isset( $data['uve_mr_hp'] ) ? sanitize_text_field( wp_unslash( $data['uve_mr_hp'] ) ) : '';
+		$hp_raw = $data['uve_mr_hp'] ?? '';
+		$hp     = $this->sanitizer->sanitize_text( $this->sanitizer->unslash( $hp_raw ) );
 		if ( '' !== $hp ) {
 			return $this->build_result( 'ok', $messages );
 		}
 
-		$email_raw = isset( $data['subscriber']['email'] ) ? wp_unslash( $data['subscriber']['email'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$email     = sanitize_email( (string) $email_raw );
-		$accepted  = isset( $data['subscriber']['subscribed_with_acceptance'] ) ? sanitize_text_field( wp_unslash( $data['subscriber']['subscribed_with_acceptance'] ) ) : '';
-		$accepted  = ( '1' === $accepted );
-		$ip        = UVE_MR_Utils::get_client_ip();
+		$email_raw = $data['subscriber']['email'] ?? '';
+		$email     = $this->sanitizer->sanitize_email( $this->sanitizer->unslash( $email_raw ) );
+		$accepted_raw = $data['subscriber']['subscribed_with_acceptance'] ?? '';
+		$accepted     = $this->sanitizer->sanitize_text( $this->sanitizer->unslash( $accepted_raw ) );
+		$accepted     = ( '1' === $accepted );
+		$ip           = $this->request_context->get_client_ip();
 
-		if ( ! $email || ! is_email( $email ) ) {
+		if ( ! $email || ! $this->sanitizer->is_email( $email ) ) {
 			return $this->build_result( 'ok', $messages );
 		}
 
@@ -110,7 +142,7 @@ final class UVE_MR_Submit_Use_Case {
 		}
 
 		if ( $this->turnstile_enabled( $config ) ) {
-			$token = sanitize_text_field( (string) wp_unslash( $data['cf-turnstile-response'] ?? '' ) );
+			$token = $this->sanitizer->sanitize_text( $this->sanitizer->unslash( $data['cf-turnstile-response'] ?? '' ) );
 			if ( ! $this->turnstile->verify( $token, $ip ) ) {
 				return $this->build_result( 'captcha', $messages );
 			}
@@ -118,12 +150,12 @@ final class UVE_MR_Submit_Use_Case {
 
 		$group_ids_cfg   = UVE_MR_Utils::parse_group_ids( (string) ( $config['destination']['group_ids'] ?? '' ) );
 		$group_ids       = $group_ids_cfg;
-		$group_ids_raw   = sanitize_text_field( (string) wp_unslash( $data['uve_mr_group_ids'] ?? '' ) );
+		$group_ids_raw   = $this->sanitizer->sanitize_text( $this->sanitizer->unslash( $data['uve_mr_group_ids'] ?? '' ) );
 		$group_ids_input = UVE_MR_Utils::parse_group_ids( $group_ids_raw );
 		if ( '' !== $group_ids_raw && $group_ids_input ) {
 			$group_ids = array_values( array_intersect( $group_ids_input, $group_ids_cfg ) );
 		}
-		$page_url = UVE_MR_Utils::safe_page_url_from_request( $data );
+		$page_url = $this->request_context->get_page_url_from_request( $data );
 
 		$fields_payload = array();
 		$fields_config  = $config['fields'] ?? array();
@@ -137,7 +169,7 @@ final class UVE_MR_Submit_Use_Case {
 				continue;
 			}
 			$value_raw = $data['subscriber'][ $field_key ] ?? '';
-			$value_raw = is_scalar( $value_raw ) ? (string) wp_unslash( $value_raw ) : '';
+			$value_raw = $this->sanitizer->unslash( $value_raw );
 			if ( '' === $value_raw ) {
 				return $this->build_result( 'error', $messages );
 			}
@@ -148,15 +180,15 @@ final class UVE_MR_Submit_Use_Case {
 				continue;
 			}
 			$value_raw = $data['subscriber'][ $field_key ] ?? '';
-			$value_raw = is_scalar( $value_raw ) ? (string) wp_unslash( $value_raw ) : '';
+			$value_raw = $this->sanitizer->unslash( $value_raw );
 			if ( '' === $value_raw ) {
 				continue;
 			}
 
 			if ( 'website' === $field_key ) {
-				$value = esc_url_raw( $value_raw );
+				$value = $this->sanitizer->sanitize_url( $value_raw );
 			} else {
-				$value = sanitize_text_field( $value_raw );
+				$value = $this->sanitizer->sanitize_text( $value_raw );
 			}
 			if ( '' === $value ) {
 				continue;
@@ -187,14 +219,13 @@ final class UVE_MR_Submit_Use_Case {
 
 		$global_opts = $this->options->get_options();
 		if ( '1' === (string) ( $global_opts['store_consent_log'] ?? '0' ) ) {
-			$user_agent = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) );
-			$user_agent = substr( $user_agent, 0, 2000 );
+			$user_agent = $this->request_context->get_user_agent();
 			$this->logs->ensure_table();
 			$this->logs->store_consent_log(
 				array(
 					'email'                     => $email,
 					'accepted'                  => 1,
-					'accepted_at'               => current_time( 'mysql' ),
+					'accepted_at'               => $this->request_context->current_time_mysql(),
 					'page_url'                  => $page_url,
 					'ip'                        => $ip,
 					'user_agent'                => $user_agent,
@@ -239,7 +270,7 @@ final class UVE_MR_Submit_Use_Case {
 	 */
 	private function resolve_form_context( array $data ): array {
 		$form_id  = isset( $data['uve_mr_form_id'] ) ? (int) $data['uve_mr_form_id'] : 0;
-		$form     = $form_id ? UVE_MR_Form_Use_Cases::get_form( $form_id ) : null;
+		$form     = $form_id ? $this->forms->get( $form_id ) : null;
 		$opts     = $this->options->get_options();
 		$defaults = UVE_MR_Form_Config::defaults( $opts );
 		$config   = $form ? $form->merge_config( $defaults ) : $defaults;

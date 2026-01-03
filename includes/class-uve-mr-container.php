@@ -59,6 +59,42 @@ final class UVE_MR_Container {
 	}
 
 	/**
+	 * Build request context.
+	 *
+	 * @return UVE_MR_Request_Context
+	 */
+	public static function request_context(): UVE_MR_Request_Context {
+		return new UVE_MR_WP_Request_Context();
+	}
+
+	/**
+	 * Build input sanitizer.
+	 *
+	 * @return UVE_MR_Input_Sanitizer
+	 */
+	public static function input_sanitizer(): UVE_MR_Input_Sanitizer {
+		return new UVE_MR_WP_Input_Sanitizer();
+	}
+
+	/**
+	 * Build form repository.
+	 *
+	 * @return UVE_MR_Form_Repository_Interface
+	 */
+	public static function form_repository(): UVE_MR_Form_Repository_Interface {
+		return new UVE_MR_WP_Form_Repository();
+	}
+
+	/**
+	 * Build form limits provider.
+	 *
+	 * @return UVE_MR_Form_Limits
+	 */
+	public static function form_limits(): UVE_MR_Form_Limits {
+		return new UVE_MR_WP_Form_Limits();
+	}
+
+	/**
 	 * Build submit use case.
 	 *
 	 * @return UVE_MR_Submit_Use_Case
@@ -69,7 +105,10 @@ final class UVE_MR_Container {
 			self::options_repository(),
 			self::logs_repository(),
 			self::turnstile_verifier(),
-			self::rate_limiter()
+			self::rate_limiter(),
+			self::request_context(),
+			self::input_sanitizer(),
+			self::form_repository()
 		);
 	}
 }

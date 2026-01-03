@@ -26,13 +26,19 @@ final class SubmitUseCaseTest extends TestCase {
 		$logs        = new Test_Logs_Repository();
 		$turnstile   = new Test_Turnstile_Verifier();
 		$rate_limiter = new Test_Rate_Limiter();
+		$request_context = new Test_Request_Context();
+		$sanitizer       = new Test_Input_Sanitizer();
+		$forms           = new Test_Form_Repository();
 
 		$use_case = new UVE_MR_Submit_Use_Case(
 			$mailrelay,
 			$options,
 			$logs,
 			$turnstile,
-			$rate_limiter
+			$rate_limiter,
+			$request_context,
+			$sanitizer,
+			$forms
 		);
 
 		$result = $use_case->process_submission(
@@ -92,5 +98,71 @@ final class Test_Turnstile_Verifier implements UVE_MR_Turnstile_Verifier {
 final class Test_Rate_Limiter implements UVE_MR_Rate_Limiter {
 	public function hit( string $key, int $max, int $window_seconds ): bool {
 		return true;
+	}
+}
+
+final class Test_Request_Context implements UVE_MR_Request_Context {
+	public function get_client_ip(): string {
+		return '203.0.113.10';
+	}
+
+	public function get_user_agent(): string {
+		return 'test-agent';
+	}
+
+	public function get_page_url_from_request( array $data ): string {
+		return 'https://example.test/';
+	}
+
+	public function current_time_mysql(): string {
+		return '2024-01-01 00:00:00';
+	}
+}
+
+final class Test_Input_Sanitizer implements UVE_MR_Input_Sanitizer {
+	public function unslash( $value ): string {
+		return is_scalar( $value ) ? (string) $value : '';
+	}
+
+	public function sanitize_text( string $value ): string {
+		return trim( $value );
+	}
+
+	public function sanitize_email( string $value ): string {
+		return trim( $value );
+	}
+
+	public function sanitize_url( string $value ): string {
+		return trim( $value );
+	}
+
+	public function is_email( string $value ): bool {
+		return false !== filter_var( $value, FILTER_VALIDATE_EMAIL );
+	}
+}
+
+final class Test_Form_Repository implements UVE_MR_Form_Repository_Interface {
+	public function get( int $id ): ?UVE_MR_Form {
+		return null;
+	}
+
+	public function list( array $args = array() ): array {
+		return array();
+	}
+
+	public function create( string $name, array $config, string $status ): ?UVE_MR_Form {
+		return null;
+	}
+
+	public function update( int $id, string $name, array $config, string $status ): ?UVE_MR_Form {
+		return null;
+	}
+
+	public function trash( int $id ): bool {
+		return false;
+	}
+
+	public function count_published( ?int $exclude_id = null ): int {
+		return 0;
 	}
 }

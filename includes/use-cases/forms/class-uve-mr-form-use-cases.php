@@ -19,7 +19,16 @@ final class UVE_MR_Form_Use_Cases {
 	 * @return UVE_MR_Form_Repository_Interface
 	 */
 	private static function repo(): UVE_MR_Form_Repository_Interface {
-		return new UVE_MR_WP_Form_Repository();
+		return UVE_MR_Container::form_repository();
+	}
+
+	/**
+	 * Build form limits provider.
+	 *
+	 * @return UVE_MR_Form_Limits
+	 */
+	private static function limits(): UVE_MR_Form_Limits {
+		return UVE_MR_Container::form_limits();
 	}
 
 	/**
@@ -132,8 +141,7 @@ final class UVE_MR_Form_Use_Cases {
 	 * @return int
 	 */
 	public static function max_published_forms(): int {
-		$max = (int) UVE_MR_Utils::premium_filter( 'uve_mr_max_published_forms', 1, 1 );
-		return $max;
+		return self::limits()->max_published_forms();
 	}
 
 	/**
@@ -147,22 +155,7 @@ final class UVE_MR_Form_Use_Cases {
 		if ( $max <= 0 ) {
 			return true;
 		}
-
-		if ( ! function_exists( 'wp_count_posts' ) ) {
-			return true;
-		}
-
-		$counts    = wp_count_posts( UVE_MR_Form::POST_TYPE );
-		$published = (int) ( $counts->publish ?? 0 );
-
-		if ( $form_id && function_exists( 'get_post' ) ) {
-			$post = get_post( $form_id );
-			if ( $post instanceof WP_Post && 'publish' === $post->post_status ) {
-				$published = max( 0, $published - 1 );
-			}
-		}
-
-		return $published < $max;
+		return self::repo()->count_published( $form_id ) < $max;
 	}
 
 	/**

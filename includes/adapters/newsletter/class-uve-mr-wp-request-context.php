@@ -1,0 +1,53 @@
+<?php
+/**
+ * WordPress-backed request context.
+ *
+ * @package UVE_Mailrelay_Newsletter
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * WordPress-backed request context.
+ */
+final class UVE_MR_WP_Request_Context implements UVE_MR_Request_Context {
+	/**
+	 * Get client IP address.
+	 *
+	 * @return string
+	 */
+	public function get_client_ip(): string {
+		return UVE_MR_Utils::get_client_ip();
+	}
+
+	/**
+	 * Get sanitized user agent.
+	 *
+	 * @return string
+	 */
+	public function get_user_agent(): string {
+		$user_agent = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) );
+		return substr( $user_agent, 0, 2000 );
+	}
+
+	/**
+	 * Get safe page URL for logging.
+	 *
+	 * @param array $data Request data.
+	 * @return string
+	 */
+	public function get_page_url_from_request( array $data ): string {
+		return UVE_MR_Utils::safe_page_url_from_request( $data );
+	}
+
+	/**
+	 * Get current time in MySQL format.
+	 *
+	 * @return string
+	 */
+	public function current_time_mysql(): string {
+		return current_time( 'mysql' );
+	}
+}
