@@ -44,9 +44,7 @@ require_once __DIR__ . '/includes/admin/class-uve-mr-upgrade-admin.php';
 require_once __DIR__ . '/includes/domain/forms/class-uve-mr-form.php';
 require_once __DIR__ . '/includes/domain/forms/class-uve-mr-form-config.php';
 require_once __DIR__ . '/includes/ports/forms/interface-uve-mr-form-repository.php';
-require_once __DIR__ . '/includes/ports/forms/interface-uve-mr-form-limits.php';
-require_once __DIR__ . '/includes/adapters/forms/class-uve-mr-wp-form-repository.php';
-require_once __DIR__ . '/includes/adapters/forms/class-uve-mr-wp-form-limits.php';
+require_once __DIR__ . '/includes/adapters/forms/class-uve-mr-single-form-repository.php';
 require_once __DIR__ . '/includes/use-cases/forms/class-uve-mr-form-use-cases.php';
 require_once __DIR__ . '/includes/domain/forms/class-uve-mr-forms.php';
 require_once __DIR__ . '/includes/class-uve-mr-submit.php';
@@ -86,8 +84,6 @@ final class UVE_Mailrelay_Newsletter {
 		add_action( 'admin_menu', array( 'UVE_MR_Upgrade_Admin', 'admin_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( 'UVE_MR_Upgrade_Admin', 'admin_enqueue' ) );
 		if ( function_exists( 'is_admin' ) && is_admin() ) {
-			require_once __DIR__ . '/includes/admin/forms/class-uve-mr-forms-table.php';
-			require_once __DIR__ . '/includes/admin/forms/class-uve-mr-forms-list-page.php';
 			require_once __DIR__ . '/includes/admin/forms/class-uve-mr-forms-editor-page.php';
 			require_once __DIR__ . '/includes/admin/forms/class-uve-mr-forms-admin.php';
 			add_action( 'admin_menu', array( 'UVE_MR_Forms_Admin', 'admin_menu' ) );
@@ -130,6 +126,11 @@ final class UVE_Mailrelay_Newsletter {
 			'email_placeholder'             => __( 'Email...', 'uve-mailrelay-newsletter' ),
 			'submit_label'                  => __( 'Subscribe', 'uve-mailrelay-newsletter' ),
 			'ajax_mode'                     => '0',
+
+			// Locale fallback (Mailrelay).
+			'locale_fallback'               => UVE_MR_Utils::default_locale_fallback(),
+			'locale_mode'                   => 'browser',
+			'locale_force'                  => UVE_MR_Utils::default_locale_fallback(),
 
 			// GDPR.
 			'privacy_url'                   => '',
@@ -209,7 +210,8 @@ final class UVE_Mailrelay_Newsletter {
 		$url           = admin_url( 'options-general.php?page=uve-mr-newsletter' );
 		$settings_link = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Settings', 'uve-mailrelay-newsletter' ) . '</a>';
 		array_unshift( $links, $settings_link );
-		if ( ! UVE_MR_Utils::is_premium_installed() ) {
+		$show_upgrade = (bool) apply_filters( 'uve_mr_show_upgrade_ui', true );
+		if ( $show_upgrade ) {
 			$upgrade_url  = admin_url( 'admin.php?page=uve-mr-newsletter-upgrade' );
 			$upgrade_link = '<a href="' . esc_url( $upgrade_url ) . '" style="color:#d63638;font-weight:600;">' . esc_html__( 'Upgrade to Premium', 'uve-mailrelay-newsletter' ) . '</a>';
 			$links[]      = $upgrade_link;

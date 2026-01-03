@@ -15,6 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class UVE_MR_Turnstile {
 
 	/**
+	 * Determine if Turnstile is configured.
+	 *
+	 * @return bool
+	 */
+	public static function is_enabled(): bool {
+		return '' !== self::get_site_key() && '' !== self::get_secret_key();
+	}
+
+	/**
 	 * Get the Turnstile site key.
 	 *
 	 * @return string

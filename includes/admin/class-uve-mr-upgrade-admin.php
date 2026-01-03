@@ -19,7 +19,8 @@ final class UVE_MR_Upgrade_Admin {
 	 * @return void
 	 */
 	public static function admin_menu(): void {
-		if ( UVE_MR_Utils::is_premium_installed() ) {
+		$show_upgrade = (bool) apply_filters( 'uve_mr_show_upgrade_ui', true );
+		if ( ! $show_upgrade ) {
 			return;
 		}
 
@@ -40,7 +41,8 @@ final class UVE_MR_Upgrade_Admin {
 	 * @return void
 	 */
 	public static function admin_enqueue( string $hook_suffix ): void {
-		if ( UVE_MR_Utils::is_premium_installed() ) {
+		$show_upgrade = (bool) apply_filters( 'uve_mr_show_upgrade_ui', true );
+		if ( ! $show_upgrade ) {
 			return;
 		}
 

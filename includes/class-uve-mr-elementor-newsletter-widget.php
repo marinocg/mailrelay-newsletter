@@ -60,22 +60,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 	 * @return void
 	 */
 	protected function register_controls() {
-		$opts           = UVE_Mailrelay_Newsletter::get_options();
-		$forms          = UVE_MR_Form_Use_Cases::list_forms(
-			array(
-				'post_status'    => array( 'publish' ),
-				'posts_per_page' => 100,
-			)
-		);
-		$form_options   = array(
-			'0' => __( 'Use legacy overrides', 'uve-mailrelay-newsletter' ),
-		);
-		$select_control = defined( 'Elementor\\Controls_Manager::SELECT' )
-			? \Elementor\Controls_Manager::SELECT
-			: 'select';
-		foreach ( $forms as $form ) {
-			$form_options[ (string) $form->id ] = $form->name;
-		}
+		$opts = UVE_Mailrelay_Newsletter::get_options();
 
 				$this->start_controls_section(
 					'content_section',
@@ -85,15 +70,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 					)
 				);
 
-				$this->add_control(
-					'form_id',
-					array(
-						'label'   => __( 'Form', 'uve-mailrelay-newsletter' ),
-						'type'    => $select_control,
-						'options' => $form_options,
-						'default' => '0',
-					)
-				);
+				do_action( 'uve_mr_elementor_register_controls', $this, $opts );
 
 				$this->add_control(
 					'title',
@@ -196,9 +173,14 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 	 * @return void
 	 */
 	protected function render() {
-		$settings = $this->get_settings_for_display();
-		$privacy  = $settings['privacy_url']['url'] ?? '';
-		$form_id  = isset( $settings['form_id'] ) ? (int) $settings['form_id'] : 0;
+		$settings    = $this->get_settings_for_display();
+		$privacy     = $settings['privacy_url']['url'] ?? '';
+		$has_form_id = array_key_exists( 'form_id', $settings );
+		$form_id     = $has_form_id ? (int) $settings['form_id'] : 0;
+		if ( ! $has_form_id ) {
+			$primary_form = UVE_MR_Form_Use_Cases::get_primary_form_for_admin();
+			$form_id      = $primary_form ? $primary_form->id : 0;
+		}
 
 		if ( $form_id ) {
 			$form_args = array(

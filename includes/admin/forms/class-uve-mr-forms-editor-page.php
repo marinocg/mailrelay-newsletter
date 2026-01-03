@@ -16,10 +16,11 @@ final class UVE_MR_Forms_Editor_Page {
 	/**
 	 * Render form editor.
 	 *
+	 * @param int|null $form_id Form ID.
 	 * @return void
 	 */
-	public static function render(): void {
-		$form_id  = absint( wp_unslash( $_GET['form_id'] ?? 0 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	public static function render( ?int $form_id = null ): void {
+		$form_id  = null === $form_id ? absint( wp_unslash( $_GET['form_id'] ?? 0 ) ) : $form_id; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$form     = $form_id ? UVE_MR_Form_Use_Cases::get_form( $form_id ) : null;
 		$opts     = UVE_Mailrelay_Newsletter::get_options();
 		$defaults = UVE_MR_Form_Config::defaults( $opts );
@@ -31,14 +32,33 @@ final class UVE_MR_Forms_Editor_Page {
 		} else {
 			$config = $defaults;
 			$name   = '';
-			$status = UVE_MR_Form_Use_Cases::can_publish_form( null ) ? 'publish' : 'draft';
+			$status = 'publish';
 		}
-		$max_published = UVE_MR_Form_Use_Cases::max_published_forms();
+		$destination   = $config['destination'] ?? array();
+		$locale_mode   = (string) ( $destination['locale_mode'] ?? 'inherit' );
+		$locale_value  = (string) ( $destination['locale'] ?? '' );
+		$locale_labels = UVE_MR_Utils::locale_labels();
+		if ( '' === $locale_value ) {
+			$global_force = UVE_MR_Utils::normalize_locale( (string) ( $opts['locale_force'] ?? '' ) );
+			$locale_value = '' !== $global_force ? $global_force : UVE_MR_Utils::default_locale_fallback();
+		}
 
 		$back_url = add_query_arg( 'page', 'uve-mr-newsletter-forms', admin_url( 'admin.php' ) );
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html( $form ? __( 'Edit Form', 'uve-mailrelay-newsletter' ) : __( 'Add New Form', 'uve-mailrelay-newsletter' ) ); ?></h1>
+			<?php
+			$status = isset( $_GET['uve_mr_status'] ) ? sanitize_text_field( (string) wp_unslash( $_GET['uve_mr_status'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( 'saved' === $status ) :
+				?>
+				<div class="notice notice-success is-dismissible">
+					<p><?php echo esc_html__( 'Form saved successfully.', 'uve-mailrelay-newsletter' ); ?></p>
+				</div>
+			<?php elseif ( 'error' === $status ) : ?>
+				<div class="notice notice-error is-dismissible">
+					<p><?php echo esc_html__( 'Something went wrong while saving the form.', 'uve-mailrelay-newsletter' ); ?></p>
+				</div>
+			<?php endif; ?>
 			<form method="post">
 				<?php wp_nonce_field( 'uve_mr_form_save' ); ?>
 				<input type="hidden" name="form_id" value="<?php echo esc_attr( (string) $form_id ); ?>">
@@ -148,6 +168,30 @@ final class UVE_MR_Forms_Editor_Page {
 												<option value="inactive" <?php selected( $config['destination']['subscriber_status'], 'inactive' ); ?>><?php echo esc_html__( 'Inactive (double opt-in)', 'uve-mailrelay-newsletter' ); ?></option>
 												<option value="active" <?php selected( $config['destination']['subscriber_status'], 'active' ); ?>><?php echo esc_html__( 'Active (single opt-in)', 'uve-mailrelay-newsletter' ); ?></option>
 											</select>
+										</div>
+									</div>
+									<div class="uve-mr-field-row">
+										<label class="uve-mr-field-label" for="uve-mr-locale-mode"><?php echo esc_html__( 'Locale', 'uve-mailrelay-newsletter' ); ?></label>
+										<div class="uve-mr-field-control">
+											<select id="uve-mr-locale-mode" name="form_config[destination][locale_mode]">
+												<option value="inherit" <?php selected( $locale_mode, 'inherit' ); ?>><?php echo esc_html__( 'Use global setting', 'uve-mailrelay-newsletter' ); ?></option>
+												<option value="browser" <?php selected( $locale_mode, 'browser' ); ?>><?php echo esc_html__( 'Use browser language', 'uve-mailrelay-newsletter' ); ?></option>
+												<option value="force" <?php selected( $locale_mode, 'force' ); ?>><?php echo esc_html__( 'Force a specific language', 'uve-mailrelay-newsletter' ); ?></option>
+											</select>
+											<p class="description"><?php echo esc_html__( 'If the browser language is unsupported, the global fallback is used.', 'uve-mailrelay-newsletter' ); ?></p>
+										</div>
+									</div>
+									<div class="uve-mr-field-row uve-mr-locale-force-row">
+										<label class="uve-mr-field-label" for="uve-mr-locale-value"><?php echo esc_html__( 'Forced language', 'uve-mailrelay-newsletter' ); ?></label>
+										<div class="uve-mr-field-control">
+											<select id="uve-mr-locale-value" name="form_config[destination][locale]">
+												<?php foreach ( $locale_labels as $value => $label ) : ?>
+													<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $locale_value, $value ); ?>>
+														<?php echo esc_html( $label ); ?>
+													</option>
+												<?php endforeach; ?>
+											</select>
+											<p class="description"><?php echo esc_html__( 'Used only when forcing a language for this form.', 'uve-mailrelay-newsletter' ); ?></p>
 										</div>
 									</div>
 								</div>
@@ -302,24 +346,6 @@ final class UVE_MR_Forms_Editor_Page {
 													<?php echo esc_html__( 'Draft', 'uve-mailrelay-newsletter' ); ?>
 												</option>
 											</select>
-											<?php if ( $max_published > 0 ) : ?>
-												<p class="description">
-													<?php
-													echo esc_html(
-														sprintf(
-															/* translators: %d: max number of published forms. */
-															_n(
-																'Free version allows up to %d published form.',
-																'Free version allows up to %d published forms.',
-																$max_published,
-																'uve-mailrelay-newsletter'
-															),
-															$max_published
-														)
-													);
-													?>
-												</p>
-											<?php endif; ?>
 										</div>
 									</div>
 								</div>

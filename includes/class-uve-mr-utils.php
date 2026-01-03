@@ -13,6 +13,124 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Utility helpers.
  */
 final class UVE_MR_Utils {
+	/**
+	 * Supported Mailrelay locales.
+	 *
+	 * @return string[]
+	 */
+	public static function supported_locales(): array {
+		return array( 'en', 'es', 'pt-BR', 'fr', 'gl', 'ca', 'eu', 'it' );
+	}
+
+	/**
+	 * Map locales to human-friendly labels.
+	 *
+	 * @return array<string,string>
+	 */
+	public static function locale_labels(): array {
+		return array(
+			'en'    => __( 'English', 'uve-mailrelay-newsletter' ),
+			'es'    => __( 'Spanish', 'uve-mailrelay-newsletter' ),
+			'pt-BR' => __( 'Portuguese (Brazil)', 'uve-mailrelay-newsletter' ),
+			'fr'    => __( 'French', 'uve-mailrelay-newsletter' ),
+			'gl'    => __( 'Galician', 'uve-mailrelay-newsletter' ),
+			'ca'    => __( 'Catalan', 'uve-mailrelay-newsletter' ),
+			'eu'    => __( 'Basque', 'uve-mailrelay-newsletter' ),
+			'it'    => __( 'Italian', 'uve-mailrelay-newsletter' ),
+		);
+	}
+
+	/**
+	 * Normalize a locale to Mailrelay supported values.
+	 *
+	 * @param string $locale Raw locale.
+	 * @return string
+	 */
+	public static function normalize_locale( string $locale ): string {
+		$locale = trim( $locale );
+		if ( '' === $locale ) {
+			return '';
+		}
+		$locale = str_replace( '_', '-', $locale );
+		$needle = strtolower( $locale );
+		foreach ( self::supported_locales() as $supported ) {
+			$supported_lower = strtolower( $supported );
+			if ( $needle === $supported_lower ) {
+				return $supported;
+			}
+			if ( 2 === strlen( $supported_lower ) && str_starts_with( $needle, $supported_lower . '-' ) ) {
+				return $supported;
+			}
+		}
+		return '';
+	}
+
+	/**
+	 * Resolve a locale from an Accept-Language header.
+	 *
+	 * @param string $header Accept-Language header.
+	 * @return string
+	 */
+	public static function locale_from_accept_language( string $header ): string {
+		$header = trim( $header );
+		if ( '' === $header ) {
+			return '';
+		}
+		$candidates = array();
+		foreach ( explode( ',', $header ) as $part ) {
+			$part = trim( $part );
+			if ( '' === $part ) {
+				continue;
+			}
+			$quality = 1.0;
+			if ( false !== strpos( $part, ';' ) ) {
+				$bits = array_map( 'trim', explode( ';', $part ) );
+				$part = $bits[0] ?? '';
+				foreach ( $bits as $bit ) {
+					if ( 0 === strpos( $bit, 'q=' ) ) {
+						$quality = (float) substr( $bit, 2 );
+					}
+				}
+			}
+			if ( '' === $part ) {
+				continue;
+			}
+			$candidates[] = array(
+				'locale'  => $part,
+				'quality' => $quality,
+			);
+		}
+		if ( empty( $candidates ) ) {
+			return '';
+		}
+		usort(
+			$candidates,
+			static function ( array $a, array $b ): int {
+				if ( $a['quality'] === $b['quality'] ) {
+					return 0;
+				}
+				return ( $a['quality'] < $b['quality'] ) ? 1 : -1;
+			}
+		);
+		foreach ( $candidates as $candidate ) {
+			$normalized = self::normalize_locale( (string) ( $candidate['locale'] ?? '' ) );
+			if ( '' !== $normalized ) {
+				return $normalized;
+			}
+		}
+		return '';
+	}
+
+	/**
+	 * Resolve the default locale fallback.
+	 *
+	 * @return string
+	 */
+	public static function default_locale_fallback(): string {
+		$wp_locale  = function_exists( 'get_locale' ) ? (string) get_locale() : '';
+		$normalized = self::normalize_locale( $wp_locale );
+		return '' !== $normalized ? $normalized : 'en';
+	}
 
 	/**
 	 * Build a safe back URL with extra query args.

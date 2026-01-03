@@ -162,7 +162,17 @@ function is_email( string $email ): bool {
 	return false !== filter_var( $email, FILTER_VALIDATE_EMAIL );
 }
 
-function add_action( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {}
+function add_action( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {
+	$GLOBALS['uve_mr_test_actions'][ $hook ][] = $callback;
+}
+function do_action( string $hook, ...$args ): void {
+	$actions = $GLOBALS['uve_mr_test_actions'][ $hook ] ?? array();
+	foreach ( $actions as $callback ) {
+		if ( is_callable( $callback ) ) {
+			call_user_func( $callback, ...$args );
+		}
+	}
+}
 function add_filter( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {
 	$GLOBALS['uve_mr_test_filters'][ $hook ][] = $callback;
 }

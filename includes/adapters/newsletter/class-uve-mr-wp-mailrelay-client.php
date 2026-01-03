@@ -44,6 +44,13 @@ final class UVE_MR_WP_Mailrelay_Client implements UVE_MR_Mailrelay_Client {
 			'subscribed_with_acceptance' => $accepted,
 			'subscribe_ip'               => $ip,
 		);
+		$locale  = $args['locale'] ?? '';
+		if ( is_string( $locale ) ) {
+			$locale = UVE_MR_Utils::normalize_locale( $locale );
+			if ( '' !== $locale ) {
+				$payload['locale'] = $locale;
+			}
+		}
 
 		$fields = $args['fields'] ?? array();
 		if ( is_array( $fields ) && ! empty( $fields ) ) {

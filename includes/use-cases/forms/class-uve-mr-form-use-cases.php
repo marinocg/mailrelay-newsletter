@@ -23,15 +23,6 @@ final class UVE_MR_Form_Use_Cases {
 	}
 
 	/**
-	 * Build form limits provider.
-	 *
-	 * @return UVE_MR_Form_Limits
-	 */
-	private static function limits(): UVE_MR_Form_Limits {
-		return UVE_MR_Container::form_limits();
-	}
-
-	/**
 	 * List forms.
 	 *
 	 * @param array $args Query args.
@@ -61,9 +52,6 @@ final class UVE_MR_Form_Use_Cases {
 	 */
 	public static function create_form( string $name, array $config, string $status = 'publish' ): ?UVE_MR_Form {
 		$status = self::normalize_status( $status );
-		if ( 'publish' === $status && ! self::can_publish_form( null ) ) {
-			$status = 'draft';
-		}
 		return self::repo()->create( $name, $config, $status );
 	}
 
@@ -78,9 +66,6 @@ final class UVE_MR_Form_Use_Cases {
 	 */
 	public static function update_form( int $id, string $name, array $config, string $status = 'publish' ): ?UVE_MR_Form {
 		$status = self::normalize_status( $status );
-		if ( 'publish' === $status && ! self::can_publish_form( $id ) ) {
-			$status = 'draft';
-		}
 		return self::repo()->update( $id, $name, $config, $status );
 	}
 
@@ -129,33 +114,38 @@ final class UVE_MR_Form_Use_Cases {
 			array(
 				'post_status'    => array( 'publish' ),
 				'posts_per_page' => 1,
-				'orderby'        => 'modified',
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
 			)
 		);
 		return $forms[0] ?? null;
 	}
 
 	/**
-	 * Get the maximum number of published forms allowed.
+	 * Get the primary form for admin editing.
 	 *
-	 * @return int
+	 * @return UVE_MR_Form|null
 	 */
-	public static function max_published_forms(): int {
-		return self::limits()->max_published_forms();
-	}
-
-	/**
-	 * Check whether another form can be published.
-	 *
-	 * @param int|null $form_id Form ID.
-	 * @return bool
-	 */
-	public static function can_publish_form( ?int $form_id ): bool {
-		$max = self::max_published_forms();
-		if ( $max <= 0 ) {
-			return true;
+	public static function get_primary_form_for_admin(): ?UVE_MR_Form {
+		$args  = array(
+			'post_status'    => array( 'publish' ),
+			'posts_per_page' => 1,
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+		);
+		$forms = self::repo()->list(
+			array(
+				'post_status'    => $args['post_status'],
+				'posts_per_page' => $args['posts_per_page'],
+				'orderby'        => $args['orderby'],
+				'order'          => $args['order'],
+			)
+		);
+		if ( empty( $forms ) ) {
+			$args['post_status'] = array( 'draft' );
+			$forms               = self::repo()->list( $args );
 		}
-		return self::repo()->count_published( $form_id ) < $max;
+		return $forms[0] ?? null;
 	}
 
 	/**

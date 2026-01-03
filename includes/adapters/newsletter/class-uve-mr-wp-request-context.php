@@ -43,6 +43,15 @@ final class UVE_MR_WP_Request_Context implements UVE_MR_Request_Context {
 	}
 
 	/**
+	 * Get raw Accept-Language header.
+	 *
+	 * @return string
+	 */
+	public function get_accept_language(): string {
+		return sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '' ) );
+	}
+
+	/**
 	 * Get current time in MySQL format.
 	 *
 	 * @return string

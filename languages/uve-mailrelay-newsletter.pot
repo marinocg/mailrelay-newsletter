@@ -74,6 +74,38 @@ msgstr ""
 msgid "We could not complete the request. Please try again."
 msgstr ""
 
+#: includes/class-uve-mr-utils.php:28
+msgid "English"
+msgstr ""
+
+#: includes/class-uve-mr-utils.php:29
+msgid "Spanish"
+msgstr ""
+
+#: includes/class-uve-mr-utils.php:30
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+#: includes/class-uve-mr-utils.php:31
+msgid "French"
+msgstr ""
+
+#: includes/class-uve-mr-utils.php:32
+msgid "Galician"
+msgstr ""
+
+#: includes/class-uve-mr-utils.php:33
+msgid "Catalan"
+msgstr ""
+
+#: includes/class-uve-mr-utils.php:34
+msgid "Basque"
+msgstr ""
+
+#: includes/class-uve-mr-utils.php:35
+msgid "Italian"
+msgstr ""
+
 #: includes/class-uve-mr-admin.php:24 includes/class-uve-mr-admin.php:25
 #: includes/class-uve-mr-admin.php:146
 #: includes/class-uve-mr-newsletter-widget.php:23
@@ -83,6 +115,10 @@ msgstr ""
 
 #: includes/class-uve-mr-admin.php:43 includes/class-uve-mr-admin.php:44
 msgid "Logs"
+msgstr ""
+
+#: includes/class-uve-mr-admin.php:197
+msgid "Settings saved successfully."
 msgstr ""
 
 #: includes/class-uve-mr-admin.php:153
@@ -161,8 +197,46 @@ msgstr ""
 msgid "No groups found or API not configured."
 msgstr ""
 
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:46
+msgid "Form saved successfully."
+msgstr ""
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:50
+msgid "Something went wrong while saving the form."
+msgstr ""
+
 #: includes/class-uve-mr-admin.php:252
 msgid "Subscription mode"
+msgstr ""
+
+#: includes/class-uve-mr-admin.php:262
+msgid "Default locale fallback"
+msgstr ""
+
+#: includes/class-uve-mr-admin.php:274
+msgid "Used when the browser language is not supported."
+msgstr ""
+
+#: includes/class-uve-mr-admin.php:284
+msgid "Default locale mode"
+msgstr ""
+
+#: includes/class-uve-mr-admin.php:288
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:140
+msgid "Use browser language"
+msgstr ""
+
+#: includes/class-uve-mr-admin.php:291
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:141
+msgid "Force a specific language"
+msgstr ""
+
+#: includes/class-uve-mr-admin.php:296
+msgid "Default forced language"
+msgstr ""
+
+#: includes/class-uve-mr-admin.php:309
+msgid "Used when forcing a language globally."
 msgstr ""
 
 #: includes/class-uve-mr-admin.php:255
@@ -176,6 +250,26 @@ msgstr ""
 #: includes/class-uve-mr-admin.php:264
 #: includes/admin/forms/class-uve-mr-forms-admin.php:426
 msgid "Spam protection"
+msgstr ""
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:135
+msgid "Locale"
+msgstr ""
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:139
+msgid "Use global setting"
+msgstr ""
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:143
+msgid "If the browser language is unsupported, the global fallback is used."
+msgstr ""
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:148
+msgid "Forced language"
+msgstr ""
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:155
+msgid "Used only when forcing a language for this form."
 msgstr ""
 
 #: includes/class-uve-mr-admin.php:267

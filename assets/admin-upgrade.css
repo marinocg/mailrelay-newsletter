@@ -1,4 +1,7 @@
-#adminmenu .toplevel_page_uve-mr-newsletter .wp-submenu a[href*="page=uve-mr-newsletter-upgrade"] {
+#adminmenu .toplevel_page_uve-mr-newsletter .wp-submenu a[href*="page=uve-mr-newsletter-upgrade"],
+#adminmenu .toplevel_page_uve-mr-newsletter .wp-submenu li a[href*="page=uve-mr-newsletter-upgrade"],
+.folded #adminmenu .toplevel_page_uve-mr-newsletter .wp-submenu a[href*="page=uve-mr-newsletter-upgrade"],
+.folded #adminmenu .toplevel_page_uve-mr-newsletter .wp-submenu li a[href*="page=uve-mr-newsletter-upgrade"] {
 	color: #d63638;
 	font-weight: 600;
 }

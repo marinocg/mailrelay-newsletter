@@ -36,6 +36,13 @@ interface UVE_MR_Request_Context {
 	public function get_page_url_from_request( array $data ): string;
 
 	/**
+	 * Get raw Accept-Language header.
+	 *
+	 * @return string
+	 */
+	public function get_accept_language(): string;
+
+	/**
 	 * Get current time in MySQL format.
 	 *
 	 * @return string

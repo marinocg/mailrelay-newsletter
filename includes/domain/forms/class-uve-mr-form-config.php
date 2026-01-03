@@ -32,6 +32,8 @@ final class UVE_MR_Form_Config {
 			'destination' => array(
 				'group_ids'         => (string) ( $opts['group_ids'] ?? '' ),
 				'subscriber_status' => (string) ( $opts['subscriber_status'] ?? 'inactive' ),
+				'locale_mode'       => 'inherit',
+				'locale'            => (string) ( $opts['locale_force'] ?? '' ),
 			),
 			'fields'      => array(
 				'email'    => array(
@@ -162,6 +164,14 @@ final class UVE_MR_Form_Config {
 		}
 		$status                                  = sanitize_text_field( (string) ( $raw['destination']['subscriber_status'] ?? $defaults['destination']['subscriber_status'] ) );
 		$out['destination']['subscriber_status'] = in_array( $status, array( 'inactive', 'active' ), true ) ? $status : 'inactive';
+		$locale_mode                             = sanitize_text_field( (string) ( $raw['destination']['locale_mode'] ?? $defaults['destination']['locale_mode'] ?? 'inherit' ) );
+		$out['destination']['locale_mode']       = in_array( $locale_mode, array( 'inherit', 'browser', 'force' ), true ) ? $locale_mode : 'inherit';
+		$raw_locale                              = sanitize_text_field( (string) ( $raw['destination']['locale'] ?? $defaults['destination']['locale'] ?? '' ) );
+		$locale                                  = UVE_MR_Utils::normalize_locale( $raw_locale );
+		if ( '' === $locale ) {
+			$locale = UVE_MR_Utils::normalize_locale( (string) ( $defaults['destination']['locale'] ?? '' ) );
+		}
+		$out['destination']['locale'] = $locale;
 
 		if ( ! empty( $defaults['fields'] ) && is_array( $defaults['fields'] ) ) {
 			foreach ( $defaults['fields'] as $key => $field ) {

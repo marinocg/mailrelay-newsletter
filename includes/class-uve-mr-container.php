@@ -82,16 +82,11 @@ final class UVE_MR_Container {
 	 * @return UVE_MR_Form_Repository_Interface
 	 */
 	public static function form_repository(): UVE_MR_Form_Repository_Interface {
-		return new UVE_MR_WP_Form_Repository();
-	}
-
-	/**
-	 * Build form limits provider.
-	 *
-	 * @return UVE_MR_Form_Limits
-	 */
-	public static function form_limits(): UVE_MR_Form_Limits {
-		return new UVE_MR_WP_Form_Limits();
+		$repo = apply_filters( 'uve_mr_form_repository', null );
+		if ( $repo instanceof UVE_MR_Form_Repository_Interface ) {
+			return $repo;
+		}
+		return new UVE_MR_Single_Form_Repository();
 	}
 
 	/**

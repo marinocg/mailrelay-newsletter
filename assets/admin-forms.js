@@ -39,8 +39,23 @@
 		update();
 	}
 
+	function toggleSelectValue(selectSelector, rowSelector, showValue) {
+		var select = document.querySelector(selectSelector);
+		if (!select) return;
+		var rows = document.querySelectorAll(rowSelector);
+		function update() {
+			var show = select.value === showValue;
+			rows.forEach(function(row) {
+				row.style.display = show ? '' : 'none';
+			});
+		}
+		select.addEventListener('change', update);
+		update();
+	}
+
 	toggleGroup('input[name="form_config[consent][inherit]"]', '.uve-mr-consent-fields');
 	toggleGroup('input[name="form_config[rate_limit][inherit]"]', '.uve-mr-rate-limit-fields');
+	toggleSelectValue('#uve-mr-locale-mode', '.uve-mr-locale-force-row', 'force');
 
 	var available = document.getElementById('uve-mr-groups-available');
 	var selected = document.getElementById('uve-mr-groups-selected');

@@ -72,13 +72,13 @@ final class UVE_MR_Submit_Use_Case {
 	/**
 	 * Create the use case with adapters.
 	 *
-	 * @param UVE_MR_Mailrelay_Client   $mailrelay Mailrelay client.
-	 * @param UVE_MR_Options_Repository $options Options repository.
-	 * @param UVE_MR_Logs_Repository    $logs Logs repository.
-	 * @param UVE_MR_Turnstile_Verifier $turnstile Turnstile verifier.
-	 * @param UVE_MR_Rate_Limiter       $rate_limiter Rate limiter.
-	 * @param UVE_MR_Request_Context    $request_context Request context.
-	 * @param UVE_MR_Input_Sanitizer    $sanitizer Input sanitizer.
+	 * @param UVE_MR_Mailrelay_Client          $mailrelay Mailrelay client.
+	 * @param UVE_MR_Options_Repository        $options Options repository.
+	 * @param UVE_MR_Logs_Repository           $logs Logs repository.
+	 * @param UVE_MR_Turnstile_Verifier        $turnstile Turnstile verifier.
+	 * @param UVE_MR_Rate_Limiter              $rate_limiter Rate limiter.
+	 * @param UVE_MR_Request_Context           $request_context Request context.
+	 * @param UVE_MR_Input_Sanitizer           $sanitizer Input sanitizer.
 	 * @param UVE_MR_Form_Repository_Interface $forms Form repository.
 	 */
 	public function __construct(
@@ -118,8 +118,8 @@ final class UVE_MR_Submit_Use_Case {
 			return $this->build_result( 'ok', $messages );
 		}
 
-		$email_raw = $data['subscriber']['email'] ?? '';
-		$email     = $this->sanitizer->sanitize_email( $this->sanitizer->unslash( $email_raw ) );
+		$email_raw    = $data['subscriber']['email'] ?? '';
+		$email        = $this->sanitizer->sanitize_email( $this->sanitizer->unslash( $email_raw ) );
 		$accepted_raw = $data['subscriber']['subscribed_with_acceptance'] ?? '';
 		$accepted     = $this->sanitizer->sanitize_text( $this->sanitizer->unslash( $accepted_raw ) );
 		$accepted     = ( '1' === $accepted );
@@ -214,6 +214,7 @@ final class UVE_MR_Submit_Use_Case {
 			array(
 				'subscriber_status' => (string) ( $config['destination']['subscriber_status'] ?? 'inactive' ),
 				'fields'            => $fields_payload,
+				'locale'            => $this->resolve_locale( $config ),
 			)
 		);
 
@@ -284,6 +285,49 @@ final class UVE_MR_Submit_Use_Case {
 	}
 
 	/**
+	 * Resolve the locale payload for Mailrelay.
+	 *
+	 * @param array $config Form config.
+	 * @return string
+	 */
+	private function resolve_locale( array $config ): string {
+		$destination = $config['destination'] ?? array();
+		$mode        = (string) ( $destination['locale_mode'] ?? 'inherit' );
+		$force_value = (string) ( $destination['locale'] ?? '' );
+
+		$global_opts = $this->options->get_options();
+		$fallback    = UVE_MR_Utils::normalize_locale( (string) ( $global_opts['locale_fallback'] ?? '' ) );
+		if ( '' === $fallback ) {
+			$fallback = UVE_MR_Utils::default_locale_fallback();
+		}
+		$global_mode  = (string) ( $global_opts['locale_mode'] ?? 'browser' );
+		$global_mode  = in_array( $global_mode, array( 'browser', 'force' ), true ) ? $global_mode : 'browser';
+		$global_force = UVE_MR_Utils::normalize_locale( (string) ( $global_opts['locale_force'] ?? '' ) );
+		if ( '' === $global_force ) {
+			$global_force = $fallback;
+		}
+
+		if ( 'inherit' === $mode ) {
+			$mode = $global_mode;
+			if ( 'force' === $mode ) {
+				$force_value = $global_force;
+			}
+		}
+
+		if ( 'force' === $mode ) {
+			$forced = UVE_MR_Utils::normalize_locale( $force_value );
+			if ( '' !== $forced ) {
+				return $forced;
+			}
+			return $global_force;
+		}
+
+		$accept = $this->request_context->get_accept_language();
+		$auto   = UVE_MR_Utils::locale_from_accept_language( $accept );
+		return '' !== $auto ? $auto : $fallback;
+	}
+
+	/**
 	 * Default messages for fallback flows.
 	 *
 	 * @return array
@@ -309,6 +353,6 @@ final class UVE_MR_Submit_Use_Case {
 		if ( 'on' === $mode ) {
 			return true;
 		}
-		return true;
+		return UVE_MR_Turnstile::is_enabled();
 	}
 }
