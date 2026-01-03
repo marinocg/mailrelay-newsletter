@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: MR4WP 1.7.1\n"
+"Project-Id-Version: RelayPress 1.7.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-01 14:05+0100\n"
 "PO-Revision-Date: 2025-01-01 00:00+0000\n"
@@ -74,8 +74,8 @@ msgstr "No se pudo completar la solicitud. Inténtalo de nuevo."
 #: includes/class-uve-mr-admin.php:146
 #: includes/class-uve-mr-newsletter-widget.php:23
 #: includes/class-uve-mr-elementor-newsletter-widget.php:36
-msgid "MR4WP"
-msgstr "MR4WP"
+msgid "RelayPress"
+msgstr "RelayPress"
 
 #: includes/class-uve-mr-admin.php:43 includes/class-uve-mr-admin.php:44
 msgid "Logs"
@@ -318,8 +318,8 @@ msgid "Purged %s records."
 msgstr "Purgados %s registros."
 
 #: includes/class-uve-mr-admin.php:596
-msgid "MR4WP Logs"
-msgstr "Registros de MR4WP"
+msgid "RelayPress Logs"
+msgstr "Registros de RelayPress"
 
 #: includes/class-uve-mr-admin.php:602
 msgid "Purge now"
@@ -418,13 +418,13 @@ msgstr "Debes aceptar la política de privacidad."
 
 #: includes/domain/forms/class-uve-mr-forms.php:28
 #, fuzzy
-msgid "MR4WP Forms"
-msgstr "MR4WP"
+msgid "RelayPress Forms"
+msgstr "RelayPress"
 
 #: includes/domain/forms/class-uve-mr-forms.php:29
 #, fuzzy
-msgid "MR4WP Form"
-msgstr "MR4WP"
+msgid "RelayPress Form"
+msgstr "RelayPress"
 
 #: includes/domain/forms/class-uve-mr-forms.php:70
 msgid "Default Form"
@@ -890,6 +890,72 @@ msgstr "Sí"
 #: includes/class-uve-mr-elementor-newsletter-widget.php:179
 msgid "No"
 msgstr "No"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:409
+msgid "Visibility"
+msgstr "Visibilidad"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:413
+msgid "Published"
+msgstr "Publicado"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:416
+msgid "Draft"
+msgstr "Borrador"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:420
+msgid "Free version allows up to %d published form."
+msgid_plural "Free version allows up to %d published forms."
+msgstr[0] "La versión gratuita permite hasta %d formulario publicado."
+msgstr[1] "La versión gratuita permite hasta %d formularios publicados."
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:176
+msgid "Move to Draft"
+msgstr "Mover a borrador"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:179
+msgid "Publish"
+msgstr "Publicar"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:126
+msgid "Created"
+msgstr "Creado"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:113
+msgid "Your form was saved as a draft. %s to publish more forms."
+msgstr "El formulario se guardó como borrador. %s para publicar más formularios."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:777
+msgid "Unlock unlimited published forms"
+msgstr "Desbloquea formularios publicados ilimitados"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:778
+msgid "Publish as many signup forms as you want and keep your campaigns segmented."
+msgstr "Publica tantos formularios de suscripción como quieras y mantiene tus campañas segmentadas."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:779
+msgid "Upgrade to Premium"
+msgstr "Actualizar a Premium"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:787
+msgid "Premium"
+msgstr "Premium"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:793
+msgid "Unlimited published forms"
+msgstr "Formularios publicados ilimitados"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:794
+msgid "Advanced segmentation and testing"
+msgstr "Segmentación y pruebas avanzadas"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:795
+msgid "Priority support"
+msgstr "Soporte prioritario"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:804
+msgid "Maybe later"
+msgstr "Quizás más tarde"
 
 #~ msgid ""
 #~ "Copy the API base URL from your Mailrelay account (API/Developers "

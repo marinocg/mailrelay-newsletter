@@ -47,10 +47,15 @@ final class UVE_MR_Form_Use_Cases {
 	 *
 	 * @param string $name Form name.
 	 * @param array  $config Form config.
+	 * @param string $status Form status.
 	 * @return UVE_MR_Form|null
 	 */
-	public static function create_form( string $name, array $config ): ?UVE_MR_Form {
-		return self::repo()->create( $name, $config );
+	public static function create_form( string $name, array $config, string $status = 'publish' ): ?UVE_MR_Form {
+		$status = self::normalize_status( $status );
+		if ( 'publish' === $status && ! self::can_publish_form( null ) ) {
+			$status = 'draft';
+		}
+		return self::repo()->create( $name, $config, $status );
 	}
 
 	/**
@@ -59,10 +64,15 @@ final class UVE_MR_Form_Use_Cases {
 	 * @param int    $id Form ID.
 	 * @param string $name Form name.
 	 * @param array  $config Form config.
+	 * @param string $status Form status.
 	 * @return UVE_MR_Form|null
 	 */
-	public static function update_form( int $id, string $name, array $config ): ?UVE_MR_Form {
-		return self::repo()->update( $id, $name, $config );
+	public static function update_form( int $id, string $name, array $config, string $status = 'publish' ): ?UVE_MR_Form {
+		$status = self::normalize_status( $status );
+		if ( 'publish' === $status && ! self::can_publish_form( $id ) ) {
+			$status = 'draft';
+		}
+		return self::repo()->update( $id, $name, $config, $status );
 	}
 
 	/**
@@ -78,7 +88,7 @@ final class UVE_MR_Form_Use_Cases {
 		}
 
 		$name = $form->name . ' (Copy)';
-		return self::repo()->create( $name, $form->config );
+		return self::repo()->create( $name, $form->config, 'draft' );
 	}
 
 	/**
@@ -99,7 +109,11 @@ final class UVE_MR_Form_Use_Cases {
 	 */
 	public static function get_form_for_render( ?int $id ): ?UVE_MR_Form {
 		if ( $id ) {
-			return self::repo()->get( $id );
+			$form = self::repo()->get( $id );
+			if ( $form && 'publish' !== $form->status ) {
+				return null;
+			}
+			return $form;
 		}
 
 		$forms = self::repo()->list(
@@ -110,5 +124,54 @@ final class UVE_MR_Form_Use_Cases {
 			)
 		);
 		return $forms[0] ?? null;
+	}
+
+	/**
+	 * Get the maximum number of published forms allowed.
+	 *
+	 * @return int
+	 */
+	public static function max_published_forms(): int {
+		$max = (int) UVE_MR_Utils::premium_filter( 'uve_mr_max_published_forms', 1, 1 );
+		return $max;
+	}
+
+	/**
+	 * Check whether another form can be published.
+	 *
+	 * @param int|null $form_id Form ID.
+	 * @return bool
+	 */
+	public static function can_publish_form( ?int $form_id ): bool {
+		$max = self::max_published_forms();
+		if ( $max <= 0 ) {
+			return true;
+		}
+
+		if ( ! function_exists( 'wp_count_posts' ) ) {
+			return true;
+		}
+
+		$counts    = wp_count_posts( UVE_MR_Form::POST_TYPE );
+		$published = (int) ( $counts->publish ?? 0 );
+
+		if ( $form_id && function_exists( 'get_post' ) ) {
+			$post = get_post( $form_id );
+			if ( $post instanceof WP_Post && 'publish' === $post->post_status ) {
+				$published = max( 0, $published - 1 );
+			}
+		}
+
+		return $published < $max;
+	}
+
+	/**
+	 * Normalize form status to supported values.
+	 *
+	 * @param string $status Status.
+	 * @return string
+	 */
+	private static function normalize_status( string $status ): string {
+		return 'draft' === $status ? 'draft' : 'publish';
 	}
 }

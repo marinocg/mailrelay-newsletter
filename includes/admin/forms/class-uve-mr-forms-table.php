@@ -45,12 +45,26 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 	public function prepare_items() {
 		$per_page = 20;
 		$page     = max( 1, absint( wp_unslash( $_GET['paged'] ?? 1 ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$orderby  = sanitize_key( (string) wp_unslash( $_GET['orderby'] ?? 'date' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$order    = strtoupper( sanitize_text_field( (string) wp_unslash( $_GET['order'] ?? 'DESC' ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		$allowed_orderby = array( 'title', 'modified', 'date', 'status' );
+		if ( ! in_array( $orderby, $allowed_orderby, true ) ) {
+			$orderby = 'date';
+		}
+		if ( ! in_array( $order, array( 'ASC', 'DESC' ), true ) ) {
+			$order = 'DESC';
+		}
 
 		$status = $this->current_status();
 		if ( 'trash' === $status ) {
 			$post_status = array( 'trash' );
-		} else {
+		} elseif ( 'draft' === $status ) {
+			$post_status = array( 'draft' );
+		} elseif ( 'active' === $status ) {
 			$post_status = array( 'publish' );
+		} else {
+			$post_status = array( 'publish', 'draft' );
 		}
 
 		$forms       = UVE_MR_Form_Use_Cases::list_forms(
@@ -58,6 +72,8 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 				'post_status'    => $post_status,
 				'posts_per_page' => $per_page,
 				'offset'         => ( $page - 1 ) * $per_page,
+				'orderby'        => $orderby,
+				'order'          => $order,
 			)
 		);
 		$this->forms = $forms;
@@ -67,8 +83,12 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 		if ( $counts ) {
 			if ( 'trash' === $status ) {
 				$total_items = (int) ( $counts->trash ?? 0 );
-			} else {
+			} elseif ( 'draft' === $status ) {
+				$total_items = (int) ( $counts->draft ?? 0 );
+			} elseif ( 'active' === $status ) {
 				$total_items = (int) ( $counts->publish ?? 0 );
+			} else {
+				$total_items = (int) ( $counts->publish ?? 0 ) + (int) ( $counts->draft ?? 0 );
 			}
 		}
 
@@ -79,7 +99,7 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 			)
 		);
 
-		$this->_column_headers = array( $this->get_columns(), array(), array() );
+		$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
 		$this->items           = $this->forms;
 	}
 
@@ -104,6 +124,7 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 			'shortcode' => __( 'Shortcode', 'uve-mailrelay-newsletter' ),
 			'group'     => __( 'Group', 'uve-mailrelay-newsletter' ),
 			'status'    => __( 'Status', 'uve-mailrelay-newsletter' ),
+			'created'   => __( 'Created', 'uve-mailrelay-newsletter' ),
 			'updated'   => __( 'Updated', 'uve-mailrelay-newsletter' ),
 		);
 	}
@@ -191,10 +212,31 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 				'delete'  => '<a href="' . esc_url( $delete_url ) . '">' . esc_html__( 'Delete Permanently', 'uve-mailrelay-newsletter' ) . '</a>',
 			);
 		} else {
+			if ( 'publish' === $item->status ) {
+				$publish_action_key = 'draft';
+				$publish_label      = esc_html__( 'Move to Draft', 'uve-mailrelay-newsletter' );
+			} else {
+				$publish_action_key = 'publish';
+				$publish_label      = esc_html__( 'Publish', 'uve-mailrelay-newsletter' );
+			}
+
+			$publish_url = wp_nonce_url(
+				add_query_arg(
+					array(
+						'page'    => 'uve-mr-newsletter-forms',
+						'action'  => $publish_action_key,
+						'form_id' => $item->id,
+					),
+					admin_url( 'admin.php' )
+				),
+				'uve_mr_forms_action'
+			);
+
 			$actions = array(
-				'edit'      => '<a href="' . esc_url( $edit_url ) . '">' . esc_html__( 'Edit', 'uve-mailrelay-newsletter' ) . '</a>',
-				'duplicate' => '<a href="' . esc_url( $dup_url ) . '">' . esc_html__( 'Duplicate', 'uve-mailrelay-newsletter' ) . '</a>',
-				'trash'     => '<a href="' . esc_url( $trash_url ) . '">' . esc_html__( 'Trash', 'uve-mailrelay-newsletter' ) . '</a>',
+				'edit'              => '<a href="' . esc_url( $edit_url ) . '">' . esc_html__( 'Edit', 'uve-mailrelay-newsletter' ) . '</a>',
+				'duplicate'         => '<a href="' . esc_url( $dup_url ) . '">' . esc_html__( 'Duplicate', 'uve-mailrelay-newsletter' ) . '</a>',
+				$publish_action_key => '<a href="' . esc_url( $publish_url ) . '">' . $publish_label . '</a>',
+				'trash'             => '<a href="' . esc_url( $trash_url ) . '">' . esc_html__( 'Trash', 'uve-mailrelay-newsletter' ) . '</a>',
 			);
 		}
 
@@ -244,6 +286,20 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Render created column.
+	 *
+	 * @param UVE_MR_Form $item Form model.
+	 * @return string
+	 */
+	protected function column_created( $item ): string {
+		$time = strtotime( (string) $item->created_at );
+		if ( ! $time ) {
+			return '';
+		}
+		return esc_html( date_i18n( 'Y-m-d H:i', $time ) );
+	}
+
+	/**
 	 * Render updated column.
 	 *
 	 * @param UVE_MR_Form $item Form model.
@@ -255,6 +311,20 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 			return '';
 		}
 		return esc_html( date_i18n( 'Y-m-d H:i', $time ) );
+	}
+
+	/**
+	 * Get sortable columns.
+	 *
+	 * @return array
+	 */
+	protected function get_sortable_columns() {
+		return array(
+			'name'    => array( 'title', false ),
+			'status'  => array( 'status', false ),
+			'created' => array( 'date', true ),
+			'updated' => array( 'modified', false ),
+		);
 	}
 
 	/**
@@ -286,8 +356,9 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 		$base   = add_query_arg( 'page', 'uve-mr-newsletter-forms', admin_url( 'admin.php' ) );
 		$status = $this->current_status();
 
-		$all    = (int) ( $counts->publish ?? 0 );
+		$all    = (int) ( $counts->publish ?? 0 ) + (int) ( $counts->draft ?? 0 );
 		$active = (int) ( $counts->publish ?? 0 );
+		$draft  = (int) ( $counts->draft ?? 0 );
 		$trash  = (int) ( $counts->trash ?? 0 );
 
 		$views        = array();
@@ -304,7 +375,15 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 			esc_url( add_query_arg( 'status', 'active', $base ) ),
 			'active' === $status ? 'current' : '',
 			// translators: %d: number of forms.
-			esc_html( sprintf( __( 'Active (%d)', 'uve-mailrelay-newsletter' ), $active ) )
+			esc_html( sprintf( __( 'Published (%d)', 'uve-mailrelay-newsletter' ), $active ) )
+		);
+
+		$views['draft'] = sprintf(
+			'<a href="%s" class="%s">%s</a>',
+			esc_url( add_query_arg( 'status', 'draft', $base ) ),
+			'draft' === $status ? 'current' : '',
+			// translators: %d: number of forms.
+			esc_html( sprintf( __( 'Draft (%d)', 'uve-mailrelay-newsletter' ), $draft ) )
 		);
 
 		$views['trash'] = sprintf(
@@ -337,16 +416,22 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 			return;
 		}
 
+		$upgrade = false;
 		foreach ( $ids as $id ) {
 			if ( 'trash' === $action ) {
 				wp_trash_post( $id );
 			} elseif ( 'restore' === $action ) {
+				$can_publish = UVE_MR_Form_Use_Cases::can_publish_form( $id );
+				$status      = $can_publish ? 'publish' : 'draft';
 				wp_update_post(
 					array(
 						'ID'          => $id,
-						'post_status' => 'publish',
+						'post_status' => $status,
 					)
 				);
+				if ( ! $can_publish ) {
+					$upgrade = true;
+				}
 			} elseif ( 'delete' === $action ) {
 				wp_delete_post( $id, true );
 			}
@@ -355,7 +440,7 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 		$redirect = add_query_arg(
 			array(
 				'page'   => 'uve-mr-newsletter-forms',
-				'notice' => 'bulk-updated',
+				'notice' => $upgrade ? 'upgrade' : 'bulk-updated',
 			),
 			admin_url( 'admin.php' )
 		);
@@ -372,6 +457,9 @@ final class UVE_MR_Forms_Table extends WP_List_Table {
 		$status = sanitize_text_field( (string) wp_unslash( $_GET['status'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( 'trash' === $status ) {
 			return 'trash';
+		}
+		if ( 'draft' === $status ) {
+			return 'draft';
 		}
 		if ( 'active' === $status ) {
 			return 'active';

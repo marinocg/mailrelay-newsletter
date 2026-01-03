@@ -95,17 +95,34 @@ class WP_Widget {
 	}
 }
 
+if ( ! class_exists( 'WP_List_Table' ) ) {
+	class WP_List_Table {
+		protected array $_args = array();
+
+		public function __construct( array $args = array() ) {
+			$this->_args = $args;
+		}
+
+		protected function row_actions( array $actions, bool $always_visible = false ): string {
+			if ( empty( $actions ) ) {
+				return '';
+			}
+			return ' ' . implode( ' ', $actions );
+		}
+	}
+}
+
 $GLOBALS['wpdb'] = new WPDB_Mock();
 
-function __( string $text, string $domain = null ): string {
+function __( string $text, ?string $domain = null ): string {
 	return $text;
 }
 
-function esc_html__( string $text, string $domain = null ): string {
+function esc_html__( string $text, ?string $domain = null ): string {
 	return $text;
 }
 
-function esc_attr__( string $text, string $domain = null ): string {
+function esc_attr__( string $text, ?string $domain = null ): string {
 	return $text;
 }
 
@@ -146,7 +163,18 @@ function is_email( string $email ): bool {
 }
 
 function add_action( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {}
-function add_filter( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {}
+function add_filter( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {
+	$GLOBALS['uve_mr_test_filters'][ $hook ][] = $callback;
+}
+function apply_filters( string $hook, $value, ...$args ) {
+	$filters = $GLOBALS['uve_mr_test_filters'][ $hook ] ?? array();
+	foreach ( $filters as $callback ) {
+		if ( is_callable( $callback ) ) {
+			$value = $callback( $value, ...$args );
+		}
+	}
+	return $value;
+}
 function add_shortcode( string $tag, $callback ): void {}
 function shortcode_atts( array $pairs, $atts ): array {
 	if ( ! is_array( $atts ) ) {
@@ -340,6 +368,14 @@ function set_transient( string $key, $value, int $expiration ): bool {
 
 function wp_parse_url( string $url ) {
 	return parse_url( $url );
+}
+
+function wp_nonce_url( string $url, string $action ): string {
+	return $url . '&_wpnonce=testnonce';
+}
+
+function date_i18n( string $format, int $timestamp ): string {
+	return date( $format, $timestamp );
 }
 
 function locate_template( array $templates ) {

@@ -16,9 +16,10 @@
     "phpunit/phpunit": "^11.0"
   },
   "scripts": {
-    "lint": "php -l uve-mailrelay-newsletter.php && find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
+    "lint": "php -l class-uve-mailrelay-newsletter.php && find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
     "phpcs": "phpcs",
-    "phpstan": "phpstan analyse"
+    "phpstan": "phpstan analyse",
+    "test": "phpunit"
   },
   "config": {
     "allow-plugins": {

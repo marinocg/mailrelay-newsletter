@@ -1,0 +1,146 @@
+.uve-mr-tab-panel {
+	display: none;
+	margin-top: 16px;
+}
+.uve-mr-tab-panel.is-active {
+	display: block;
+}
+.uve-mr-tab-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
+	gap: 24px;
+	align-items: start;
+}
+.uve-mr-form-grid {
+	display: grid;
+	gap: 12px;
+}
+.uve-mr-field-row {
+	display: grid;
+	grid-template-columns: 220px minmax(0, 1fr);
+	gap: 16px;
+	align-items: start;
+}
+.uve-mr-field-label {
+	font-weight: 600;
+}
+.uve-mr-field-control .regular-text {
+	width: 100%;
+	max-width: 420px;
+}
+.uve-mr-field-control .small-text {
+	width: 140px;
+}
+.uve-mr-field-control select {
+	min-width: 220px;
+	max-width: 420px;
+}
+.uve-mr-tab-main {
+	min-width: 0;
+}
+.uve-mr-panel {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 16px;
+	margin-bottom: 16px;
+}
+.uve-mr-panel h3 {
+	margin-top: 0;
+}
+.uve-mr-tab-help {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	padding: 14px 16px;
+}
+.uve-mr-tab-help h4 {
+	margin-top: 0;
+}
+.uve-mr-help-list {
+	margin: 0;
+	padding-left: 18px;
+}
+.uve-mr-help-list li {
+	margin-bottom: 8px;
+}
+.uve-mr-tab-panel .widefat input.regular-text {
+	width: 100%;
+	max-width: 100%;
+}
+.uve-mr-tab-panel .widefat td {
+	vertical-align: top;
+}
+.uve-mr-tab-panel .widefat .description {
+	margin-top: 4px;
+}
+.uve-mr-fields-table {
+	width: 100%;
+}
+.uve-mr-table-wrap {
+	overflow-x: auto;
+}
+.uve-mr-fields-table th:nth-child(2),
+.uve-mr-fields-table th:nth-child(3),
+.uve-mr-fields-table td:nth-child(2),
+.uve-mr-fields-table td:nth-child(3) {
+	text-align: center;
+	width: 80px;
+}
+.uve-mr-sticky-save {
+	position: sticky;
+	bottom: 12px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 12px 16px;
+	display: flex;
+	gap: 8px;
+	justify-content: flex-start;
+	z-index: 2;
+	margin-top: 20px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+.uve-mr-dual-list {
+	display: grid;
+	grid-template-columns: minmax(240px, 1fr) auto minmax(240px, 1fr);
+	gap: 16px;
+	align-items: center;
+	max-width: 860px;
+}
+.uve-mr-dual-list select {
+	width: 100%;
+	min-height: 160px;
+}
+.uve-mr-dual-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.uve-mr-dual-actions .button {
+	width: 100%;
+	justify-content: center;
+}
+@media (max-width: 960px) {
+	.uve-mr-tab-grid {
+		grid-template-columns: 1fr;
+	}
+}
+@media (max-width: 782px) {
+	.uve-mr-field-row {
+		grid-template-columns: 1fr;
+	}
+	.uve-mr-field-label {
+		margin-bottom: 4px;
+	}
+	.uve-mr-dual-list {
+		grid-template-columns: 1fr;
+	}
+	.uve-mr-dual-actions {
+		flex-direction: row;
+		justify-content: flex-start;
+	}
+	.uve-mr-dual-actions .button {
+		width: auto;
+	}
+}

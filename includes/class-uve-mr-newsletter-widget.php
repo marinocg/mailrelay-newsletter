@@ -20,7 +20,7 @@ class UVE_MR_Newsletter_Widget extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
 			'uve_mr_newsletter_widget',
-			__( 'MR4WP', 'uve-mailrelay-newsletter' ),
+			__( 'RelayPress', 'uve-mailrelay-newsletter' ),
 			array( 'description' => __( 'Newsletter form with Turnstile + Mailrelay API + double opt-in (neutral message) and logs.', 'uve-mailrelay-newsletter' ) )
 		);
 	}
@@ -70,7 +70,12 @@ class UVE_MR_Newsletter_Widget extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		$opts              = UVE_Mailrelay_Newsletter::get_options();
-		$forms             = UVE_MR_Form_Use_Cases::list_forms( array( 'posts_per_page' => 100 ) );
+		$forms             = UVE_MR_Form_Use_Cases::list_forms(
+			array(
+				'post_status'    => array( 'publish' ),
+				'posts_per_page' => 100,
+			)
+		);
 		$form_id           = $instance['form_id'] ?? 0;
 		$title             = $instance['title'] ?? $opts['title'];
 		$description       = $instance['description'] ?? $opts['description'];

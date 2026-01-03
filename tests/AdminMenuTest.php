@@ -17,8 +17,8 @@ final class AdminMenuTest extends TestCase {
 		$this->assertCount( 2, $GLOBALS['uve_mr_test_submenu_pages'] );
 
 		$menu = $GLOBALS['uve_mr_test_menu_pages'][0];
-		$this->assertSame( 'MR4WP', $menu['page_title'] );
-		$this->assertSame( 'MR4WP', $menu['menu_title'] );
+		$this->assertSame( 'RelayPress', $menu['page_title'] );
+		$this->assertSame( 'RelayPress', $menu['menu_title'] );
 		$this->assertSame( 'uve-mr-newsletter', $menu['menu_slug'] );
 
 		$settings = $GLOBALS['uve_mr_test_submenu_pages'][0];

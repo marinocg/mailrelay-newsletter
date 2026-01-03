@@ -183,4 +183,39 @@ final class UVE_MR_Utils {
 
 		return $fixed;
 	}
+
+	/**
+	 * Check whether the premium plugin is installed.
+	 *
+	 * @return bool
+	 */
+	public static function is_premium_installed(): bool {
+		$class = (string) apply_filters( 'uve_mr_premium_class', 'UVE_MR_Premium' );
+		return '' !== $class && class_exists( $class );
+	}
+
+	/**
+	 * Apply a filter only when the premium plugin is installed.
+	 *
+	 * @param string $hook Filter name.
+	 * @param mixed  $value Default value to filter.
+	 * @param mixed  $default_if_missing Default value when premium is not installed.
+	 * @return mixed
+	 */
+	public static function premium_filter( string $hook, $value, $default_if_missing = null ) {
+		if ( ! self::is_premium_installed() ) {
+			return null === $default_if_missing ? $value : $default_if_missing;
+		}
+
+		return apply_filters( $hook, $value );
+	}
+
+	/**
+	 * Get the main plugin file path.
+	 *
+	 * @return string
+	 */
+	public static function plugin_file(): string {
+		return __DIR__ . '/../class-uve-mailrelay-newsletter.php';
+	}
 }

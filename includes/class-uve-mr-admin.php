@@ -21,8 +21,8 @@ final class UVE_MR_Admin {
 	 */
 	public static function admin_menu(): void {
 		add_menu_page(
-			__( 'MR4WP', 'uve-mailrelay-newsletter' ),
-			__( 'MR4WP', 'uve-mailrelay-newsletter' ),
+			__( 'RelayPress', 'uve-mailrelay-newsletter' ),
+			__( 'RelayPress', 'uve-mailrelay-newsletter' ),
 			'manage_options',
 			'uve-mr-newsletter',
 			array( __CLASS__, 'render_settings_page' ),
@@ -79,12 +79,56 @@ final class UVE_MR_Admin {
 	 * @return void
 	 */
 	public static function admin_enqueue( string $hook_suffix ): void {
-		if ( false === strpos( $hook_suffix, 'uve-mr-newsletter-logs' ) ) {
+		if ( false !== strpos( $hook_suffix, 'uve-mr-newsletter-logs' ) ) {
+			$src = plugins_url( 'assets/admin-logs.css', UVE_MR_Utils::plugin_file() );
+			wp_enqueue_style( 'uve-mr-admin-logs', $src, array(), UVE_Mailrelay_Newsletter::VERSION );
+		}
+
+		if ( ! UVE_MR_Utils::is_premium_installed() && false !== strpos( $hook_suffix, 'uve-mr-newsletter' ) ) {
+			$src = plugins_url( 'assets/admin-upgrade.css', UVE_MR_Utils::plugin_file() );
+			wp_enqueue_style( 'uve-mr-admin-upgrade', $src, array(), UVE_Mailrelay_Newsletter::VERSION );
+		}
+	}
+
+	/**
+	 * Reorder submenu items for the plugin menu.
+	 *
+	 * @return void
+	 */
+	public static function reorder_submenu(): void {
+		global $submenu;
+		$parent = 'uve-mr-newsletter';
+		if ( empty( $submenu[ $parent ] ) || ! is_array( $submenu[ $parent ] ) ) {
 			return;
 		}
 
-		$src = plugins_url( 'assets/admin-logs.css', __DIR__ . '/../class-uve-mailrelay-newsletter.php' );
-		wp_enqueue_style( 'uve-mr-admin-logs', $src, array(), UVE_Mailrelay_Newsletter::VERSION );
+		$desired = array(
+			'uve-mr-newsletter',
+			'uve-mr-newsletter-forms',
+			'uve-mr-newsletter-logs',
+			'uve-mr-newsletter-upgrade',
+		);
+
+		$ordered = array();
+		$other   = array();
+		foreach ( $submenu[ $parent ] as $item ) {
+			$slug = $item[2] ?? '';
+			if ( in_array( $slug, $desired, true ) ) {
+				$ordered[ $slug ] = $item;
+				continue;
+			}
+			$other[] = $item;
+		}
+
+		$final = array();
+		foreach ( $desired as $slug ) {
+			if ( isset( $ordered[ $slug ] ) ) {
+				$final[] = $ordered[ $slug ];
+			}
+		}
+
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$submenu[ $parent ] = array_merge( $final, $other );
 	}
 
 	/**
@@ -143,7 +187,7 @@ final class UVE_MR_Admin {
 		$opts = UVE_Mailrelay_Newsletter::get_options();
 		?>
 		<div class="wrap">
-		<h1><?php echo esc_html__( 'MR4WP', 'uve-mailrelay-newsletter' ); ?></h1>
+		<h1><?php echo esc_html__( 'RelayPress', 'uve-mailrelay-newsletter' ); ?></h1>
 
 			<form method="post" action="options.php">
 				<?php settings_fields( 'uve_mr_newsletter' ); ?>
@@ -593,7 +637,7 @@ final class UVE_MR_Admin {
 		}
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'MR4WP Logs', 'uve-mailrelay-newsletter' ); ?></h1>
+			<h1><?php echo esc_html__( 'RelayPress Logs', 'uve-mailrelay-newsletter' ); ?></h1>
 
 			<?php UVE_MR_Logs::render_logs_table_safe(); ?>
 

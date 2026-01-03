@@ -74,16 +74,17 @@ final class UVE_MR_WP_Form_Repository implements UVE_MR_Form_Repository_Interfac
 	 *
 	 * @param string $name Form name.
 	 * @param array  $config Config array.
+	 * @param string $status Form status.
 	 * @return UVE_MR_Form|null
 	 */
-	public function create( string $name, array $config ): ?UVE_MR_Form {
+	public function create( string $name, array $config, string $status ): ?UVE_MR_Form {
 		if ( ! function_exists( 'wp_insert_post' ) ) {
 			return null;
 		}
 		$post_id = wp_insert_post(
 			array(
 				'post_type'   => UVE_MR_Form::POST_TYPE,
-				'post_status' => 'publish',
+				'post_status' => $status,
 				'post_title'  => $name,
 			),
 			true
@@ -106,9 +107,10 @@ final class UVE_MR_WP_Form_Repository implements UVE_MR_Form_Repository_Interfac
 	 * @param int    $id Form ID.
 	 * @param string $name Form name.
 	 * @param array  $config Config array.
+	 * @param string $status Form status.
 	 * @return UVE_MR_Form|null
 	 */
-	public function update( int $id, string $name, array $config ): ?UVE_MR_Form {
+	public function update( int $id, string $name, array $config, string $status ): ?UVE_MR_Form {
 		if ( ! function_exists( 'get_post' ) || ! function_exists( 'wp_update_post' ) ) {
 			return null;
 		}
@@ -121,7 +123,7 @@ final class UVE_MR_WP_Form_Repository implements UVE_MR_Form_Repository_Interfac
 			array(
 				'ID'          => $id,
 				'post_title'  => $name,
-				'post_status' => 'publish',
+				'post_status' => $status,
 			),
 			true
 		);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Elementor widget for MR4WP.
+ * Elementor widget for RelayPress.
  *
  * @package UVE_Mailrelay_Newsletter
  */
@@ -33,7 +33,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 	 * @return string
 	 */
 	public function get_title() {
-		return __( 'MR4WP', 'uve-mailrelay-newsletter' );
+		return __( 'RelayPress', 'uve-mailrelay-newsletter' );
 	}
 
 	/**
@@ -61,7 +61,12 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 	 */
 	protected function register_controls() {
 		$opts           = UVE_Mailrelay_Newsletter::get_options();
-		$forms          = UVE_MR_Form_Use_Cases::list_forms( array( 'posts_per_page' => 100 ) );
+		$forms          = UVE_MR_Form_Use_Cases::list_forms(
+			array(
+				'post_status'    => array( 'publish' ),
+				'posts_per_page' => 100,
+			)
+		);
 		$form_options   = array(
 			'0' => __( 'Use legacy overrides', 'uve-mailrelay-newsletter' ),
 		);

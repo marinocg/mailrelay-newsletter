@@ -34,9 +34,10 @@ interface UVE_MR_Form_Repository_Interface {
 	 *
 	 * @param string $name Form name.
 	 * @param array  $config Config array.
+	 * @param string $status Form status.
 	 * @return UVE_MR_Form|null
 	 */
-	public function create( string $name, array $config ): ?UVE_MR_Form;
+	public function create( string $name, array $config, string $status ): ?UVE_MR_Form;
 
 	/**
 	 * Update a form.
@@ -44,9 +45,10 @@ interface UVE_MR_Form_Repository_Interface {
 	 * @param int    $id Form ID.
 	 * @param string $name Form name.
 	 * @param array  $config Config array.
+	 * @param string $status Form status.
 	 * @return UVE_MR_Form|null
 	 */
-	public function update( int $id, string $name, array $config ): ?UVE_MR_Form;
+	public function update( int $id, string $name, array $config, string $status ): ?UVE_MR_Form;
 
 	/**
 	 * Trash a form.

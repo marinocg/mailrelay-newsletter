@@ -47,6 +47,13 @@ final class UVE_MR_Form {
 	public string $updated_at;
 
 	/**
+	 * Created timestamp.
+	 *
+	 * @var string
+	 */
+	public string $created_at;
+
+	/**
 	 * Raw config.
 	 *
 	 * @var array
@@ -65,6 +72,7 @@ final class UVE_MR_Form {
 		$self->name       = (string) $post->post_title;
 		$self->status     = (string) $post->post_status;
 		$self->updated_at = (string) $post->post_modified;
+		$self->created_at = (string) $post->post_date;
 		$config           = get_post_meta( $post->ID, self::META_CONFIG, true );
 		$self->config     = is_array( $config ) ? $config : array();
 		return $self;
