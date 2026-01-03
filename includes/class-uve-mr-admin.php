@@ -21,8 +21,8 @@ final class UVE_MR_Admin {
 	 */
 	public static function admin_menu(): void {
 		add_menu_page(
-			__( 'MR4WP', 'uve-mailrelay-newsletter' ),
-			__( 'MR4WP', 'uve-mailrelay-newsletter' ),
+			__( 'RelayPress', 'uve-mailrelay-newsletter' ),
+			__( 'RelayPress', 'uve-mailrelay-newsletter' ),
 			'manage_options',
 			'uve-mr-newsletter',
 			array( __CLASS__, 'render_settings_page' ),
@@ -79,12 +79,63 @@ final class UVE_MR_Admin {
 	 * @return void
 	 */
 	public static function admin_enqueue( string $hook_suffix ): void {
-		if ( false === strpos( $hook_suffix, 'uve-mr-newsletter-logs' ) ) {
+		if ( 'toplevel_page_uve-mr-newsletter' === $hook_suffix ) {
+			$base   = UVE_MR_Utils::plugin_file();
+			$js_src = plugins_url( 'assets/admin-forms.js', $base );
+			wp_enqueue_script( 'uve-mr-admin-settings', $js_src, array(), UVE_Mailrelay_Newsletter::VERSION, true );
+		}
+
+		if ( false !== strpos( $hook_suffix, 'uve-mr-newsletter-logs' ) ) {
+			$src = plugins_url( 'assets/admin-logs.css', UVE_MR_Utils::plugin_file() );
+			wp_enqueue_style( 'uve-mr-admin-logs', $src, array(), UVE_Mailrelay_Newsletter::VERSION );
+		}
+
+		$show_upgrade = (bool) apply_filters( 'uve_mr_show_upgrade_ui', true );
+		if ( $show_upgrade ) {
+			$src = plugins_url( 'assets/admin-upgrade.css', UVE_MR_Utils::plugin_file() );
+			wp_enqueue_style( 'uve-mr-admin-upgrade', $src, array(), UVE_Mailrelay_Newsletter::VERSION );
+		}
+	}
+
+	/**
+	 * Reorder submenu items for the plugin menu.
+	 *
+	 * @return void
+	 */
+	public static function reorder_submenu(): void {
+		global $submenu;
+		$parent = 'uve-mr-newsletter';
+		if ( empty( $submenu[ $parent ] ) || ! is_array( $submenu[ $parent ] ) ) {
 			return;
 		}
 
-		$src = plugins_url( 'assets/admin-logs.css', __DIR__ . '/../class-uve-mailrelay-newsletter.php' );
-		wp_enqueue_style( 'uve-mr-admin-logs', $src, array(), UVE_Mailrelay_Newsletter::VERSION );
+		$desired = array(
+			'uve-mr-newsletter',
+			'uve-mr-newsletter-forms',
+			'uve-mr-newsletter-logs',
+			'uve-mr-newsletter-upgrade',
+		);
+
+		$ordered = array();
+		$other   = array();
+		foreach ( $submenu[ $parent ] as $item ) {
+			$slug = $item[2] ?? '';
+			if ( in_array( $slug, $desired, true ) ) {
+				$ordered[ $slug ] = $item;
+				continue;
+			}
+			$other[] = $item;
+		}
+
+		$final = array();
+		foreach ( $desired as $slug ) {
+			if ( isset( $ordered[ $slug ] ) ) {
+				$final[] = $ordered[ $slug ];
+			}
+		}
+
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$submenu[ $parent ] = array_merge( $final, $other );
 	}
 
 	/**
@@ -113,6 +164,17 @@ final class UVE_MR_Admin {
 		$out['email_placeholder'] = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['email_placeholder'] ?? $def['email_placeholder'] ) ) );
 		$out['submit_label']      = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['submit_label'] ?? $def['submit_label'] ) ) );
 		$out['ajax_mode']         = ! empty( $raw['ajax_mode'] ) ? '1' : '0';
+		$locale_fallback_raw      = sanitize_text_field( (string) ( $raw['locale_fallback'] ?? $def['locale_fallback'] ) );
+		$locale_fallback          = UVE_MR_Utils::normalize_locale( $locale_fallback_raw );
+		$out['locale_fallback']   = '' !== $locale_fallback ? $locale_fallback : UVE_MR_Utils::default_locale_fallback();
+		$locale_mode_raw          = sanitize_text_field( (string) ( $raw['locale_mode'] ?? $def['locale_mode'] ) );
+		$out['locale_mode']       = in_array( $locale_mode_raw, array( 'browser', 'force' ), true ) ? $locale_mode_raw : 'browser';
+		$locale_force_raw         = sanitize_text_field( (string) ( $raw['locale_force'] ?? $def['locale_force'] ) );
+		$locale_force             = UVE_MR_Utils::normalize_locale( $locale_force_raw );
+		if ( '' === $locale_force ) {
+			$locale_force = UVE_MR_Utils::default_locale_fallback();
+		}
+		$out['locale_force'] = $locale_force;
 
 		$out['privacy_url']   = esc_url_raw( trim( (string) ( $raw['privacy_url'] ?? $def['privacy_url'] ) ) );
 		$out['consent_label'] = UVE_MR_Utils::normalize_text( sanitize_text_field( (string) ( $raw['consent_label'] ?? $def['consent_label'] ) ) );
@@ -143,7 +205,15 @@ final class UVE_MR_Admin {
 		$opts = UVE_Mailrelay_Newsletter::get_options();
 		?>
 		<div class="wrap">
-		<h1><?php echo esc_html__( 'MR4WP', 'uve-mailrelay-newsletter' ); ?></h1>
+		<h1><?php echo esc_html__( 'RelayPress', 'uve-mailrelay-newsletter' ); ?></h1>
+			<?php
+			$updated = isset( $_GET['settings-updated'] ) ? sanitize_text_field( (string) wp_unslash( $_GET['settings-updated'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( '' !== $updated ) :
+				?>
+				<div class="notice notice-success is-dismissible">
+					<p><?php echo esc_html__( 'Settings saved successfully.', 'uve-mailrelay-newsletter' ); ?></p>
+				</div>
+			<?php endif; ?>
 
 			<form method="post" action="options.php">
 				<?php settings_fields( 'uve_mr_newsletter' ); ?>
@@ -255,6 +325,58 @@ final class UVE_MR_Admin {
 											<option value="inactive" <?php selected( $opts['subscriber_status'], 'inactive' ); ?>><?php echo esc_html__( 'Double opt-in (inactive + confirmation)', 'uve-mailrelay-newsletter' ); ?></option>
 											<option value="active" <?php selected( $opts['subscriber_status'], 'active' ); ?>><?php echo esc_html__( 'Single opt-in (active)', 'uve-mailrelay-newsletter' ); ?></option>
 										</select>
+									</div>
+								</div>
+								<div class="uve-mr-field-row">
+									<label class="uve-mr-field-label" for="uve-mr-locale-fallback"><?php echo esc_html__( 'Default locale fallback', 'uve-mailrelay-newsletter' ); ?></label>
+									<div class="uve-mr-field-control">
+										<?php
+										$locale_labels   = UVE_MR_Utils::locale_labels();
+										$locale_fallback = UVE_MR_Utils::normalize_locale( (string) ( $opts['locale_fallback'] ?? '' ) );
+										if ( '' === $locale_fallback ) {
+											$locale_fallback = UVE_MR_Utils::default_locale_fallback();
+										}
+										?>
+										<select id="uve-mr-locale-fallback" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[locale_fallback]">
+											<?php foreach ( $locale_labels as $value => $label ) : ?>
+												<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $locale_fallback, $value ); ?>>
+													<?php echo esc_html( $label ); ?>
+												</option>
+											<?php endforeach; ?>
+										</select>
+										<p class="description"><?php echo esc_html__( 'Used when the browser language is not supported.', 'uve-mailrelay-newsletter' ); ?></p>
+									</div>
+								</div>
+								<div class="uve-mr-field-row">
+									<label class="uve-mr-field-label" for="uve-mr-locale-mode"><?php echo esc_html__( 'Default locale mode', 'uve-mailrelay-newsletter' ); ?></label>
+									<div class="uve-mr-field-control">
+										<select id="uve-mr-locale-mode" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[locale_mode]">
+											<option value="browser" <?php selected( (string) ( $opts['locale_mode'] ?? 'browser' ), 'browser' ); ?>>
+												<?php echo esc_html__( 'Use browser language', 'uve-mailrelay-newsletter' ); ?>
+											</option>
+											<option value="force" <?php selected( (string) ( $opts['locale_mode'] ?? 'browser' ), 'force' ); ?>>
+												<?php echo esc_html__( 'Force a specific language', 'uve-mailrelay-newsletter' ); ?>
+											</option>
+										</select>
+									</div>
+								</div>
+								<div class="uve-mr-field-row uve-mr-locale-force-row">
+									<label class="uve-mr-field-label" for="uve-mr-locale-force"><?php echo esc_html__( 'Default forced language', 'uve-mailrelay-newsletter' ); ?></label>
+									<div class="uve-mr-field-control">
+										<?php
+										$locale_force = UVE_MR_Utils::normalize_locale( (string) ( $opts['locale_force'] ?? '' ) );
+										if ( '' === $locale_force ) {
+											$locale_force = UVE_MR_Utils::default_locale_fallback();
+										}
+										?>
+										<select id="uve-mr-locale-force" name="<?php echo esc_attr( UVE_Mailrelay_Newsletter::OPT_KEY ); ?>[locale_force]">
+											<?php foreach ( $locale_labels as $value => $label ) : ?>
+												<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $locale_force, $value ); ?>>
+													<?php echo esc_html( $label ); ?>
+												</option>
+											<?php endforeach; ?>
+										</select>
+										<p class="description"><?php echo esc_html__( 'Used when forcing a language globally.', 'uve-mailrelay-newsletter' ); ?></p>
 									</div>
 								</div>
 							</div>
@@ -593,7 +715,7 @@ final class UVE_MR_Admin {
 		}
 		?>
 		<div class="wrap">
-			<h1><?php echo esc_html__( 'MR4WP Logs', 'uve-mailrelay-newsletter' ); ?></h1>
+			<h1><?php echo esc_html__( 'RelayPress Logs', 'uve-mailrelay-newsletter' ); ?></h1>
 
 			<?php UVE_MR_Logs::render_logs_table_safe(); ?>
 

@@ -19,7 +19,7 @@ final class UVE_MR_Form_Use_Cases {
 	 * @return UVE_MR_Form_Repository_Interface
 	 */
 	private static function repo(): UVE_MR_Form_Repository_Interface {
-		return new UVE_MR_WP_Form_Repository();
+		return UVE_MR_Container::form_repository();
 	}
 
 	/**
@@ -47,10 +47,12 @@ final class UVE_MR_Form_Use_Cases {
 	 *
 	 * @param string $name Form name.
 	 * @param array  $config Form config.
+	 * @param string $status Form status.
 	 * @return UVE_MR_Form|null
 	 */
-	public static function create_form( string $name, array $config ): ?UVE_MR_Form {
-		return self::repo()->create( $name, $config );
+	public static function create_form( string $name, array $config, string $status = 'publish' ): ?UVE_MR_Form {
+		$status = self::normalize_status( $status );
+		return self::repo()->create( $name, $config, $status );
 	}
 
 	/**
@@ -59,10 +61,12 @@ final class UVE_MR_Form_Use_Cases {
 	 * @param int    $id Form ID.
 	 * @param string $name Form name.
 	 * @param array  $config Form config.
+	 * @param string $status Form status.
 	 * @return UVE_MR_Form|null
 	 */
-	public static function update_form( int $id, string $name, array $config ): ?UVE_MR_Form {
-		return self::repo()->update( $id, $name, $config );
+	public static function update_form( int $id, string $name, array $config, string $status = 'publish' ): ?UVE_MR_Form {
+		$status = self::normalize_status( $status );
+		return self::repo()->update( $id, $name, $config, $status );
 	}
 
 	/**
@@ -78,7 +82,7 @@ final class UVE_MR_Form_Use_Cases {
 		}
 
 		$name = $form->name . ' (Copy)';
-		return self::repo()->create( $name, $form->config );
+		return self::repo()->create( $name, $form->config, 'draft' );
 	}
 
 	/**
@@ -99,16 +103,58 @@ final class UVE_MR_Form_Use_Cases {
 	 */
 	public static function get_form_for_render( ?int $id ): ?UVE_MR_Form {
 		if ( $id ) {
-			return self::repo()->get( $id );
+			$form = self::repo()->get( $id );
+			if ( $form && 'publish' !== $form->status ) {
+				return null;
+			}
+			return $form;
 		}
 
 		$forms = self::repo()->list(
 			array(
 				'post_status'    => array( 'publish' ),
 				'posts_per_page' => 1,
-				'orderby'        => 'modified',
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
 			)
 		);
 		return $forms[0] ?? null;
+	}
+
+	/**
+	 * Get the primary form for admin editing.
+	 *
+	 * @return UVE_MR_Form|null
+	 */
+	public static function get_primary_form_for_admin(): ?UVE_MR_Form {
+		$args  = array(
+			'post_status'    => array( 'publish' ),
+			'posts_per_page' => 1,
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+		);
+		$forms = self::repo()->list(
+			array(
+				'post_status'    => $args['post_status'],
+				'posts_per_page' => $args['posts_per_page'],
+				'orderby'        => $args['orderby'],
+				'order'          => $args['order'],
+			)
+		);
+		if ( empty( $forms ) ) {
+			$args['post_status'] = array( 'draft' );
+			$forms               = self::repo()->list( $args );
+		}
+		return $forms[0] ?? null;
+	}
+
+	/**
+	 * Normalize form status to supported values.
+	 *
+	 * @param string $status Status.
+	 * @return string
+	 */
+	private static function normalize_status( string $status ): string {
+		return 'draft' === $status ? 'draft' : 'publish';
 	}
 }

@@ -16,6 +16,8 @@
 - Align logs table styling with WP list tables, including column sizing.
 - Improve client IP detection for proxy/Cloudflare setups.
 - Add tests for admin menu registration, logs table rendering, and client IP parsing.
+- Add locale handling with global defaults and per-form overrides, including browser detection and Mailrelay payload support.
+- Add admin notices for successful saves and fix forms redirect handling.
 
 ## 1.7.1
 - Block form after submit and add ajax behaviour

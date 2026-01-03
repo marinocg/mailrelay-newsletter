@@ -26,7 +26,8 @@ final class MailrelayTest extends TestCase {
 	public function test_subscribe_returns_error_when_missing_config(): void {
 		$GLOBALS['uve_mr_test_options'][ UVE_Mailrelay_Newsletter::OPT_KEY ]['api_base_url'] = '';
 
-		$result = UVE_MR_Mailrelay::subscribe_with_confirmation( 'test@example.com', array( 1 ), true, '203.0.113.10' );
+		$client = new UVE_MR_WP_Mailrelay_Client();
+		$result = $client->subscribe_with_confirmation( 'test@example.com', array( 1 ), true, '203.0.113.10' );
 
 		$this->assertFalse( $result['ok'] );
 		$this->assertSame( 0, $result['http_code'] );
@@ -38,7 +39,8 @@ final class MailrelayTest extends TestCase {
 			'body'     => wp_json_encode( array( 'id' => 123 ) ),
 		);
 
-		$result = UVE_MR_Mailrelay::subscribe_with_confirmation( 'test@example.com', array( 1 ), true, '203.0.113.10' );
+		$client = new UVE_MR_WP_Mailrelay_Client();
+		$result = $client->subscribe_with_confirmation( 'test@example.com', array( 1 ), true, '203.0.113.10' );
 
 		$this->assertTrue( $result['ok'] );
 		$this->assertNull( $result['confirmation_requested_at'] );
@@ -56,7 +58,8 @@ final class MailrelayTest extends TestCase {
 			'body'     => 'ok',
 		);
 
-		$result = UVE_MR_Mailrelay::subscribe_with_confirmation( 'test@example.com', array( 1 ), true, '203.0.113.10' );
+		$client = new UVE_MR_WP_Mailrelay_Client();
+		$result = $client->subscribe_with_confirmation( 'test@example.com', array( 1 ), true, '203.0.113.10' );
 
 		$this->assertTrue( $result['ok'] );
 		$this->assertSame( '2025-01-01 00:00:00', $result['confirmation_requested_at'] );

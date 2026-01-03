@@ -25,6 +25,7 @@ abstract class Widget_Base {
 
 class Controls_Manager {
 	public const TAB_CONTENT = 'content';
+	public const SELECT      = 'select';
 	public const TEXT        = 'text';
 	public const TEXTAREA    = 'textarea';
 	public const URL         = 'url';

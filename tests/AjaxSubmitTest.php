@@ -24,6 +24,7 @@ final class AjaxSubmitTest extends TestCase {
 				'store_consent_log'             => '0',
 				'rate_limit_max'                => 5,
 				'rate_limit_window_seconds'     => 3600,
+				'turnstile_site_key'            => 'site_key',
 				'turnstile_secret_key'          => 'secret_key',
 			),
 		);

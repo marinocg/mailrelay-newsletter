@@ -422,7 +422,7 @@ final class UVE_MR_Frontend {
 		if ( 'on' === $mode ) {
 			return true;
 		}
-		return true;
+		return UVE_MR_Turnstile::is_enabled();
 	}
 
 	/**

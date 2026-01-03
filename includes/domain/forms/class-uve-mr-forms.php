@@ -25,8 +25,8 @@ final class UVE_MR_Forms {
 			UVE_MR_Form::POST_TYPE,
 			array(
 				'labels'             => array(
-					'name'          => __( 'MR4WP Forms', 'uve-mailrelay-newsletter' ),
-					'singular_name' => __( 'MR4WP Form', 'uve-mailrelay-newsletter' ),
+					'name'          => __( 'RelayPress Forms', 'uve-mailrelay-newsletter' ),
+					'singular_name' => __( 'RelayPress Form', 'uve-mailrelay-newsletter' ),
 				),
 				'public'             => false,
 				'publicly_queryable' => false,
@@ -69,7 +69,7 @@ final class UVE_MR_Forms {
 		$defaults                   = UVE_MR_Form_Config::defaults( $opts );
 		$defaults['basics']['name'] = __( 'Default Form', 'uve-mailrelay-newsletter' );
 
-		UVE_MR_Form_Use_Cases::create_form( $defaults['basics']['name'], $defaults );
+		UVE_MR_Form_Use_Cases::create_form( $defaults['basics']['name'], $defaults, 'publish' );
 		update_option( self::MIGRATION_OPTION, '1' );
 	}
 }

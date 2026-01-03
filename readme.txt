@@ -1,4 +1,4 @@
-=== MR4WP ===
+=== RelayPress ===
 Contributors: uve
 Tags: newsletter, mailrelay, turnstile, gdpr
 Requires at least: 6.0
@@ -19,7 +19,7 @@ Newsletter subscription with Mailrelay API + Cloudflare Turnstile + consent logg
 == Installation ==
 1. Upload the plugin ZIP.
 2. Activate it.
-3. Configure Settings → MR4WP.
+3. Configure Settings → RelayPress.
 
 == Changelog ==
 = 1.4.1 =

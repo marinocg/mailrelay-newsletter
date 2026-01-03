@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: MR4WP 1.7.1\n"
+"Project-Id-Version: RelayPress 1.7.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-01 14:05+0100\n"
 "PO-Revision-Date: 2025-01-01 00:00+0000\n"
@@ -70,16 +70,52 @@ msgstr "Acepto la política de privacidad"
 msgid "We could not complete the request. Please try again."
 msgstr "No se pudo completar la solicitud. Inténtalo de nuevo."
 
+#: includes/class-uve-mr-utils.php:28
+msgid "English"
+msgstr "Inglés"
+
+#: includes/class-uve-mr-utils.php:29
+msgid "Spanish"
+msgstr "Español"
+
+#: includes/class-uve-mr-utils.php:30
+msgid "Portuguese (Brazil)"
+msgstr "Portugués (Brasil)"
+
+#: includes/class-uve-mr-utils.php:31
+msgid "French"
+msgstr "Francés"
+
+#: includes/class-uve-mr-utils.php:32
+msgid "Galician"
+msgstr "Gallego"
+
+#: includes/class-uve-mr-utils.php:33
+msgid "Catalan"
+msgstr "Catalán"
+
+#: includes/class-uve-mr-utils.php:34
+msgid "Basque"
+msgstr "Euskera"
+
+#: includes/class-uve-mr-utils.php:35
+msgid "Italian"
+msgstr "Italiano"
+
 #: includes/class-uve-mr-admin.php:24 includes/class-uve-mr-admin.php:25
 #: includes/class-uve-mr-admin.php:146
 #: includes/class-uve-mr-newsletter-widget.php:23
 #: includes/class-uve-mr-elementor-newsletter-widget.php:36
-msgid "MR4WP"
-msgstr "MR4WP"
+msgid "RelayPress"
+msgstr "RelayPress"
 
 #: includes/class-uve-mr-admin.php:43 includes/class-uve-mr-admin.php:44
 msgid "Logs"
 msgstr "Registros"
+
+#: includes/class-uve-mr-admin.php:197
+msgid "Settings saved successfully."
+msgstr "Configuración guardada correctamente."
 
 #: includes/class-uve-mr-admin.php:153
 msgid "Mailrelay API"
@@ -157,9 +193,47 @@ msgstr "Actualizar grupos"
 msgid "No groups found or API not configured."
 msgstr "No se encontraron grupos o la API no está configurada."
 
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:46
+msgid "Form saved successfully."
+msgstr "Formulario guardado correctamente."
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:50
+msgid "Something went wrong while saving the form."
+msgstr "Se produjo un error al guardar el formulario."
+
 #: includes/class-uve-mr-admin.php:252
 msgid "Subscription mode"
 msgstr "Modo suscripción"
+
+#: includes/class-uve-mr-admin.php:262
+msgid "Default locale fallback"
+msgstr "Idioma de respaldo por defecto"
+
+#: includes/class-uve-mr-admin.php:274
+msgid "Used when the browser language is not supported."
+msgstr "Se usa cuando el idioma del navegador no está soportado."
+
+#: includes/class-uve-mr-admin.php:284
+msgid "Default locale mode"
+msgstr "Modo de idioma por defecto"
+
+#: includes/class-uve-mr-admin.php:288
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:140
+msgid "Use browser language"
+msgstr "Usar idioma del navegador"
+
+#: includes/class-uve-mr-admin.php:291
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:141
+msgid "Force a specific language"
+msgstr "Forzar un idioma específico"
+
+#: includes/class-uve-mr-admin.php:296
+msgid "Default forced language"
+msgstr "Idioma forzado por defecto"
+
+#: includes/class-uve-mr-admin.php:309
+msgid "Used when forcing a language globally."
+msgstr "Se usa al forzar un idioma globalmente."
 
 #: includes/class-uve-mr-admin.php:255
 msgid "Double opt-in (inactive + confirmation)"
@@ -173,6 +247,26 @@ msgstr "Single opt-in (active)"
 #: includes/admin/forms/class-uve-mr-forms-admin.php:426
 msgid "Spam protection"
 msgstr "Protección anti-spam"
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:135
+msgid "Locale"
+msgstr "Idioma"
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:139
+msgid "Use global setting"
+msgstr "Usar configuración global"
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:143
+msgid "If the browser language is unsupported, the global fallback is used."
+msgstr "Si el idioma del navegador no es compatible, se usa el valor global."
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:148
+msgid "Forced language"
+msgstr "Idioma forzado"
+
+#: includes/admin/forms/class-uve-mr-forms-editor-page.php:155
+msgid "Used only when forcing a language for this form."
+msgstr "Se usa solo al forzar un idioma para este formulario."
 
 #: includes/class-uve-mr-admin.php:267
 msgid "Turnstile Site Key"
@@ -318,8 +412,8 @@ msgid "Purged %s records."
 msgstr "Purgados %s registros."
 
 #: includes/class-uve-mr-admin.php:596
-msgid "MR4WP Logs"
-msgstr "Registros de MR4WP"
+msgid "RelayPress Logs"
+msgstr "Registros de RelayPress"
 
 #: includes/class-uve-mr-admin.php:602
 msgid "Purge now"
@@ -335,9 +429,8 @@ msgstr ""
 
 #: includes/class-uve-mr-newsletter-widget.php:84
 #: includes/class-uve-mr-elementor-newsletter-widget.php:86
-#, fuzzy
 msgid "Form"
-msgstr "Formularios"
+msgstr "Formulario"
 
 #: includes/class-uve-mr-newsletter-widget.php:86
 #: includes/class-uve-mr-elementor-newsletter-widget.php:66
@@ -418,13 +511,13 @@ msgstr "Debes aceptar la política de privacidad."
 
 #: includes/domain/forms/class-uve-mr-forms.php:28
 #, fuzzy
-msgid "MR4WP Forms"
-msgstr "MR4WP"
+msgid "RelayPress Forms"
+msgstr "RelayPress"
 
 #: includes/domain/forms/class-uve-mr-forms.php:29
 #, fuzzy
-msgid "MR4WP Form"
-msgstr "MR4WP"
+msgid "RelayPress Form"
+msgstr "RelayPress"
 
 #: includes/domain/forms/class-uve-mr-forms.php:70
 msgid "Default Form"
@@ -890,6 +983,72 @@ msgstr "Sí"
 #: includes/class-uve-mr-elementor-newsletter-widget.php:179
 msgid "No"
 msgstr "No"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:409
+msgid "Visibility"
+msgstr "Visibilidad"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:413
+msgid "Published"
+msgstr "Publicado"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:416
+msgid "Draft"
+msgstr "Borrador"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:420
+msgid "Free version allows up to %d published form."
+msgid_plural "Free version allows up to %d published forms."
+msgstr[0] "La versión gratuita permite hasta %d formulario publicado."
+msgstr[1] "La versión gratuita permite hasta %d formularios publicados."
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:176
+msgid "Move to Draft"
+msgstr "Mover a borrador"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:179
+msgid "Publish"
+msgstr "Publicar"
+
+#: includes/admin/forms/class-uve-mr-forms-table.php:126
+msgid "Created"
+msgstr "Creado"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:113
+msgid "Your form was saved as a draft. %s to publish more forms."
+msgstr "El formulario se guardó como borrador. %s para publicar más formularios."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:777
+msgid "Unlock unlimited published forms"
+msgstr "Desbloquea formularios publicados ilimitados"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:778
+msgid "Publish as many signup forms as you want and keep your campaigns segmented."
+msgstr "Publica tantos formularios de suscripción como quieras y mantiene tus campañas segmentadas."
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:779
+msgid "Upgrade to Premium"
+msgstr "Actualizar a Premium"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:787
+msgid "Premium"
+msgstr "Premium"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:793
+msgid "Unlimited published forms"
+msgstr "Formularios publicados ilimitados"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:794
+msgid "Advanced segmentation and testing"
+msgstr "Segmentación y pruebas avanzadas"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:795
+msgid "Priority support"
+msgstr "Soporte prioritario"
+
+#: includes/admin/forms/class-uve-mr-forms-admin.php:804
+msgid "Maybe later"
+msgstr "Quizás más tarde"
 
 #~ msgid ""
 #~ "Copy the API base URL from your Mailrelay account (API/Developers "

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: MR4WP
+ * Plugin Name: RelayPress
  * Description: Widget + shortcode newsletter with Cloudflare Turnstile and Mailrelay official API. Uses inactive + resend_confirmation_email for double opt-in. Neutral success message to prevent email enumeration. GDPR consent log with retention and confirmation-send logging.
  * Version: 1.7.1
  * Requires at least: 6.0
@@ -22,25 +22,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once __DIR__ . '/includes/class-uve-mr-utils.php';
 require_once __DIR__ . '/includes/class-uve-mr-turnstile.php';
 require_once __DIR__ . '/includes/class-uve-mr-logs.php';
-require_once __DIR__ . '/includes/class-uve-mr-mailrelay.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-uve-mr-mailrelay-client.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-uve-mr-options-repository.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-uve-mr-logs-repository.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-uve-mr-turnstile-verifier.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-uve-mr-rate-limiter.php';
+require_once __DIR__ . '/includes/ports/newsletter/interface-uve-mr-request-context.php';
+require_once __DIR__ . '/includes/ports/newsletter/interface-uve-mr-input-sanitizer.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-uve-mr-wp-mailrelay-client.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-uve-mr-wp-options-repository.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-uve-mr-wp-logs-repository.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-uve-mr-wp-turnstile-verifier.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-uve-mr-wp-rate-limiter.php';
+require_once __DIR__ . '/includes/adapters/newsletter/class-uve-mr-wp-request-context.php';
+require_once __DIR__ . '/includes/adapters/newsletter/class-uve-mr-wp-input-sanitizer.php';
 require_once __DIR__ . '/includes/use-cases/newsletter/class-uve-mr-submit-use-case.php';
 require_once __DIR__ . '/includes/class-uve-mr-container.php';
 require_once __DIR__ . '/includes/class-uve-mr-frontend.php';
 require_once __DIR__ . '/includes/class-uve-mr-admin.php';
+require_once __DIR__ . '/includes/admin/class-uve-mr-upgrade-admin.php';
 require_once __DIR__ . '/includes/domain/forms/class-uve-mr-form.php';
 require_once __DIR__ . '/includes/domain/forms/class-uve-mr-form-config.php';
 require_once __DIR__ . '/includes/ports/forms/interface-uve-mr-form-repository.php';
-require_once __DIR__ . '/includes/adapters/forms/class-uve-mr-wp-form-repository.php';
+require_once __DIR__ . '/includes/adapters/forms/class-uve-mr-single-form-repository.php';
 require_once __DIR__ . '/includes/use-cases/forms/class-uve-mr-form-use-cases.php';
 require_once __DIR__ . '/includes/domain/forms/class-uve-mr-forms.php';
 require_once __DIR__ . '/includes/class-uve-mr-submit.php';
@@ -74,13 +78,17 @@ final class UVE_Mailrelay_Newsletter {
 		add_action( 'elementor/widgets/register', array( 'UVE_MR_Elementor', 'register_elementor_widget' ) );
 		add_action( 'elementor/elements/categories_registered', array( 'UVE_MR_Elementor', 'register_elementor_category' ) );
 		add_action( 'admin_menu', array( 'UVE_MR_Admin', 'admin_menu' ) );
+		add_action( 'admin_menu', array( 'UVE_MR_Admin', 'reorder_submenu' ), 999 );
 		add_action( 'admin_init', array( 'UVE_MR_Admin', 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( 'UVE_MR_Admin', 'admin_enqueue' ) );
+		add_action( 'admin_menu', array( 'UVE_MR_Upgrade_Admin', 'admin_menu' ) );
+		add_action( 'admin_enqueue_scripts', array( 'UVE_MR_Upgrade_Admin', 'admin_enqueue' ) );
 		if ( function_exists( 'is_admin' ) && is_admin() ) {
-			require_once __DIR__ . '/includes/admin/forms/class-uve-mr-forms-table.php';
+			require_once __DIR__ . '/includes/admin/forms/class-uve-mr-forms-editor-page.php';
 			require_once __DIR__ . '/includes/admin/forms/class-uve-mr-forms-admin.php';
 			add_action( 'admin_menu', array( 'UVE_MR_Forms_Admin', 'admin_menu' ) );
 			add_action( 'admin_init', array( 'UVE_MR_Forms_Admin', 'admin_init' ) );
+			add_action( 'admin_enqueue_scripts', array( 'UVE_MR_Forms_Admin', 'admin_enqueue' ) );
 		}
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( __CLASS__, 'add_settings_link' ) );
 
@@ -118,6 +126,11 @@ final class UVE_Mailrelay_Newsletter {
 			'email_placeholder'             => __( 'Email...', 'uve-mailrelay-newsletter' ),
 			'submit_label'                  => __( 'Subscribe', 'uve-mailrelay-newsletter' ),
 			'ajax_mode'                     => '0',
+
+			// Locale fallback (Mailrelay).
+			'locale_fallback'               => UVE_MR_Utils::default_locale_fallback(),
+			'locale_mode'                   => 'browser',
+			'locale_force'                  => UVE_MR_Utils::default_locale_fallback(),
 
 			// GDPR.
 			'privacy_url'                   => '',
@@ -197,6 +210,12 @@ final class UVE_Mailrelay_Newsletter {
 		$url           = admin_url( 'options-general.php?page=uve-mr-newsletter' );
 		$settings_link = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Settings', 'uve-mailrelay-newsletter' ) . '</a>';
 		array_unshift( $links, $settings_link );
+		$show_upgrade = (bool) apply_filters( 'uve_mr_show_upgrade_ui', true );
+		if ( $show_upgrade ) {
+			$upgrade_url  = admin_url( 'admin.php?page=uve-mr-newsletter-upgrade' );
+			$upgrade_link = '<a href="' . esc_url( $upgrade_url ) . '" style="color:#d63638;font-weight:600;">' . esc_html__( 'Upgrade to Premium', 'uve-mailrelay-newsletter' ) . '</a>';
+			$links[]      = $upgrade_link;
+		}
 		return $links;
 	}
 

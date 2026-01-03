@@ -3,11 +3,16 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
+if ( ! class_exists( 'UVE_MR_Premium_Fake' ) ) {
+	class UVE_MR_Premium_Fake {}
+}
+
 final class UtilsTest extends TestCase {
 
 	protected function setUp(): void {
 		$GLOBALS['uve_mr_test_is_ssl']  = false;
 		$GLOBALS['uve_mr_test_referer'] = '';
+		$GLOBALS['uve_mr_test_filters'] = array();
 	}
 
 	public function test_parse_group_ids_filters_and_dedupes(): void {
@@ -93,5 +98,36 @@ final class UtilsTest extends TestCase {
 		$GLOBALS['uve_mr_test_referer'] = 'https://example.test/from-ref';
 		$data                           = array( 'uve_mr_page_url' => array( 'bad' ) );
 		$this->assertSame( 'https://example.test/from-ref', UVE_MR_Utils::safe_page_url_from_request( $data ) );
+	}
+
+	public function test_plugin_file_points_to_root_file(): void {
+		$path = UVE_MR_Utils::plugin_file();
+		$this->assertStringEndsWith( 'class-uve-mailrelay-newsletter.php', $path );
+		$this->assertFileExists( $path );
+	}
+
+	public function test_premium_installed_false_when_class_missing(): void {
+		add_filter( 'uve_mr_premium_class', fn() => 'UVE_MR_Missing_Premium' );
+		$this->assertFalse( UVE_MR_Utils::is_premium_installed() );
+	}
+
+	public function test_premium_filter_skips_when_not_installed(): void {
+		add_filter( 'uve_mr_premium_class', fn() => 'UVE_MR_Missing_Premium' );
+		add_filter( 'uve_mr_test_filter', fn() => 'filtered' );
+
+		$this->assertSame(
+			'default',
+			UVE_MR_Utils::premium_filter( 'uve_mr_test_filter', 'value', 'default' )
+		);
+	}
+
+	public function test_premium_filter_applies_when_installed(): void {
+		add_filter( 'uve_mr_premium_class', fn() => 'UVE_MR_Premium_Fake' );
+		add_filter( 'uve_mr_test_filter', fn() => 'filtered' );
+
+		$this->assertSame(
+			'filtered',
+			UVE_MR_Utils::premium_filter( 'uve_mr_test_filter', 'value', 'default' )
+		);
 	}
 }
