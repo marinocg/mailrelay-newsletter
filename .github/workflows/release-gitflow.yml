@@ -80,7 +80,7 @@ jobs:
           if [ -d languages ]; then
             for file in languages/*.po languages/*.pot; do
               if [ -f "$file" ]; then
-                sed -i -E "s/^\"Project-Id-Version: .*\"/\"Project-Id-Version: MR4WP ${VERSION}\"/" "$file"
+                sed -i -E "s/^\"Project-Id-Version: .*\"/\"Project-Id-Version: RelayPress ${VERSION}\"/" "$file"
               fi
             done
           fi
