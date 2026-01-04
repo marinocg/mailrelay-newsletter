@@ -1,23 +1,11 @@
 # Changelog
 
 ## Unreleased
-- Restructure plugin code into domain-aware ports/adapters/use-cases for consistency.
-- Refresh forms and settings admin UIs with tabbed panels, help content, and improved controls.
-- Add Mailrelay group selectors with cached API data in forms and settings.
-- Improve logs table mobile behavior and responsiveness.
-- Expand translations and regenerate MO files.
-- Add plugin header requirements (WP/PHP) metadata.
-- Add tests for submit use case and logs table rendering.
-- Harden group ID handling to prevent tampering while preserving defaults.
-- Validate logged page URLs with same-host checks and safer fallbacks.
-- Add tests for group ID handling and safe page URL logic.
-- Move MR4WP admin pages to a top-level menu with separate Settings and Logs screens.
-- Improve logs UI with search, per-page controls, pagination, and sortable columns.
-- Align logs table styling with WP list tables, including column sizing.
-- Improve client IP detection for proxy/Cloudflare setups.
-- Add tests for admin menu registration, logs table rendering, and client IP parsing.
-- Add locale handling with global defaults and per-form overrides, including browser detection and Mailrelay payload support.
-- Add admin notices for successful saves and fix forms redirect handling.
+- Pending
+
+## 1.8.0
+- Full restructure, forms management
+
 
 ## 1.7.1
 - Block form after submit and add ajax behaviour
