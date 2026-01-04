@@ -1,6 +1,6 @@
-# MR4WP
+# RelayPress
 
-MR4WP is a WordPress plugin that adds a Mailrelay newsletter form with Cloudflare Turnstile, GDPR consent, double opt-in support, and audit logs.
+RelayPress is a WordPress plugin that adds a Mailrelay newsletter form with Cloudflare Turnstile, GDPR consent, double opt-in support, and audit logs.
 
 ## Features
 - Mailrelay API integration (active or inactive subscribers).
@@ -19,7 +19,7 @@ MR4WP is a WordPress plugin that adds a Mailrelay newsletter form with Cloudflar
 ## Installation (single site)
 1. Download the ZIP from a GitHub Release.
 2. WordPress -> Plugins -> Add New -> Upload Plugin -> Activate.
-3. Settings -> MR4WP -> configure API and Turnstile.
+3. Settings -> RelayPress -> configure API and Turnstile.
 
 ## Usage
 Shortcode:
@@ -28,10 +28,10 @@ Shortcode:
 ```
 
 Widget:
-- Appearance -> Widgets -> "MR4WP"
+- Appearance -> Widgets -> "RelayPress"
 
 Elementor:
-- Search for "MR4WP" in the widget panel.
+- Search for "RelayPress" in the widget panel.
 
 ## Theme template override
 You can override the frontend form by adding a template file in your theme:
@@ -41,7 +41,7 @@ You can override the frontend form by adding a template file in your theme:
 The plugin will load the first matching file and fall back to its own template at `templates/form.php`.
 
 ## Configuration
-Open Settings -> MR4WP and set:
+Open Settings -> RelayPress and set:
 - Mailrelay API base URL and token.
 - Group IDs and subscriber status (active or inactive).
 - Turnstile site and secret keys.
@@ -85,12 +85,12 @@ msgfmt languages/uve-mailrelay-newsletter-en_US.po -o languages/uve-mailrelay-ne
 
 Create a ZIP from the plugin root (PowerShell example):
 ```
-$zip = "mr4wp.zip"
+$zip = "relaypress.zip"
 if (Test-Path $zip) { Remove-Item $zip }
 Compress-Archive -Path * -DestinationPath $zip
 ```
 
-Then upload `mr4wp.zip` in WordPress -> Plugins -> Add New -> Upload Plugin.
+Then upload `relaypress.zip` in WordPress -> Plugins -> Add New -> Upload Plugin.
 
 ## Releases (GitFlow)
 Branches:

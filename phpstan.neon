@@ -1,5 +1,8 @@
 parameters:
   level: 5
+  parallel:
+    maximumNumberOfProcesses: 0
+    processTimeout: 60.0
   paths:
     - .
   excludePaths:

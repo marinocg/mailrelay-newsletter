@@ -10,19 +10,21 @@ final class AjaxSubmitTest extends TestCase {
 		$GLOBALS['uve_mr_test_nonce_ok']  = true;
 		$GLOBALS['uve_mr_test_transients'] = array();
 		$GLOBALS['uve_mr_test_http']       = array( 'POST' => array(), 'GET' => array() );
+		$GLOBALS['uve_mr_test_last_http']  = array();
 		$_SERVER['REMOTE_ADDR']            = '203.0.113.10';
 
 		$GLOBALS['uve_mr_test_options'] = array(
 			UVE_Mailrelay_Newsletter::OPT_KEY => array(
 				'api_base_url'                  => 'https://api.test/api/v1',
 				'api_token'                     => 'token',
-				'group_ids'                     => '1',
+				'group_ids'                     => '1,2',
 				'subscriber_status'             => 'active',
 				'confirm_resend_max'            => 0,
 				'confirm_resend_window_seconds' => 3600,
 				'store_consent_log'             => '0',
 				'rate_limit_max'                => 5,
 				'rate_limit_window_seconds'     => 3600,
+				'turnstile_site_key'            => 'site_key',
 				'turnstile_secret_key'          => 'secret_key',
 			),
 		);
@@ -47,7 +49,7 @@ final class AjaxSubmitTest extends TestCase {
 			'_wpnonce' => 'nonce',
 			'uve_mr_hp' => '',
 			'cf-turnstile-response' => 'token',
-			'uve_mr_group_ids' => '1',
+			'uve_mr_group_ids' => '1,2',
 			'uve_mr_page_url' => 'https://example.test/page',
 			'subscriber' => array(
 				'email' => 'test@example.com',
@@ -148,5 +150,34 @@ final class AjaxSubmitTest extends TestCase {
 		$data = json_decode( $output, true );
 		$this->assertTrue( $data['success'] );
 		$this->assertSame( 'ok', $data['data']['status'] );
+	}
+
+	public function test_ajax_group_ids_intersect_with_config(): void {
+		$_POST                   = $this->base_post();
+		$_POST['uve_mr_group_ids'] = '2,3';
+
+		ob_start();
+		UVE_MR_Submit::handle_submit_ajax();
+		ob_end_clean();
+
+		$last = $GLOBALS['uve_mr_test_last_http'];
+		$this->assertSame( 'POST', $last['method'] ?? '' );
+		$this->assertSame( 'https://api.test/api/v1/subscribers', $last['url'] ?? '' );
+		$payload = json_decode( $last['args']['body'] ?? '', true );
+		$this->assertSame( array( 2 ), $payload['group_ids'] ?? array() );
+	}
+
+	public function test_ajax_group_ids_falls_back_to_config(): void {
+		$_POST = $this->base_post();
+		unset( $_POST['uve_mr_group_ids'] );
+
+		ob_start();
+		UVE_MR_Submit::handle_submit_ajax();
+		ob_end_clean();
+
+		$last = $GLOBALS['uve_mr_test_last_http'];
+		$this->assertSame( 'https://api.test/api/v1/subscribers', $last['url'] ?? '' );
+		$payload = json_decode( $last['args']['body'] ?? '', true );
+		$this->assertSame( array( 1, 2 ), $payload['group_ids'] ?? array() );
 	}
 }

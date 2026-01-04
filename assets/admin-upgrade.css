@@ -1,0 +1,127 @@
+#adminmenu .toplevel_page_uve-mr-newsletter .wp-submenu a[href*="page=uve-mr-newsletter-upgrade"],
+#adminmenu .toplevel_page_uve-mr-newsletter .wp-submenu li a[href*="page=uve-mr-newsletter-upgrade"],
+.folded #adminmenu .toplevel_page_uve-mr-newsletter .wp-submenu a[href*="page=uve-mr-newsletter-upgrade"],
+.folded #adminmenu .toplevel_page_uve-mr-newsletter .wp-submenu li a[href*="page=uve-mr-newsletter-upgrade"] {
+	color: #d63638;
+	font-weight: 600;
+}
+
+.uve-mr-upgrade-card {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 12px;
+	padding: 24px;
+	max-width: 720px;
+	box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+.uve-mr-upgrade-card h2 {
+	margin-top: 0;
+}
+.uve-mr-upgrade-card ul {
+	padding-left: 18px;
+	margin: 16px 0 20px;
+}
+.uve-mr-upgrade-cta {
+	background: #d63638;
+	border-color: #d63638;
+	box-shadow: 0 12px 24px rgba(214, 54, 56, 0.3);
+}
+.uve-mr-upgrade-cta:hover {
+	background: #b72b2d;
+	border-color: #b72b2d;
+}
+
+.uve-mr-upgrade-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(17, 24, 39, 0.6);
+	display: none;
+	align-items: center;
+	justify-content: center;
+	z-index: 100000;
+	padding: 24px;
+}
+.uve-mr-upgrade-overlay.is-visible {
+	display: flex;
+}
+.uve-mr-upgrade-modal {
+	background: #fff;
+	border-radius: 16px;
+	width: min(640px, 92vw);
+	box-shadow: 0 24px 80px rgba(15, 23, 42, 0.35);
+	position: relative;
+	overflow: hidden;
+}
+.uve-mr-upgrade-close {
+	position: absolute;
+	top: 14px;
+	right: 16px;
+	background: transparent;
+	border: none;
+	font-size: 28px;
+	line-height: 1;
+	cursor: pointer;
+	color: #4b5563;
+}
+.uve-mr-upgrade-hero {
+	padding: 28px 32px 20px;
+	background: linear-gradient(135deg, #0f766e, #0ea5e9);
+	color: #fff;
+}
+.uve-mr-upgrade-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: rgba(255, 255, 255, 0.2);
+	padding: 4px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+.uve-mr-upgrade-hero h2 {
+	margin: 12px 0 6px;
+	font-size: 26px;
+}
+.uve-mr-upgrade-hero p {
+	margin: 0;
+	font-size: 15px;
+	opacity: 0.92;
+}
+.uve-mr-upgrade-body {
+	padding: 18px 32px 10px;
+}
+.uve-mr-upgrade-body ul {
+	margin: 0;
+	padding-left: 18px;
+	color: #374151;
+}
+.uve-mr-upgrade-body li {
+	margin-bottom: 8px;
+}
+.uve-mr-upgrade-actions {
+	display: flex;
+	gap: 12px;
+	padding: 8px 32px 28px;
+	flex-wrap: wrap;
+}
+.uve-mr-upgrade-actions .uve-mr-upgrade-cta {
+	background: #0f766e;
+	border-color: #0f766e;
+	box-shadow: 0 10px 18px rgba(15, 118, 110, 0.28);
+}
+.uve-mr-upgrade-actions .uve-mr-upgrade-cta:hover {
+	background: #0b5f58;
+	border-color: #0b5f58;
+}
+@media (max-width: 600px) {
+	.uve-mr-upgrade-hero,
+	.uve-mr-upgrade-body,
+	.uve-mr-upgrade-actions {
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+	.uve-mr-upgrade-hero h2 {
+		font-size: 22px;
+	}
+}

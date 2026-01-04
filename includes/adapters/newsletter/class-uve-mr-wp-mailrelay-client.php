@@ -1,6 +1,6 @@
 <?php
 /**
- * Mailrelay API helpers.
+ * WordPress Mailrelay adapter.
  *
  * @package UVE_Mailrelay_Newsletter
  */
@@ -10,10 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Mailrelay API helpers.
+ * WordPress Mailrelay client adapter.
  */
-final class UVE_MR_Mailrelay {
-
+final class UVE_MR_WP_Mailrelay_Client implements UVE_MR_Mailrelay_Client {
 	/**
 	 * Subscribe a user and optionally resend confirmation.
 	 *
@@ -21,9 +20,10 @@ final class UVE_MR_Mailrelay {
 	 * @param array  $group_ids Group IDs.
 	 * @param bool   $accepted Consent accepted.
 	 * @param string $ip Client IP.
+	 * @param array  $args Optional overrides.
 	 * @return array
 	 */
-	public static function subscribe_with_confirmation( string $email, array $group_ids, bool $accepted, string $ip ): array {
+	public function subscribe_with_confirmation( string $email, array $group_ids, bool $accepted, string $ip, array $args = array() ): array {
 		$opts  = UVE_Mailrelay_Newsletter::get_options();
 		$base  = rtrim( (string) $opts['api_base_url'], '/' );
 		$token = (string) $opts['api_token'];
@@ -35,18 +35,37 @@ final class UVE_MR_Mailrelay {
 			);
 		}
 
-		$status = ( 'active' === $opts['subscriber_status'] ) ? 'active' : 'inactive';
+		$status = ( 'active' === ( $args['subscriber_status'] ?? $opts['subscriber_status'] ) ) ? 'active' : 'inactive';
 
-		$create = self::post_json(
+		$payload = array(
+			'status'                     => $status,
+			'email'                      => $email,
+			'group_ids'                  => $group_ids,
+			'subscribed_with_acceptance' => $accepted,
+			'subscribe_ip'               => $ip,
+		);
+		$locale  = $args['locale'] ?? '';
+		if ( is_string( $locale ) ) {
+			$locale = UVE_MR_Utils::normalize_locale( $locale );
+			if ( '' !== $locale ) {
+				$payload['locale'] = $locale;
+			}
+		}
+
+		$fields = $args['fields'] ?? array();
+		if ( is_array( $fields ) && ! empty( $fields ) ) {
+			foreach ( $fields as $key => $value ) {
+				if ( ! is_string( $key ) || '' === $key ) {
+					continue;
+				}
+				$payload[ $key ] = $value;
+			}
+		}
+
+		$create = $this->post_json(
 			$base . '/subscribers',
 			$token,
-			array(
-				'status'                     => $status,
-				'email'                      => $email,
-				'group_ids'                  => $group_ids,
-				'subscribed_with_acceptance' => $accepted,
-				'subscribe_ip'               => $ip,
-			)
+			$payload
 		);
 
 		$out = array(
@@ -73,19 +92,91 @@ final class UVE_MR_Mailrelay {
 
 		$subscriber_id = null;
 		if ( ! empty( $create['ok'] ) ) {
-			$subscriber_id = self::extract_subscriber_id_from_body( (string) ( $create['body'] ?? '' ) );
+			$subscriber_id = $this->extract_subscriber_id_from_body( (string) ( $create['body'] ?? '' ) );
 		} elseif ( ! empty( $create['already_exists'] ) ) {
-			$subscriber_id = self::find_subscriber_id_by_email_best_effort( $base, $token, $email );
+			$subscriber_id = $this->find_subscriber_id_by_email_best_effort( $base, $token, $email );
 		}
 
 		if ( $subscriber_id ) {
-			$confirm                          = self::resend_confirmation( $base, $token, (int) $subscriber_id );
+			$confirm                          = $this->resend_confirmation( $base, $token, (int) $subscriber_id );
 			$out['confirmation_requested_at'] = current_time( 'mysql' );
 			$out['confirmation_http_code']    = $confirm['http_code'] ?? null;
 			$out['confirmation_response']     = $confirm['body'] ?? null;
 		}
 
 		return $out;
+	}
+
+	/**
+	 * Fetch Mailrelay groups.
+	 *
+	 * @param bool $force_refresh Force refresh cache.
+	 * @return array<int,array{id:int,name:string}>
+	 */
+	public function get_groups( bool $force_refresh = false ): array {
+		$cache_key = 'uve_mr_groups_cache';
+		$cached    = get_transient( $cache_key );
+		if ( ! $force_refresh && is_array( $cached ) ) {
+			return $cached;
+		}
+
+		$opts  = UVE_Mailrelay_Newsletter::get_options();
+		$base  = rtrim( (string) $opts['api_base_url'], '/' );
+		$token = (string) $opts['api_token'];
+		if ( ! $base || ! $token ) {
+			return array();
+		}
+
+		$url  = $base . '/groups';
+		$resp = wp_remote_get(
+			$url,
+			array(
+				'timeout' => 15,
+				'headers' => array(
+					'Accept'       => 'application/json',
+					'X-AUTH-TOKEN' => $token,
+				),
+			)
+		);
+
+		if ( is_wp_error( $resp ) ) {
+			return array();
+		}
+
+		$code = (int) wp_remote_retrieve_response_code( $resp );
+		if ( 200 > $code || 300 <= $code ) {
+			return array();
+		}
+
+		$body = (string) wp_remote_retrieve_body( $resp );
+		$data = json_decode( $body, true );
+		if ( ! is_array( $data ) ) {
+			return array();
+		}
+
+		$list = $data['data'] ?? $data['items'] ?? $data;
+		if ( ! is_array( $list ) ) {
+			return array();
+		}
+
+		$groups = array();
+		foreach ( $list as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$id   = isset( $row['id'] ) ? (int) $row['id'] : 0;
+			$name = isset( $row['name'] ) ? (string) $row['name'] : '';
+			if ( $id <= 0 || '' === $name ) {
+				continue;
+			}
+			$groups[] = array(
+				'id'   => $id,
+				'name' => $name,
+			);
+		}
+
+		set_transient( $cache_key, $groups, 30 * MINUTE_IN_SECONDS );
+		return $groups;
 	}
 
 	/**
@@ -96,7 +187,7 @@ final class UVE_MR_Mailrelay {
 	 * @param int    $subscriber_id Subscriber ID.
 	 * @return array
 	 */
-	private static function resend_confirmation( string $base, string $token, int $subscriber_id ): array {
+	private function resend_confirmation( string $base, string $token, int $subscriber_id ): array {
 		$url  = $base . '/subscribers/' . $subscriber_id . '/resend_confirmation_email';
 		$resp = wp_remote_post(
 			$url,
@@ -133,7 +224,7 @@ final class UVE_MR_Mailrelay {
 	 * @param string $body Response body.
 	 * @return int|null
 	 */
-	private static function extract_subscriber_id_from_body( string $body ): ?int {
+	private function extract_subscriber_id_from_body( string $body ): ?int {
 		if ( ! $body ) {
 			return null;
 		}
@@ -163,7 +254,7 @@ final class UVE_MR_Mailrelay {
 	 * @param string $email Subscriber email.
 	 * @return int|null
 	 */
-	private static function find_subscriber_id_by_email_best_effort( string $base, string $token, string $email ): ?int {
+	private function find_subscriber_id_by_email_best_effort( string $base, string $token, string $email ): ?int {
 		$variants = array(
 			$base . '/subscribers?email=' . rawurlencode( $email ),
 			$base . '/subscribers?search=' . rawurlencode( $email ),
@@ -232,7 +323,7 @@ final class UVE_MR_Mailrelay {
 	 * @param array  $payload Payload data.
 	 * @return array
 	 */
-	private static function post_json( string $url, string $token, array $payload ): array {
+	private function post_json( string $url, string $token, array $payload ): array {
 		$resp = wp_remote_post(
 			$url,
 			array(

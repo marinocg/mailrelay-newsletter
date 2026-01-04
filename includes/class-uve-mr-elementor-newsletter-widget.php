@@ -1,6 +1,6 @@
 <?php
 /**
- * Elementor widget for MR4WP.
+ * Elementor widget for RelayPress.
  *
  * @package UVE_Mailrelay_Newsletter
  */
@@ -33,7 +33,7 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 	 * @return string
 	 */
 	public function get_title() {
-		return __( 'MR4WP', 'uve-mailrelay-newsletter' );
+		return __( 'RelayPress', 'uve-mailrelay-newsletter' );
 	}
 
 	/**
@@ -69,6 +69,8 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 						'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
 					)
 				);
+
+				do_action( 'uve_mr_elementor_register_controls', $this, $opts );
 
 				$this->add_control(
 					'title',
@@ -171,20 +173,33 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 	 * @return void
 	 */
 	protected function render() {
-		$settings = $this->get_settings_for_display();
-		$privacy  = $settings['privacy_url']['url'] ?? '';
+		$settings    = $this->get_settings_for_display();
+		$privacy     = $settings['privacy_url']['url'] ?? '';
+		$has_form_id = array_key_exists( 'form_id', $settings );
+		$form_id     = $has_form_id ? (int) $settings['form_id'] : 0;
+		if ( ! $has_form_id ) {
+			$primary_form = UVE_MR_Form_Use_Cases::get_primary_form_for_admin();
+			$form_id      = $primary_form ? $primary_form->id : 0;
+		}
 
-				$form_args = array(
-					'title'             => $settings['title'] ?? '',
-					'description'       => $settings['description'] ?? '',
-					'email_placeholder' => $settings['email_placeholder'] ?? '',
-					'submit_label'      => $settings['submit_label'] ?? '',
-					'group_ids'         => $settings['group_ids'] ?? '',
-					'privacy_url'       => $privacy,
-					'consent_label'     => $settings['consent_label'] ?? '',
-					'class'             => $settings['extra_class'] ?? '',
-					'ajax'              => $settings['ajax_mode'] ?? '0',
-				);
+		if ( $form_id ) {
+			$form_args = array(
+				'id'    => $form_id,
+				'class' => $settings['extra_class'] ?? '',
+			);
+		} else {
+			$form_args = array(
+				'title'             => $settings['title'] ?? '',
+				'description'       => $settings['description'] ?? '',
+				'email_placeholder' => $settings['email_placeholder'] ?? '',
+				'submit_label'      => $settings['submit_label'] ?? '',
+				'group_ids'         => $settings['group_ids'] ?? '',
+				'privacy_url'       => $privacy,
+				'consent_label'     => $settings['consent_label'] ?? '',
+				'class'             => $settings['extra_class'] ?? '',
+				'ajax'              => $settings['ajax_mode'] ?? '0',
+			);
+		}
 
 				echo UVE_MR_Frontend::shortcode( $form_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
