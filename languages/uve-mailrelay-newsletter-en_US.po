@@ -1059,3 +1059,1008 @@ msgstr "Maybe later"
 
 #~ msgid "Notes"
 #~ msgstr "Notes"
+
+#: includes/domain/forms/class-uve-mr-form-config.php:79
+msgid "Country"
+msgstr "Country"
+
+#: includes/domain/forms/class-uve-mr-form-config.php:80
+#: templates/form.php:69
+msgid "Select a country"
+msgstr "Select a country"
+
+#: includes/class-uve-mr-utils.php:58
+msgid "Afghanistan"
+msgstr "Afghanistan"
+
+#: includes/class-uve-mr-utils.php:59
+msgid "Aland Islands"
+msgstr "Aland Islands"
+
+#: includes/class-uve-mr-utils.php:60
+msgid "Albania"
+msgstr "Albania"
+
+#: includes/class-uve-mr-utils.php:61
+msgid "Algeria"
+msgstr "Algeria"
+
+#: includes/class-uve-mr-utils.php:62
+msgid "American Samoa"
+msgstr "American Samoa"
+
+#: includes/class-uve-mr-utils.php:63
+msgid "Andorra"
+msgstr "Andorra"
+
+#: includes/class-uve-mr-utils.php:64
+msgid "Angola"
+msgstr "Angola"
+
+#: includes/class-uve-mr-utils.php:65
+msgid "Anguilla"
+msgstr "Anguilla"
+
+#: includes/class-uve-mr-utils.php:66
+msgid "Antarctica"
+msgstr "Antarctica"
+
+#: includes/class-uve-mr-utils.php:67
+msgid "Antigua and Barbuda"
+msgstr "Antigua and Barbuda"
+
+#: includes/class-uve-mr-utils.php:68
+msgid "Argentina"
+msgstr "Argentina"
+
+#: includes/class-uve-mr-utils.php:69
+msgid "Armenia"
+msgstr "Armenia"
+
+#: includes/class-uve-mr-utils.php:70
+msgid "Aruba"
+msgstr "Aruba"
+
+#: includes/class-uve-mr-utils.php:71
+msgid "Australia"
+msgstr "Australia"
+
+#: includes/class-uve-mr-utils.php:72
+msgid "Austria"
+msgstr "Austria"
+
+#: includes/class-uve-mr-utils.php:73
+msgid "Azerbaijan"
+msgstr "Azerbaijan"
+
+#: includes/class-uve-mr-utils.php:74
+msgid "Bahamas"
+msgstr "Bahamas"
+
+#: includes/class-uve-mr-utils.php:75
+msgid "Bahrain"
+msgstr "Bahrain"
+
+#: includes/class-uve-mr-utils.php:76
+msgid "Bangladesh"
+msgstr "Bangladesh"
+
+#: includes/class-uve-mr-utils.php:77
+msgid "Barbados"
+msgstr "Barbados"
+
+#: includes/class-uve-mr-utils.php:78
+msgid "Belarus"
+msgstr "Belarus"
+
+#: includes/class-uve-mr-utils.php:79
+msgid "Belgium"
+msgstr "Belgium"
+
+#: includes/class-uve-mr-utils.php:80
+msgid "Belize"
+msgstr "Belize"
+
+#: includes/class-uve-mr-utils.php:81
+msgid "Benin"
+msgstr "Benin"
+
+#: includes/class-uve-mr-utils.php:82
+msgid "Bermuda"
+msgstr "Bermuda"
+
+#: includes/class-uve-mr-utils.php:83
+msgid "Bhutan"
+msgstr "Bhutan"
+
+#: includes/class-uve-mr-utils.php:84
+msgid "Bolivia"
+msgstr "Bolivia"
+
+#: includes/class-uve-mr-utils.php:85
+msgid "Bonaire, Sint Eustatius and Saba"
+msgstr "Bonaire, Sint Eustatius and Saba"
+
+#: includes/class-uve-mr-utils.php:86
+msgid "Bosnia and Herzegovina"
+msgstr "Bosnia and Herzegovina"
+
+#: includes/class-uve-mr-utils.php:87
+msgid "Botswana"
+msgstr "Botswana"
+
+#: includes/class-uve-mr-utils.php:88
+msgid "Bouvet Island"
+msgstr "Bouvet Island"
+
+#: includes/class-uve-mr-utils.php:89
+msgid "Brazil"
+msgstr "Brazil"
+
+#: includes/class-uve-mr-utils.php:90
+msgid "British Indian Ocean Territory"
+msgstr "British Indian Ocean Territory"
+
+#: includes/class-uve-mr-utils.php:91
+msgid "Brunei Darussalam"
+msgstr "Brunei Darussalam"
+
+#: includes/class-uve-mr-utils.php:92
+msgid "Bulgaria"
+msgstr "Bulgaria"
+
+#: includes/class-uve-mr-utils.php:93
+msgid "Burkina Faso"
+msgstr "Burkina Faso"
+
+#: includes/class-uve-mr-utils.php:94
+msgid "Burundi"
+msgstr "Burundi"
+
+#: includes/class-uve-mr-utils.php:95
+msgid "Cambodia"
+msgstr "Cambodia"
+
+#: includes/class-uve-mr-utils.php:96
+msgid "Cameroon"
+msgstr "Cameroon"
+
+#: includes/class-uve-mr-utils.php:97
+msgid "Canada"
+msgstr "Canada"
+
+#: includes/class-uve-mr-utils.php:98
+msgid "Cabo Verde"
+msgstr "Cabo Verde"
+
+#: includes/class-uve-mr-utils.php:99
+msgid "Cayman Islands"
+msgstr "Cayman Islands"
+
+#: includes/class-uve-mr-utils.php:100
+msgid "Central African Republic"
+msgstr "Central African Republic"
+
+#: includes/class-uve-mr-utils.php:101
+msgid "Chad"
+msgstr "Chad"
+
+#: includes/class-uve-mr-utils.php:102
+msgid "Chile"
+msgstr "Chile"
+
+#: includes/class-uve-mr-utils.php:103
+msgid "China"
+msgstr "China"
+
+#: includes/class-uve-mr-utils.php:104
+msgid "Christmas Island"
+msgstr "Christmas Island"
+
+#: includes/class-uve-mr-utils.php:105
+msgid "Cocos (Keeling) Islands"
+msgstr "Cocos (Keeling) Islands"
+
+#: includes/class-uve-mr-utils.php:106
+msgid "Colombia"
+msgstr "Colombia"
+
+#: includes/class-uve-mr-utils.php:107
+msgid "Comoros"
+msgstr "Comoros"
+
+#: includes/class-uve-mr-utils.php:108
+msgid "Congo"
+msgstr "Congo"
+
+#: includes/class-uve-mr-utils.php:109
+msgid "Congo, Democratic Republic of the"
+msgstr "Congo, Democratic Republic of the"
+
+#: includes/class-uve-mr-utils.php:110
+msgid "Cook Islands"
+msgstr "Cook Islands"
+
+#: includes/class-uve-mr-utils.php:111
+msgid "Costa Rica"
+msgstr "Costa Rica"
+
+#: includes/class-uve-mr-utils.php:112
+msgid "Cote d'Ivoire"
+msgstr "Cote d'Ivoire"
+
+#: includes/class-uve-mr-utils.php:113
+msgid "Croatia"
+msgstr "Croatia"
+
+#: includes/class-uve-mr-utils.php:114
+msgid "Cuba"
+msgstr "Cuba"
+
+#: includes/class-uve-mr-utils.php:115
+msgid "Curacao"
+msgstr "Curacao"
+
+#: includes/class-uve-mr-utils.php:116
+msgid "Cyprus"
+msgstr "Cyprus"
+
+#: includes/class-uve-mr-utils.php:117
+msgid "Czechia"
+msgstr "Czechia"
+
+#: includes/class-uve-mr-utils.php:118
+msgid "Denmark"
+msgstr "Denmark"
+
+#: includes/class-uve-mr-utils.php:119
+msgid "Djibouti"
+msgstr "Djibouti"
+
+#: includes/class-uve-mr-utils.php:120
+msgid "Dominica"
+msgstr "Dominica"
+
+#: includes/class-uve-mr-utils.php:121
+msgid "Dominican Republic"
+msgstr "Dominican Republic"
+
+#: includes/class-uve-mr-utils.php:122
+msgid "Ecuador"
+msgstr "Ecuador"
+
+#: includes/class-uve-mr-utils.php:123
+msgid "Egypt"
+msgstr "Egypt"
+
+#: includes/class-uve-mr-utils.php:124
+msgid "El Salvador"
+msgstr "El Salvador"
+
+#: includes/class-uve-mr-utils.php:125
+msgid "Equatorial Guinea"
+msgstr "Equatorial Guinea"
+
+#: includes/class-uve-mr-utils.php:126
+msgid "Eritrea"
+msgstr "Eritrea"
+
+#: includes/class-uve-mr-utils.php:127
+msgid "Estonia"
+msgstr "Estonia"
+
+#: includes/class-uve-mr-utils.php:128
+msgid "Eswatini"
+msgstr "Eswatini"
+
+#: includes/class-uve-mr-utils.php:129
+msgid "Ethiopia"
+msgstr "Ethiopia"
+
+#: includes/class-uve-mr-utils.php:130
+msgid "Falkland Islands (Malvinas)"
+msgstr "Falkland Islands (Malvinas)"
+
+#: includes/class-uve-mr-utils.php:131
+msgid "Faroe Islands"
+msgstr "Faroe Islands"
+
+#: includes/class-uve-mr-utils.php:132
+msgid "Fiji"
+msgstr "Fiji"
+
+#: includes/class-uve-mr-utils.php:133
+msgid "Finland"
+msgstr "Finland"
+
+#: includes/class-uve-mr-utils.php:134
+msgid "France"
+msgstr "France"
+
+#: includes/class-uve-mr-utils.php:135
+msgid "French Guiana"
+msgstr "French Guiana"
+
+#: includes/class-uve-mr-utils.php:136
+msgid "French Polynesia"
+msgstr "French Polynesia"
+
+#: includes/class-uve-mr-utils.php:137
+msgid "French Southern Territories"
+msgstr "French Southern Territories"
+
+#: includes/class-uve-mr-utils.php:138
+msgid "Gabon"
+msgstr "Gabon"
+
+#: includes/class-uve-mr-utils.php:139
+msgid "Gambia"
+msgstr "Gambia"
+
+#: includes/class-uve-mr-utils.php:140
+msgid "Georgia"
+msgstr "Georgia"
+
+#: includes/class-uve-mr-utils.php:141
+msgid "Germany"
+msgstr "Germany"
+
+#: includes/class-uve-mr-utils.php:142
+msgid "Ghana"
+msgstr "Ghana"
+
+#: includes/class-uve-mr-utils.php:143
+msgid "Gibraltar"
+msgstr "Gibraltar"
+
+#: includes/class-uve-mr-utils.php:144
+msgid "Greece"
+msgstr "Greece"
+
+#: includes/class-uve-mr-utils.php:145
+msgid "Greenland"
+msgstr "Greenland"
+
+#: includes/class-uve-mr-utils.php:146
+msgid "Grenada"
+msgstr "Grenada"
+
+#: includes/class-uve-mr-utils.php:147
+msgid "Guadeloupe"
+msgstr "Guadeloupe"
+
+#: includes/class-uve-mr-utils.php:148
+msgid "Guam"
+msgstr "Guam"
+
+#: includes/class-uve-mr-utils.php:149
+msgid "Guatemala"
+msgstr "Guatemala"
+
+#: includes/class-uve-mr-utils.php:150
+msgid "Guernsey"
+msgstr "Guernsey"
+
+#: includes/class-uve-mr-utils.php:151
+msgid "Guinea"
+msgstr "Guinea"
+
+#: includes/class-uve-mr-utils.php:152
+msgid "Guinea-Bissau"
+msgstr "Guinea-Bissau"
+
+#: includes/class-uve-mr-utils.php:153
+msgid "Guyana"
+msgstr "Guyana"
+
+#: includes/class-uve-mr-utils.php:154
+msgid "Haiti"
+msgstr "Haiti"
+
+#: includes/class-uve-mr-utils.php:155
+msgid "Heard Island and McDonald Islands"
+msgstr "Heard Island and McDonald Islands"
+
+#: includes/class-uve-mr-utils.php:156
+msgid "Holy See"
+msgstr "Holy See"
+
+#: includes/class-uve-mr-utils.php:157
+msgid "Honduras"
+msgstr "Honduras"
+
+#: includes/class-uve-mr-utils.php:158
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+#: includes/class-uve-mr-utils.php:159
+msgid "Hungary"
+msgstr "Hungary"
+
+#: includes/class-uve-mr-utils.php:160
+msgid "Iceland"
+msgstr "Iceland"
+
+#: includes/class-uve-mr-utils.php:161
+msgid "India"
+msgstr "India"
+
+#: includes/class-uve-mr-utils.php:162
+msgid "Indonesia"
+msgstr "Indonesia"
+
+#: includes/class-uve-mr-utils.php:163
+msgid "Iran, Islamic Republic of"
+msgstr "Iran, Islamic Republic of"
+
+#: includes/class-uve-mr-utils.php:164
+msgid "Iraq"
+msgstr "Iraq"
+
+#: includes/class-uve-mr-utils.php:165
+msgid "Ireland"
+msgstr "Ireland"
+
+#: includes/class-uve-mr-utils.php:166
+msgid "Isle of Man"
+msgstr "Isle of Man"
+
+#: includes/class-uve-mr-utils.php:167
+msgid "Israel"
+msgstr "Israel"
+
+#: includes/class-uve-mr-utils.php:168
+msgid "Italy"
+msgstr "Italy"
+
+#: includes/class-uve-mr-utils.php:169
+msgid "Jamaica"
+msgstr "Jamaica"
+
+#: includes/class-uve-mr-utils.php:170
+msgid "Japan"
+msgstr "Japan"
+
+#: includes/class-uve-mr-utils.php:171
+msgid "Jersey"
+msgstr "Jersey"
+
+#: includes/class-uve-mr-utils.php:172
+msgid "Jordan"
+msgstr "Jordan"
+
+#: includes/class-uve-mr-utils.php:173
+msgid "Kazakhstan"
+msgstr "Kazakhstan"
+
+#: includes/class-uve-mr-utils.php:174
+msgid "Kenya"
+msgstr "Kenya"
+
+#: includes/class-uve-mr-utils.php:175
+msgid "Kiribati"
+msgstr "Kiribati"
+
+#: includes/class-uve-mr-utils.php:176
+msgid "Korea, Democratic People's Republic of"
+msgstr "Korea, Democratic People's Republic of"
+
+#: includes/class-uve-mr-utils.php:177
+msgid "Korea, Republic of"
+msgstr "Korea, Republic of"
+
+#: includes/class-uve-mr-utils.php:178
+msgid "Kuwait"
+msgstr "Kuwait"
+
+#: includes/class-uve-mr-utils.php:179
+msgid "Kyrgyzstan"
+msgstr "Kyrgyzstan"
+
+#: includes/class-uve-mr-utils.php:180
+msgid "Lao People's Democratic Republic"
+msgstr "Lao People's Democratic Republic"
+
+#: includes/class-uve-mr-utils.php:181
+msgid "Latvia"
+msgstr "Latvia"
+
+#: includes/class-uve-mr-utils.php:182
+msgid "Lebanon"
+msgstr "Lebanon"
+
+#: includes/class-uve-mr-utils.php:183
+msgid "Lesotho"
+msgstr "Lesotho"
+
+#: includes/class-uve-mr-utils.php:184
+msgid "Liberia"
+msgstr "Liberia"
+
+#: includes/class-uve-mr-utils.php:185
+msgid "Libya"
+msgstr "Libya"
+
+#: includes/class-uve-mr-utils.php:186
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
+#: includes/class-uve-mr-utils.php:187
+msgid "Lithuania"
+msgstr "Lithuania"
+
+#: includes/class-uve-mr-utils.php:188
+msgid "Luxembourg"
+msgstr "Luxembourg"
+
+#: includes/class-uve-mr-utils.php:189
+msgid "Macao"
+msgstr "Macao"
+
+#: includes/class-uve-mr-utils.php:190
+msgid "Madagascar"
+msgstr "Madagascar"
+
+#: includes/class-uve-mr-utils.php:191
+msgid "Malawi"
+msgstr "Malawi"
+
+#: includes/class-uve-mr-utils.php:192
+msgid "Malaysia"
+msgstr "Malaysia"
+
+#: includes/class-uve-mr-utils.php:193
+msgid "Maldives"
+msgstr "Maldives"
+
+#: includes/class-uve-mr-utils.php:194
+msgid "Mali"
+msgstr "Mali"
+
+#: includes/class-uve-mr-utils.php:195
+msgid "Malta"
+msgstr "Malta"
+
+#: includes/class-uve-mr-utils.php:196
+msgid "Marshall Islands"
+msgstr "Marshall Islands"
+
+#: includes/class-uve-mr-utils.php:197
+msgid "Martinique"
+msgstr "Martinique"
+
+#: includes/class-uve-mr-utils.php:198
+msgid "Mauritania"
+msgstr "Mauritania"
+
+#: includes/class-uve-mr-utils.php:199
+msgid "Mauritius"
+msgstr "Mauritius"
+
+#: includes/class-uve-mr-utils.php:200
+msgid "Mayotte"
+msgstr "Mayotte"
+
+#: includes/class-uve-mr-utils.php:201
+msgid "Mexico"
+msgstr "Mexico"
+
+#: includes/class-uve-mr-utils.php:202
+msgid "Micronesia, Federated States of"
+msgstr "Micronesia, Federated States of"
+
+#: includes/class-uve-mr-utils.php:203
+msgid "Moldova, Republic of"
+msgstr "Moldova, Republic of"
+
+#: includes/class-uve-mr-utils.php:204
+msgid "Monaco"
+msgstr "Monaco"
+
+#: includes/class-uve-mr-utils.php:205
+msgid "Mongolia"
+msgstr "Mongolia"
+
+#: includes/class-uve-mr-utils.php:206
+msgid "Montenegro"
+msgstr "Montenegro"
+
+#: includes/class-uve-mr-utils.php:207
+msgid "Montserrat"
+msgstr "Montserrat"
+
+#: includes/class-uve-mr-utils.php:208
+msgid "Morocco"
+msgstr "Morocco"
+
+#: includes/class-uve-mr-utils.php:209
+msgid "Mozambique"
+msgstr "Mozambique"
+
+#: includes/class-uve-mr-utils.php:210
+msgid "Myanmar"
+msgstr "Myanmar"
+
+#: includes/class-uve-mr-utils.php:211
+msgid "Namibia"
+msgstr "Namibia"
+
+#: includes/class-uve-mr-utils.php:212
+msgid "Nauru"
+msgstr "Nauru"
+
+#: includes/class-uve-mr-utils.php:213
+msgid "Nepal"
+msgstr "Nepal"
+
+#: includes/class-uve-mr-utils.php:214
+msgid "Netherlands"
+msgstr "Netherlands"
+
+#: includes/class-uve-mr-utils.php:215
+msgid "New Caledonia"
+msgstr "New Caledonia"
+
+#: includes/class-uve-mr-utils.php:216
+msgid "New Zealand"
+msgstr "New Zealand"
+
+#: includes/class-uve-mr-utils.php:217
+msgid "Nicaragua"
+msgstr "Nicaragua"
+
+#: includes/class-uve-mr-utils.php:218
+msgid "Niger"
+msgstr "Niger"
+
+#: includes/class-uve-mr-utils.php:219
+msgid "Nigeria"
+msgstr "Nigeria"
+
+#: includes/class-uve-mr-utils.php:220
+msgid "Niue"
+msgstr "Niue"
+
+#: includes/class-uve-mr-utils.php:221
+msgid "Norfolk Island"
+msgstr "Norfolk Island"
+
+#: includes/class-uve-mr-utils.php:222
+msgid "North Macedonia"
+msgstr "North Macedonia"
+
+#: includes/class-uve-mr-utils.php:223
+msgid "Northern Mariana Islands"
+msgstr "Northern Mariana Islands"
+
+#: includes/class-uve-mr-utils.php:224
+msgid "Norway"
+msgstr "Norway"
+
+#: includes/class-uve-mr-utils.php:225
+msgid "Oman"
+msgstr "Oman"
+
+#: includes/class-uve-mr-utils.php:226
+msgid "Pakistan"
+msgstr "Pakistan"
+
+#: includes/class-uve-mr-utils.php:227
+msgid "Palau"
+msgstr "Palau"
+
+#: includes/class-uve-mr-utils.php:228
+msgid "Palestine, State of"
+msgstr "Palestine, State of"
+
+#: includes/class-uve-mr-utils.php:229
+msgid "Panama"
+msgstr "Panama"
+
+#: includes/class-uve-mr-utils.php:230
+msgid "Papua New Guinea"
+msgstr "Papua New Guinea"
+
+#: includes/class-uve-mr-utils.php:231
+msgid "Paraguay"
+msgstr "Paraguay"
+
+#: includes/class-uve-mr-utils.php:232
+msgid "Peru"
+msgstr "Peru"
+
+#: includes/class-uve-mr-utils.php:233
+msgid "Philippines"
+msgstr "Philippines"
+
+#: includes/class-uve-mr-utils.php:234
+msgid "Pitcairn"
+msgstr "Pitcairn"
+
+#: includes/class-uve-mr-utils.php:235
+msgid "Poland"
+msgstr "Poland"
+
+#: includes/class-uve-mr-utils.php:236
+msgid "Portugal"
+msgstr "Portugal"
+
+#: includes/class-uve-mr-utils.php:237
+msgid "Puerto Rico"
+msgstr "Puerto Rico"
+
+#: includes/class-uve-mr-utils.php:238
+msgid "Qatar"
+msgstr "Qatar"
+
+#: includes/class-uve-mr-utils.php:239
+msgid "Reunion"
+msgstr "Reunion"
+
+#: includes/class-uve-mr-utils.php:240
+msgid "Romania"
+msgstr "Romania"
+
+#: includes/class-uve-mr-utils.php:241
+msgid "Russian Federation"
+msgstr "Russian Federation"
+
+#: includes/class-uve-mr-utils.php:242
+msgid "Rwanda"
+msgstr "Rwanda"
+
+#: includes/class-uve-mr-utils.php:243
+msgid "Saint Barthelemy"
+msgstr "Saint Barthelemy"
+
+#: includes/class-uve-mr-utils.php:244
+msgid "Saint Helena, Ascension and Tristan da Cunha"
+msgstr "Saint Helena, Ascension and Tristan da Cunha"
+
+#: includes/class-uve-mr-utils.php:245
+msgid "Saint Kitts and Nevis"
+msgstr "Saint Kitts and Nevis"
+
+#: includes/class-uve-mr-utils.php:246
+msgid "Saint Lucia"
+msgstr "Saint Lucia"
+
+#: includes/class-uve-mr-utils.php:247
+msgid "Saint Martin (French part)"
+msgstr "Saint Martin (French part)"
+
+#: includes/class-uve-mr-utils.php:248
+msgid "Saint Pierre and Miquelon"
+msgstr "Saint Pierre and Miquelon"
+
+#: includes/class-uve-mr-utils.php:249
+msgid "Saint Vincent and the Grenadines"
+msgstr "Saint Vincent and the Grenadines"
+
+#: includes/class-uve-mr-utils.php:250
+msgid "Samoa"
+msgstr "Samoa"
+
+#: includes/class-uve-mr-utils.php:251
+msgid "San Marino"
+msgstr "San Marino"
+
+#: includes/class-uve-mr-utils.php:252
+msgid "Sao Tome and Principe"
+msgstr "Sao Tome and Principe"
+
+#: includes/class-uve-mr-utils.php:253
+msgid "Saudi Arabia"
+msgstr "Saudi Arabia"
+
+#: includes/class-uve-mr-utils.php:254
+msgid "Senegal"
+msgstr "Senegal"
+
+#: includes/class-uve-mr-utils.php:255
+msgid "Serbia"
+msgstr "Serbia"
+
+#: includes/class-uve-mr-utils.php:256
+msgid "Seychelles"
+msgstr "Seychelles"
+
+#: includes/class-uve-mr-utils.php:257
+msgid "Sierra Leone"
+msgstr "Sierra Leone"
+
+#: includes/class-uve-mr-utils.php:258
+msgid "Singapore"
+msgstr "Singapore"
+
+#: includes/class-uve-mr-utils.php:259
+msgid "Sint Maarten (Dutch part)"
+msgstr "Sint Maarten (Dutch part)"
+
+#: includes/class-uve-mr-utils.php:260
+msgid "Slovakia"
+msgstr "Slovakia"
+
+#: includes/class-uve-mr-utils.php:261
+msgid "Slovenia"
+msgstr "Slovenia"
+
+#: includes/class-uve-mr-utils.php:262
+msgid "Solomon Islands"
+msgstr "Solomon Islands"
+
+#: includes/class-uve-mr-utils.php:263
+msgid "Somalia"
+msgstr "Somalia"
+
+#: includes/class-uve-mr-utils.php:264
+msgid "South Africa"
+msgstr "South Africa"
+
+#: includes/class-uve-mr-utils.php:265
+msgid "South Georgia and the South Sandwich Islands"
+msgstr "South Georgia and the South Sandwich Islands"
+
+#: includes/class-uve-mr-utils.php:266
+msgid "South Sudan"
+msgstr "South Sudan"
+
+#: includes/class-uve-mr-utils.php:267
+msgid "Spain"
+msgstr "Spain"
+
+#: includes/class-uve-mr-utils.php:268
+msgid "Sri Lanka"
+msgstr "Sri Lanka"
+
+#: includes/class-uve-mr-utils.php:269
+msgid "Sudan"
+msgstr "Sudan"
+
+#: includes/class-uve-mr-utils.php:270
+msgid "Suriname"
+msgstr "Suriname"
+
+#: includes/class-uve-mr-utils.php:271
+msgid "Svalbard and Jan Mayen"
+msgstr "Svalbard and Jan Mayen"
+
+#: includes/class-uve-mr-utils.php:272
+msgid "Sweden"
+msgstr "Sweden"
+
+#: includes/class-uve-mr-utils.php:273
+msgid "Switzerland"
+msgstr "Switzerland"
+
+#: includes/class-uve-mr-utils.php:274
+msgid "Syrian Arab Republic"
+msgstr "Syrian Arab Republic"
+
+#: includes/class-uve-mr-utils.php:275
+msgid "Taiwan, Province of China"
+msgstr "Taiwan, Province of China"
+
+#: includes/class-uve-mr-utils.php:276
+msgid "Tajikistan"
+msgstr "Tajikistan"
+
+#: includes/class-uve-mr-utils.php:277
+msgid "Tanzania, United Republic of"
+msgstr "Tanzania, United Republic of"
+
+#: includes/class-uve-mr-utils.php:278
+msgid "Thailand"
+msgstr "Thailand"
+
+#: includes/class-uve-mr-utils.php:279
+msgid "Timor-Leste"
+msgstr "Timor-Leste"
+
+#: includes/class-uve-mr-utils.php:280
+msgid "Togo"
+msgstr "Togo"
+
+#: includes/class-uve-mr-utils.php:281
+msgid "Tokelau"
+msgstr "Tokelau"
+
+#: includes/class-uve-mr-utils.php:282
+msgid "Tonga"
+msgstr "Tonga"
+
+#: includes/class-uve-mr-utils.php:283
+msgid "Trinidad and Tobago"
+msgstr "Trinidad and Tobago"
+
+#: includes/class-uve-mr-utils.php:284
+msgid "Tunisia"
+msgstr "Tunisia"
+
+#: includes/class-uve-mr-utils.php:285
+msgid "Turkey"
+msgstr "Turkey"
+
+#: includes/class-uve-mr-utils.php:286
+msgid "Turkmenistan"
+msgstr "Turkmenistan"
+
+#: includes/class-uve-mr-utils.php:287
+msgid "Turks and Caicos Islands"
+msgstr "Turks and Caicos Islands"
+
+#: includes/class-uve-mr-utils.php:288
+msgid "Tuvalu"
+msgstr "Tuvalu"
+
+#: includes/class-uve-mr-utils.php:289
+msgid "Uganda"
+msgstr "Uganda"
+
+#: includes/class-uve-mr-utils.php:290
+msgid "Ukraine"
+msgstr "Ukraine"
+
+#: includes/class-uve-mr-utils.php:291
+msgid "United Arab Emirates"
+msgstr "United Arab Emirates"
+
+#: includes/class-uve-mr-utils.php:292
+msgid "United Kingdom"
+msgstr "United Kingdom"
+
+#: includes/class-uve-mr-utils.php:293
+msgid "United States"
+msgstr "United States"
+
+#: includes/class-uve-mr-utils.php:294
+msgid "United States Minor Outlying Islands"
+msgstr "United States Minor Outlying Islands"
+
+#: includes/class-uve-mr-utils.php:295
+msgid "Uruguay"
+msgstr "Uruguay"
+
+#: includes/class-uve-mr-utils.php:296
+msgid "Uzbekistan"
+msgstr "Uzbekistan"
+
+#: includes/class-uve-mr-utils.php:297
+msgid "Vanuatu"
+msgstr "Vanuatu"
+
+#: includes/class-uve-mr-utils.php:298
+msgid "Venezuela, Bolivarian Republic of"
+msgstr "Venezuela, Bolivarian Republic of"
+
+#: includes/class-uve-mr-utils.php:299
+msgid "Viet Nam"
+msgstr "Viet Nam"
+
+#: includes/class-uve-mr-utils.php:300
+msgid "Virgin Islands, British"
+msgstr "Virgin Islands, British"
+
+#: includes/class-uve-mr-utils.php:301
+msgid "Virgin Islands, U.S."
+msgstr "Virgin Islands, U.S."
+
+#: includes/class-uve-mr-utils.php:302
+msgid "Wallis and Futuna"
+msgstr "Wallis and Futuna"
+
+#: includes/class-uve-mr-utils.php:303
+msgid "Western Sahara"
+msgstr "Western Sahara"
+
+#: includes/class-uve-mr-utils.php:304
+msgid "Yemen"
+msgstr "Yemen"
+
+#: includes/class-uve-mr-utils.php:305
+msgid "Zambia"
+msgstr "Zambia"
+
+#: includes/class-uve-mr-utils.php:306
+msgid "Zimbabwe"
+msgstr "Zimbabwe"

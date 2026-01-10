@@ -56,6 +56,145 @@ final class SubmitUseCaseTest extends TestCase {
 		$this->assertSame( array( 1, 2 ), $mailrelay->last_group_ids );
 	}
 
+	public function test_submit_use_case_passes_country_field(): void {
+		$GLOBALS['uve_mr_test_options'] = array(
+			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+				'api_base_url'                  => 'https://api.test/api/v1',
+				'api_token'                     => 'token',
+				'group_ids'                     => '1',
+				'subscriber_status'             => 'active',
+				'confirm_resend_max'            => 0,
+				'confirm_resend_window_seconds' => 3600,
+				'store_consent_log'             => '0',
+				'rate_limit_max'                => 5,
+				'rate_limit_window_seconds'     => 3600,
+				'turnstile_secret_key'          => 'secret_key',
+			),
+		);
+
+		$form = new UVE_MR_Form();
+		$form->id     = 12;
+		$form->name   = 'Form 12';
+		$form->status = 'publish';
+		$form->config = array(
+			'destination' => array(
+				'group_ids'         => '1',
+				'subscriber_status' => 'active',
+			),
+			'fields'      => array(
+				'country' => array(
+					'enabled'  => true,
+					'required' => true,
+				),
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$turnstile       = new Test_Turnstile_Verifier();
+		$rate_limiter    = new Test_Rate_Limiter();
+		$request_context = new Test_Request_Context();
+		$sanitizer       = new Test_Input_Sanitizer();
+		$forms           = new SubmitUseCase_Test_Form_Repository( $form );
+
+		$use_case = new UVE_MR_Submit_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$turnstile,
+			$rate_limiter,
+			$request_context,
+			$sanitizer,
+			$forms
+		);
+
+		$result = $use_case->process_submission(
+			array(
+				'uve_mr_form_id'   => 12,
+				'uve_mr_hp'        => '',
+				'uve_mr_group_ids' => '1',
+				'subscriber'       => array(
+					'email'                     => 'test@example.com',
+					'subscribed_with_acceptance' => '1',
+					'country'                   => 'es',
+				),
+			)
+		);
+
+		$this->assertSame( 'ok', $result['status'] );
+		$this->assertSame( 'ES', $mailrelay->last_args['fields']['country'] ?? '' );
+	}
+
+	public function test_submit_use_case_rejects_invalid_country_when_required(): void {
+		$GLOBALS['uve_mr_test_options'] = array(
+			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+				'api_base_url'                  => 'https://api.test/api/v1',
+				'api_token'                     => 'token',
+				'group_ids'                     => '1',
+				'subscriber_status'             => 'active',
+				'confirm_resend_max'            => 0,
+				'confirm_resend_window_seconds' => 3600,
+				'store_consent_log'             => '0',
+				'rate_limit_max'                => 5,
+				'rate_limit_window_seconds'     => 3600,
+				'turnstile_secret_key'          => 'secret_key',
+			),
+		);
+
+		$form = new UVE_MR_Form();
+		$form->id     = 13;
+		$form->name   = 'Form 13';
+		$form->status = 'publish';
+		$form->config = array(
+			'destination' => array(
+				'group_ids'         => '1',
+				'subscriber_status' => 'active',
+			),
+			'fields'      => array(
+				'country' => array(
+					'enabled'  => true,
+					'required' => true,
+				),
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$turnstile       = new Test_Turnstile_Verifier();
+		$rate_limiter    = new Test_Rate_Limiter();
+		$request_context = new Test_Request_Context();
+		$sanitizer       = new Test_Input_Sanitizer();
+		$forms           = new SubmitUseCase_Test_Form_Repository( $form );
+
+		$use_case = new UVE_MR_Submit_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$turnstile,
+			$rate_limiter,
+			$request_context,
+			$sanitizer,
+			$forms
+		);
+
+		$result = $use_case->process_submission(
+			array(
+				'uve_mr_form_id'   => 13,
+				'uve_mr_hp'        => '',
+				'uve_mr_group_ids' => '1',
+				'subscriber'       => array(
+					'email'                     => 'test@example.com',
+					'subscribed_with_acceptance' => '1',
+					'country'                   => 'XX',
+				),
+			)
+		);
+
+		$this->assertSame( 'error', $result['status'] );
+	}
+
 	public function test_submit_use_case_uses_forced_locale(): void {
 		$GLOBALS['uve_mr_test_options'] = array(
 			UVE_Mailrelay_Newsletter::OPT_KEY => array(

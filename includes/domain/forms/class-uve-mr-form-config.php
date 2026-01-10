@@ -71,6 +71,13 @@ final class UVE_MR_Form_Config {
 					'placeholder' => '',
 					'type'        => 'text',
 				),
+				'country'  => array(
+					'enabled'     => false,
+					'required'    => false,
+					'label'       => __( 'Country', 'uve-mailrelay-newsletter' ),
+					'placeholder' => __( 'Select a country', 'uve-mailrelay-newsletter' ),
+					'type'        => 'country',
+				),
 				'birthday' => array(
 					'enabled'     => false,
 					'required'    => false,
