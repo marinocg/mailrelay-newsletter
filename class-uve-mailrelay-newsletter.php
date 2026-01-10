@@ -50,6 +50,7 @@ require_once __DIR__ . '/includes/domain/forms/class-uve-mr-forms.php';
 require_once __DIR__ . '/includes/class-uve-mr-submit.php';
 require_once __DIR__ . '/includes/class-uve-mr-widgets.php';
 require_once __DIR__ . '/includes/class-uve-mr-elementor.php';
+require_once __DIR__ . '/includes/class-uve-mr-gutenberg.php';
 require_once __DIR__ . '/includes/class-uve-mr-newsletter-widget.php';
 
 /**
@@ -74,6 +75,7 @@ final class UVE_Mailrelay_Newsletter {
 		add_action( 'init', array( 'UVE_MR_Forms', 'register_post_type' ) );
 		add_action( 'init', array( 'UVE_MR_Forms', 'maybe_migrate_default_form' ) );
 		add_action( 'init', array( 'UVE_MR_Frontend', 'register_shortcode' ) );
+		add_action( 'init', array( 'UVE_MR_Gutenberg', 'register_block' ) );
 		add_action( 'widgets_init', array( 'UVE_MR_Widgets', 'register_widget' ) );
 		add_action( 'elementor/widgets/register', array( 'UVE_MR_Elementor', 'register_elementor_widget' ) );
 		add_action( 'elementor/elements/categories_registered', array( 'UVE_MR_Elementor', 'register_elementor_category' ) );

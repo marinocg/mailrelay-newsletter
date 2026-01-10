@@ -220,6 +220,17 @@ function register_activation_hook( string $file, $callback ): void {}
 function register_deactivation_hook( string $file, $callback ): void {}
 function wp_script_is( string $handle, string $status = '' ): bool { return false; }
 function wp_enqueue_script( string $handle, string $src = '', array $deps = array(), $ver = false, $in_footer = false ): void {}
+function wp_register_script( string $handle, string $src = '', array $deps = array(), $ver = false, $in_footer = false ): void {
+	$GLOBALS['uve_mr_test_scripts'][ $handle ] = array(
+		'src'       => $src,
+		'deps'      => $deps,
+		'ver'       => $ver,
+		'in_footer' => $in_footer,
+	);
+}
+function wp_localize_script( string $handle, string $object_name, array $l10n ): void {
+	$GLOBALS['uve_mr_test_script_data'][ $handle ][ $object_name ] = $l10n;
+}
 function load_textdomain( string $domain, string $mofile ): bool { return true; }
 function load_plugin_textdomain( string $domain, bool $deprecated = false, string $plugin_rel_path = '' ): bool { return true; }
 function determine_locale(): string { return 'en_US'; }
@@ -394,6 +405,14 @@ function locate_template( array $templates ) {
 
 function plugin_basename( string $file ): string {
 	return basename( $file );
+}
+function plugins_url( string $path = '', string $plugin = '' ): string {
+	$base = 'https://example.test/wp-content/plugins/uve-mailrelay-newsletter/';
+	return $base . ltrim( $path, '/' );
+}
+
+function register_block_type( string $name, array $args = array() ): void {
+	$GLOBALS['uve_mr_test_blocks'][ $name ] = $args;
 }
 
 function current_time( string $type ): string {
