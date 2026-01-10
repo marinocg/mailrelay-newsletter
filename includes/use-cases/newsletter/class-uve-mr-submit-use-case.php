@@ -159,7 +159,7 @@ final class UVE_MR_Submit_Use_Case {
 
 		$fields_payload = array();
 		$fields_config  = $config['fields'] ?? array();
-		$allowed_fields = array( 'name', 'address', 'city', 'state', 'birthday', 'website', 'phone' );
+		$allowed_fields = array( 'name', 'address', 'city', 'state', 'country', 'birthday', 'website', 'phone' );
 		foreach ( $allowed_fields as $field_key ) {
 			$field_cfg = $fields_config[ $field_key ] ?? array();
 			if ( ! is_array( $field_cfg ) || empty( $field_cfg['enabled'] ) ) {
@@ -170,6 +170,14 @@ final class UVE_MR_Submit_Use_Case {
 			}
 			$value_raw = $data['subscriber'][ $field_key ] ?? '';
 			$value_raw = $this->sanitizer->unslash( $value_raw );
+			if ( 'country' === $field_key ) {
+				$country = $this->sanitizer->sanitize_text( $value_raw );
+				$country = UVE_MR_Utils::normalize_country_code( $country );
+				if ( '' === $country ) {
+					return $this->build_result( 'error', $messages );
+				}
+				continue;
+			}
 			if ( '' === $value_raw ) {
 				return $this->build_result( 'error', $messages );
 			}
@@ -182,6 +190,15 @@ final class UVE_MR_Submit_Use_Case {
 			$value_raw = $data['subscriber'][ $field_key ] ?? '';
 			$value_raw = $this->sanitizer->unslash( $value_raw );
 			if ( '' === $value_raw ) {
+				continue;
+			}
+
+			if ( 'country' === $field_key ) {
+				$country = $this->sanitizer->sanitize_text( $value_raw );
+				$country = UVE_MR_Utils::normalize_country_code( $country );
+				if ( '' !== $country ) {
+					$fields_payload['country'] = $country;
+				}
 				continue;
 			}
 

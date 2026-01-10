@@ -52,6 +52,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<p class="mdes"><?php echo esc_html( $desc ); ?></p><?php endif; ?>
 
 			<?php if ( is_array( $fields ) ) : ?>
+				<?php $country_options = null; ?>
 				<?php foreach ( $fields as $key => $field ) : ?>
 					<?php
 					if ( ! is_array( $field ) || empty( $field['enabled'] ) ) {
@@ -68,6 +69,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 					}
 					$label_text       = '' === $label ? ucfirst( (string) $key ) : $label;
 					$placeholder_text = '' === $placeholder ? $label : $placeholder;
+					$is_country       = ( 'country' === $field_type );
+					if ( $is_country && null === $country_options ) {
+						$country_options = (array) UVE_MR_Utils::country_options();
+						uasort(
+							$country_options,
+							static function ( string $left, string $right ): int {
+								return strcasecmp( $left, $right );
+							}
+						);
+					}
+					if ( $is_country && '' === $placeholder_text ) {
+						$placeholder_text = __( 'Select a country', 'uve-mailrelay-newsletter' );
+					}
 					?>
 					<p class="mfield mfield-<?php echo esc_attr( $key ); ?>">
 						<label class="uve-mr-field-label" for="uve-mr-<?php echo esc_attr( $key ); ?>">
@@ -76,7 +90,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<span class="uve-mr-required" aria-hidden="true">*</span>
 							<?php endif; ?>
 						</label>
-						<input type="<?php echo esc_attr( $field_type ); ?>" id="uve-mr-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name_attr ); ?>" placeholder="<?php echo esc_attr( $placeholder_text ); ?>" <?php echo $required ? 'required' : ''; ?>>
+						<?php if ( $is_country ) : ?>
+							<select id="uve-mr-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name_attr ); ?>" <?php echo $required ? 'required' : ''; ?>>
+								<option value=""><?php echo esc_html( $placeholder_text ); ?></option>
+								<?php foreach ( $country_options as $code => $country_label ) : ?>
+									<option value="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $country_label ); ?></option>
+								<?php endforeach; ?>
+							</select>
+						<?php else : ?>
+							<input type="<?php echo esc_attr( $field_type ); ?>" id="uve-mr-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name_attr ); ?>" placeholder="<?php echo esc_attr( $placeholder_text ); ?>" <?php echo $required ? 'required' : ''; ?>>
+						<?php endif; ?>
 					</p>
 				<?php endforeach; ?>
 			<?php endif; ?>
@@ -148,19 +171,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 		.uve-mr-form-fields input[type="email"],
 		.uve-mr-form-fields input[type="url"],
 		.uve-mr-form-fields input[type="tel"],
-		.uve-mr-form-fields input[type="date"] {
+		.uve-mr-form-fields input[type="date"],
+		.uve-mr-form-fields select {
+			display: block;
 			width: 100%;
 			padding: 14px 16px;
 			border-radius: 10px;
 			border: 1px solid #7a7a7a;
 			background: var(--wp--preset--color--base, #fff);
+			box-sizing: border-box;
+			line-height: 1.2;
 		}
 
 		.uve-mr-form-fields input[type="text"]:focus,
 		.uve-mr-form-fields input[type="email"]:focus,
 		.uve-mr-form-fields input[type="url"]:focus,
 		.uve-mr-form-fields input[type="tel"]:focus,
-		.uve-mr-form-fields input[type="date"]:focus {
+		.uve-mr-form-fields input[type="date"]:focus,
+		.uve-mr-form-fields select:focus {
 			border-color: #111;
 			box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.2);
 			outline: none;

@@ -100,6 +100,14 @@ final class UtilsTest extends TestCase {
 		$this->assertSame( 'https://example.test/from-ref', UVE_MR_Utils::safe_page_url_from_request( $data ) );
 	}
 
+	public function test_normalize_country_code_accepts_valid(): void {
+		$this->assertSame( 'ES', UVE_MR_Utils::normalize_country_code( 'es' ) );
+	}
+
+	public function test_normalize_country_code_rejects_invalid(): void {
+		$this->assertSame( '', UVE_MR_Utils::normalize_country_code( 'XX' ) );
+	}
+
 	public function test_plugin_file_points_to_root_file(): void {
 		$path = UVE_MR_Utils::plugin_file();
 		$this->assertStringEndsWith( 'class-uve-mailrelay-newsletter.php', $path );
