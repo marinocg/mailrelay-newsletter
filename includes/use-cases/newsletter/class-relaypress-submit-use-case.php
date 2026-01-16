@@ -155,11 +155,14 @@ final class RelayPress_Submit_Use_Case {
 		if ( '' !== $group_ids_raw && $group_ids_input ) {
 			$group_ids = array_values( array_intersect( $group_ids_input, $group_ids_cfg ) );
 		}
-		$page_url = $this->request_context->get_page_url_from_request( $data );
+		$page_url    = $this->request_context->get_page_url_from_request( $data );
+		$global_opts = $this->options->get_options();
 
 		$fields_payload = array();
 		$fields_config  = $config['fields'] ?? array();
 		$allowed_fields = array( 'name', 'address', 'city', 'state', 'country', 'birthday', 'website', 'phone' );
+		$country_hint   = '';
+		$phone_meta     = null;
 		foreach ( $allowed_fields as $field_key ) {
 			$field_cfg = $fields_config[ $field_key ] ?? array();
 			if ( ! is_array( $field_cfg ) || empty( $field_cfg['enabled'] ) ) {
@@ -198,6 +201,7 @@ final class RelayPress_Submit_Use_Case {
 				$country = RelayPress_Utils::normalize_country_code( $country );
 				if ( '' !== $country ) {
 					$fields_payload['country'] = $country;
+					$country_hint              = $country;
 				}
 				continue;
 			}
@@ -212,11 +216,39 @@ final class RelayPress_Submit_Use_Case {
 			}
 
 			if ( 'phone' === $field_key ) {
-				$phone = preg_replace( '/\s+/', '', $value );
-				if ( is_string( $phone ) && preg_match( '/^\+\d{7,15}$/', $phone ) ) {
-					$fields_payload['sms_phone']      = $phone;
-					$fields_payload['whatsapp_phone'] = $phone;
+				$prefix_raw = $data['subscriber']['phone_prefix'] ?? '';
+				$prefix_raw = $this->sanitizer->unslash( $prefix_raw );
+				$prefix     = $this->sanitizer->sanitize_text( $prefix_raw );
+				if ( '' === $prefix && '1' === (string) ( $global_opts['hide_phone_prefix_selector'] ?? '0' ) ) {
+					$default_country = (string) ( $global_opts['default_phone_country'] ?? '' );
+					$default_prefix  = RelayPress_Phone_Normalizer::calling_code_for_country( $default_country );
+					if ( '' !== $default_prefix ) {
+						$prefix = '+' . $default_prefix;
+					}
 				}
+				$combined   = RelayPress_Phone_Normalizer::combine_phone_with_prefix( $value, $prefix );
+				$phone_meta = RelayPress_Phone_Normalizer::normalize(
+					$combined,
+					array(
+						'country'           => $country_hint,
+						'default_country'   => (string) ( $global_opts['default_phone_country'] ?? '' ),
+						'accept_extensions' => false,
+						'require_e164'      => false,
+					)
+				);
+				if ( empty( $phone_meta['is_valid'] ) ) {
+					if ( '1' === (string) ( $global_opts['send_raw_phone_on_fail'] ?? '0' ) ) {
+						$fallback = RelayPress_Phone_Normalizer::compact_raw( $phone_meta['raw_sanitized'] ?? '' );
+						if ( '' !== $fallback && ! in_array( $phone_meta['reason'] ?? '', array( RelayPress_Phone_Normalizer::REASON_EXTENSION_NOT_SUPPORTED, RelayPress_Phone_Normalizer::REASON_INVALID_CHARS ), true ) ) {
+							$fields_payload['sms_phone']      = $fallback;
+							$fields_payload['whatsapp_phone'] = $fallback;
+							continue;
+						}
+					}
+					return $this->build_result( 'phone', $messages );
+				}
+				$fields_payload['sms_phone']      = $phone_meta['normalized'];
+				$fields_payload['whatsapp_phone'] = $phone_meta['normalized'];
 				continue;
 			}
 
@@ -235,25 +267,31 @@ final class RelayPress_Submit_Use_Case {
 			)
 		);
 
-		$global_opts = $this->options->get_options();
 		if ( '1' === (string) ( $global_opts['store_consent_log'] ?? '0' ) ) {
 			$user_agent = $this->request_context->get_user_agent();
 			$this->logs->ensure_table();
-			$this->logs->store_consent_log(
-				array(
-					'email'                     => $email,
-					'accepted'                  => 1,
-					'accepted_at'               => $this->request_context->current_time_mysql(),
-					'page_url'                  => $page_url,
-					'ip'                        => $ip,
-					'user_agent'                => $user_agent,
-					'mailrelay_http_code'       => $result['http_code'] ?? null,
-					'mailrelay_response'        => $result['body'] ?? null,
-					'confirmation_requested_at' => $result['confirmation_requested_at'] ?? null,
-					'confirmation_http_code'    => $result['confirmation_http_code'] ?? null,
-					'confirmation_response'     => $result['confirmation_response'] ?? null,
-				)
+			$log_row = array(
+				'email'                     => $email,
+				'accepted'                  => 1,
+				'accepted_at'               => $this->request_context->current_time_mysql(),
+				'page_url'                  => $page_url,
+				'ip'                        => $ip,
+				'user_agent'                => $user_agent,
+				'mailrelay_http_code'       => $result['http_code'] ?? null,
+				'mailrelay_response'        => $result['body'] ?? null,
+				'confirmation_requested_at' => $result['confirmation_requested_at'] ?? null,
+				'confirmation_http_code'    => $result['confirmation_http_code'] ?? null,
+				'confirmation_response'     => $result['confirmation_response'] ?? null,
 			);
+			if ( is_array( $phone_meta ) ) {
+				$log_row['phone_raw']        = ( '1' === (string) ( $global_opts['log_phone_raw'] ?? '0' ) ) ? (string) ( $phone_meta['raw_sanitized'] ?? '' ) : null;
+				$log_row['phone_normalized'] = $phone_meta['normalized'] ?? null;
+				$log_row['phone_valid']      = ! empty( $phone_meta['is_valid'] ) ? 1 : 0;
+				$log_row['phone_reason']     = $phone_meta['reason'] ?? null;
+				$log_row['phone_country']    = $phone_meta['country_used'] ?? null;
+				$log_row['phone_confidence'] = $phone_meta['confidence'] ?? null;
+			}
+			$this->logs->store_consent_log( $log_row );
 		}
 
 		return $this->build_result( 'ok', $messages );

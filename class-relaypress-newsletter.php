@@ -20,6 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once __DIR__ . '/includes/class-relaypress-utils.php';
+require_once __DIR__ . '/includes/class-relaypress-phone-normalizer.php';
 require_once __DIR__ . '/includes/class-relaypress-turnstile.php';
 require_once __DIR__ . '/includes/class-relaypress-logs.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-mailrelay-client.php';
@@ -139,10 +140,16 @@ final class RelayPress_Newsletter {
 			'locale_mode'                   => 'browser',
 			'locale_force'                  => RelayPress_Utils::default_locale_fallback(),
 
+			// Phone normalization.
+			'default_phone_country'         => '',
+			'send_raw_phone_on_fail'        => '0',
+			'hide_phone_prefix_selector'    => '0',
+
 			// GDPR.
 			'privacy_url'                   => '',
 			'consent_label'                 => __( 'I agree to receive the newsletter and have read the privacy policy', 'relaypress-newsletter' ),
 			'store_consent_log'             => '1', // String flag (1 or 0).
+			'log_phone_raw'                 => '0',
 			'hash_ip'                       => '1',            // store hashed IP by default.
 			'retention_days'                => 180,     // purge logs older than N days.
 

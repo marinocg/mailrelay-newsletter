@@ -250,7 +250,7 @@ final class RelayPress_Forms_Editor_Page {
 									<td>
 										<input type="text" class="regular-text" name="form_config[fields][<?php echo esc_attr( $key ); ?>][placeholder]" value="<?php echo esc_attr( $placeholder ); ?>">
 										<?php if ( 'phone' === $key ) : ?>
-											<p class="description"><?php echo esc_html__( 'Use E.164 format (e.g., +34666666666). Sent to both SMS and WhatsApp in Mailrelay.', 'relaypress-newsletter' ); ?></p>
+											<p class="description"><?php echo esc_html__( 'Accepts E.164 (e.g., +34666666666) or local numbers with a default country. Sent to both SMS and WhatsApp in Mailrelay.', 'relaypress-newsletter' ); ?></p>
 										<?php endif; ?>
 									</td>
 								</tr>
@@ -311,6 +311,12 @@ final class RelayPress_Forms_Editor_Page {
 										<label class="relaypress-field-label" for="relaypress-consent-error"><?php echo esc_html__( 'Consent error', 'relaypress-newsletter' ); ?></label>
 										<div class="relaypress-field-control">
 											<input id="relaypress-consent-error" type="text" class="regular-text" name="form_config[messages][consent]" value="<?php echo esc_attr( $config['messages']['consent'] ); ?>">
+										</div>
+									</div>
+									<div class="relaypress-field-row">
+										<label class="relaypress-field-label" for="relaypress-phone-error"><?php echo esc_html__( 'Phone error', 'relaypress-newsletter' ); ?></label>
+										<div class="relaypress-field-control">
+											<input id="relaypress-phone-error" type="text" class="regular-text" name="form_config[messages][phone]" value="<?php echo esc_attr( $config['messages']['phone'] ); ?>">
 										</div>
 									</div>
 									<div class="relaypress-field-row">
