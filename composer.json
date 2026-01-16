@@ -1,6 +1,6 @@
 {
-  "name": "uve/uve-mailrelay-newsletter",
-  "description": "Uve Mailrelay Newsletter plugin (dev tooling)",
+  "name": "relaypress/relaypress-newsletter",
+  "description": "Relaypress Newsletter plugin (dev tooling)",
   "type": "project",
   "license": "GPL-2.0-or-later",
   "require": {
@@ -16,7 +16,7 @@
     "phpunit/phpunit": "^11.0"
   },
   "scripts": {
-    "lint": "php -l class-uve-mailrelay-newsletter.php && find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
+    "lint": "php -l class-relaypress-newsletter.php && find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
     "phpcs": "phpcs",
     "phpstan": "phpstan analyse",
     "test": "phpunit"

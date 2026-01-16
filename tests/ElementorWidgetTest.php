@@ -4,13 +4,13 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/../stubs/elementor.php';
-require_once __DIR__ . '/../includes/class-uve-mr-elementor-newsletter-widget.php';
+require_once __DIR__ . '/../includes/class-relaypress-elementor-newsletter-widget.php';
 
 final class ElementorWidgetTest extends TestCase {
 	protected function setUp(): void {
-		$GLOBALS['uve_mr_test_filters'] = array();
-		$GLOBALS['uve_mr_test_actions'] = array();
-		add_action( 'uve_mr_elementor_register_controls', array( 'UVE_MR_Elementor', 'register_form_controls' ), 10, 2 );
+		$GLOBALS['relaypress_test_filters'] = array();
+		$GLOBALS['relaypress_test_actions'] = array();
+		add_action( 'relaypress_elementor_register_controls', array( 'RelayPress_Elementor', 'register_form_controls' ), 10, 2 );
 	}
 
 	public function test_register_controls_includes_form_select(): void {
@@ -45,7 +45,7 @@ final class ElementorWidgetTest extends TestCase {
 		$widget->settings = array();
 		$output = $widget->capture_render();
 
-		$this->assertStringContainsString( 'name="uve_mr_form_id" value="1"', $output );
+		$this->assertStringContainsString( 'name="relaypress_form_id" value="1"', $output );
 	}
 
 	public function test_render_uses_requested_form_when_selected(): void {
@@ -64,11 +64,11 @@ final class ElementorWidgetTest extends TestCase {
 		);
 		$output = $widget->capture_render();
 
-		$this->assertStringContainsString( 'name="uve_mr_form_id" value="3"', $output );
+		$this->assertStringContainsString( 'name="relaypress_form_id" value="3"', $output );
 	}
 
-	private function make_form( int $id, string $status ): UVE_MR_Form {
-		$form             = new UVE_MR_Form();
+	private function make_form( int $id, string $status ): RelayPress_Form {
+		$form             = new RelayPress_Form();
 		$form->id         = $id;
 		$form->name       = 'Form ' . $id;
 		$form->status     = $status;
@@ -78,9 +78,9 @@ final class ElementorWidgetTest extends TestCase {
 		return $form;
 	}
 
-	private function set_repo( UVE_MR_Form_Repository_Interface $repo ): void {
+	private function set_repo( RelayPress_Form_Repository_Interface $repo ): void {
 		add_filter(
-			'uve_mr_form_repository',
+			'relaypress_form_repository',
 			static function () use ( $repo ) {
 				return $repo;
 			}
@@ -89,7 +89,7 @@ final class ElementorWidgetTest extends TestCase {
 
 }
 
-final class Test_Elementor_Widget extends UVE_MR_Elementor_Newsletter_Widget {
+final class Test_Elementor_Widget extends RelayPress_Elementor_Newsletter_Widget {
 	public array $controls = array();
 
 	public function add_control( string $id, array $args = array() ): void {
@@ -101,7 +101,7 @@ final class Test_Elementor_Widget extends UVE_MR_Elementor_Newsletter_Widget {
 	}
 }
 
-final class Test_Elementor_Render_Widget extends UVE_MR_Elementor_Newsletter_Widget {
+final class Test_Elementor_Render_Widget extends RelayPress_Elementor_Newsletter_Widget {
 	public array $settings = array();
 
 	public function get_settings_for_display(): array {
@@ -115,20 +115,20 @@ final class Test_Elementor_Render_Widget extends UVE_MR_Elementor_Newsletter_Wid
 	}
 }
 
-final class Elementor_Test_Form_Repository implements UVE_MR_Form_Repository_Interface {
+final class Elementor_Test_Form_Repository implements RelayPress_Form_Repository_Interface {
 	/**
-	 * @var UVE_MR_Form[]
+	 * @var RelayPress_Form[]
 	 */
 	private array $forms;
 
 	/**
-	 * @param UVE_MR_Form[] $forms
+	 * @param RelayPress_Form[] $forms
 	 */
 	public function __construct( array $forms ) {
 		$this->forms = $forms;
 	}
 
-	public function get( int $id ): ?UVE_MR_Form {
+	public function get( int $id ): ?RelayPress_Form {
 		foreach ( $this->forms as $form ) {
 			if ( $form->id === $id ) {
 				return $form;
@@ -150,7 +150,7 @@ final class Elementor_Test_Form_Repository implements UVE_MR_Form_Repository_Int
 			$forms = array_values(
 				array_filter(
 					$forms,
-					static function ( UVE_MR_Form $form ) use ( $allowed ): bool {
+					static function ( RelayPress_Form $form ) use ( $allowed ): bool {
 						return in_array( $form->status, $allowed, true );
 					}
 				)
@@ -159,7 +159,7 @@ final class Elementor_Test_Form_Repository implements UVE_MR_Form_Repository_Int
 		if ( ( $args['orderby'] ?? '' ) === 'ID' ) {
 			usort(
 				$forms,
-				static function ( UVE_MR_Form $a, UVE_MR_Form $b ) use ( $args ): int {
+				static function ( RelayPress_Form $a, RelayPress_Form $b ) use ( $args ): int {
 					$cmp = $a->id <=> $b->id;
 					$order = strtoupper( (string) ( $args['order'] ?? 'ASC' ) );
 					return 'DESC' === $order ? -$cmp : $cmp;
@@ -173,11 +173,11 @@ final class Elementor_Test_Form_Repository implements UVE_MR_Form_Repository_Int
 		return $forms;
 	}
 
-	public function create( string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function create( string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 
-	public function update( int $id, string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function update( int $id, string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 

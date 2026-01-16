@@ -1,6 +1,6 @@
 # agents.md
 
-This repository contains **MR4WP** (`uve-mailrelay-newsletter`), a WordPress plugin that provides:
+This repository contains **MR4WP** (`relaypress-newsletter`), a WordPress plugin that provides:
 - Newsletter subscription form (shortcode, widget, Elementor widget)
 - Mailrelay API integration
 - Optional Cloudflare Turnstile verification
@@ -18,16 +18,16 @@ If you are an automated coding agent (Copilot/ChatGPT/Cursor/etc.), follow these
 - **Never introduce email enumeration**:
   - Frontend responses must remain neutral and must not reveal whether an email exists or is already subscribed.
 - All state-changing flows must keep:
-  - **Nonce verification** (`UVE_Mailrelay_Newsletter::NONCE`)
+  - **Nonce verification** (`RelayPress_Newsletter::NONCE`)
   - **Capability checks** for admin actions
   - Input sanitization + output escaping everywhere.
 - Keep existing abuse protections intact:
-  - Honeypot field (`uve_mr_hp`)
+  - Honeypot field (`relaypress_hp`)
   - Rate limiting (transients-based)
   - Turnstile verification when enabled
 
 ### 2) Privacy / GDPR friendly by default
-- Consent logs are stored in a dedicated DB table (`UVE_MR_Logs`).
+- Consent logs are stored in a dedicated DB table (`RelayPress_Logs`).
 - Do not add new stored personal data unless absolutely necessary.
 - Preserve retention + purge mechanics (scheduled purge).
 
@@ -48,7 +48,7 @@ If you are an automated coding agent (Copilot/ChatGPT/Cursor/etc.), follow these
 ## Repository layout (where things live)
 
 ### Root
-- `class-uve-mailrelay-newsletter.php` — main plugin bootstrap, constants, hooks, activation.
+- `class-relaypress-newsletter.php` — main plugin bootstrap, constants, hooks, activation.
 - `uninstall.php` — uninstall behavior.
 - `templates/form.php` — frontend form template (overrideable by theme).
 - `languages/` — translations (`.po/.mo/.pot`).
@@ -56,32 +56,32 @@ If you are an automated coding agent (Copilot/ChatGPT/Cursor/etc.), follow these
 - `build-plugin-zip.sh` — builds a distributable ZIP (compiles translations, excludes dev files).
 
 ### `includes/` (hexagonal-ish)
-- `includes/domain/` — domain objects (e.g., `UVE_MR_Form`, `UVE_MR_Form_Config`).
+- `includes/domain/` — domain objects (e.g., `RelayPress_Form`, `RelayPress_Form_Config`).
 - `includes/ports/` — interfaces for adapters (repositories, rate limiter, turnstile verifier).
 - `includes/adapters/` — WP implementations (wpdb/options/transients/wp_remote_request).
 - `includes/use-cases/` — application logic (submit flow, form use cases).
 - `includes/admin/` — admin UI (forms CRUD, tables).
-- `includes/class-uve-mr-container.php` — service container wiring.
+- `includes/class-relaypress-container.php` — service container wiring.
 
 Agent rule: when adding new behavior, prefer:
-**domain → port → adapter → use-case**, and wire it via `UVE_MR_Container`.
+**domain → port → adapter → use-case**, and wire it via `RelayPress_Container`.
 
 ---
 
 ## Public APIs you must not break
 
 ### Shortcode
-- `uve_mailrelay_newsletter`
+- `relaypress_newsletter`
 
 ### Submission endpoints
 - `admin-post.php` actions:
-  - `uve_mr_subscribe` (priv + nopriv)
+  - `relaypress_subscribe` (priv + nopriv)
 - AJAX actions:
-  - `uve_mr_subscribe_ajax` (priv + nopriv)
+  - `relaypress_subscribe_ajax` (priv + nopriv)
 
 ### Theme template overrides
 Frontend template resolution allows theme overrides via:
-- `your-theme/uve-mr-newsletter/form.php`
+- `your-theme/relaypress-newsletter/form.php`
 - `your-theme/mr4wp/form.php`
 Fallback:
 - plugin `templates/form.php`
@@ -89,7 +89,7 @@ Fallback:
 Do not change these paths without a backwards-compatible migration plan.
 
 ### Forms storage (CPT + meta)
-- Post type: `mr4wp_form` (see `UVE_MR_Form::POST_TYPE`)
+- Post type: `mr4wp_form` (see `RelayPress_Form::POST_TYPE`)
 - Meta keys:
   - `_mr4wp_form_config`
   - `_mr4wp_form_version`
@@ -101,12 +101,12 @@ Avoid changing the schema unless you also include a safe migration.
 ## Coding standards & conventions
 
 - Classic WordPress style (no namespaces).
-- Class naming: `UVE_MR_*` / `UVE_Mailrelay_Newsletter`.
+- Class naming: `RelayPress_*` / `RelayPress_Newsletter`.
 - Always:
   - sanitize on input (`sanitize_text_field`, `absint`, `sanitize_email`, etc.)
   - escape on output (`esc_html`, `esc_attr`, `esc_url`, `wp_kses_post`, etc.)
 - SQL must use `$wpdb->prepare()` for parameterized queries.
-- Prefer existing utilities in `UVE_MR_Utils`.
+- Prefer existing utilities in `RelayPress_Utils`.
 - Keep text mostly ASCII unless the file already contains Unicode.
 
 ---
@@ -170,7 +170,7 @@ Use:
 Notes:
 
 * Requires `msgfmt` (to compile `.po` → `.mo`) and `zip`.
-* Outputs `dist/uve-mailrelay-newsletter.zip`.
+* Outputs `dist/relaypress-newsletter.zip`.
 * Excludes dev files like `vendor/`, `composer.*`, `phpunit/phpstan/phpcs` configs, etc.
   (Do not change exclusions casually.)
 

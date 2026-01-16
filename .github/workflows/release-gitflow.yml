@@ -67,8 +67,8 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           # Plugin main file: update "Version: x.y.z" and const VERSION.
-          sed -i -E "s/^([[:space:]]*\\*?[[:space:]]*)Version:[[:space:]]*.*/\\1Version: ${VERSION}/" class-uve-mailrelay-newsletter.php
-          sed -i -E "s/^([[:space:]]*)const VERSION([[:space:]]*)=[[:space:]]*'[^']*';/\\1const VERSION\\2= '${VERSION}';/" class-uve-mailrelay-newsletter.php
+          sed -i -E "s/^([[:space:]]*\\*?[[:space:]]*)Version:[[:space:]]*.*/\\1Version: ${VERSION}/" class-relaypress-newsletter.php
+          sed -i -E "s/^([[:space:]]*)const VERSION([[:space:]]*)=[[:space:]]*'[^']*';/\\1const VERSION\\2= '${VERSION}';/" class-relaypress-newsletter.php
 
           # WP readme stable tag
           if [ -f readme.txt ]; then
@@ -145,7 +145,7 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          git add class-uve-mailrelay-newsletter.php readme.txt CHANGELOG.md languages/*.po languages/*.pot languages/*.mo || true
+          git add class-relaypress-newsletter.php readme.txt CHANGELOG.md languages/*.po languages/*.pot languages/*.mo || true
           git commit -m "chore(release): v${VERSION}" || echo "No changes to commit"
 
       - name: Push release branch
@@ -234,7 +234,7 @@ jobs:
         run: |
           mkdir -p dist
           # Build a plugin folder inside zip with correct slug name
-          git archive --format=zip --prefix=uve-mailrelay-newsletter/ "v${VERSION}" -o "dist/uve-mailrelay-newsletter-v${VERSION}.zip"
+          git archive --format=zip --prefix=relaypress-newsletter/ "v${VERSION}" -o "dist/relaypress-newsletter-v${VERSION}.zip"
 
       - name: Create GitHub Release + upload ZIP
         uses: softprops/action-gh-release@v2
@@ -242,4 +242,4 @@ jobs:
           tag_name: v${{ inputs.version }}
           name: v${{ inputs.version }}
           body: ${{ inputs.release_notes }}
-          files: dist/uve-mailrelay-newsletter-v${{ inputs.version }}.zip
+          files: dist/relaypress-newsletter-v${{ inputs.version }}.zip

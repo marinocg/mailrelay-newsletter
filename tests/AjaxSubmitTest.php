@@ -6,15 +6,15 @@ use PHPUnit\Framework\TestCase;
 final class AjaxSubmitTest extends TestCase {
 
 	protected function setUp(): void {
-		$GLOBALS['uve_mr_test_no_exit']   = true;
-		$GLOBALS['uve_mr_test_nonce_ok']  = true;
-		$GLOBALS['uve_mr_test_transients'] = array();
-		$GLOBALS['uve_mr_test_http']       = array( 'POST' => array(), 'GET' => array() );
-		$GLOBALS['uve_mr_test_last_http']  = array();
+		$GLOBALS['relaypress_test_no_exit']   = true;
+		$GLOBALS['relaypress_test_nonce_ok']  = true;
+		$GLOBALS['relaypress_test_transients'] = array();
+		$GLOBALS['relaypress_test_http']       = array( 'POST' => array(), 'GET' => array() );
+		$GLOBALS['relaypress_test_last_http']  = array();
 		$_SERVER['REMOTE_ADDR']            = '203.0.113.10';
 
-		$GLOBALS['uve_mr_test_options'] = array(
-			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
 				'api_base_url'                  => 'https://api.test/api/v1',
 				'api_token'                     => 'token',
 				'group_ids'                     => '1,2',
@@ -29,28 +29,28 @@ final class AjaxSubmitTest extends TestCase {
 			),
 		);
 
-		$GLOBALS['uve_mr_test_http']['POST']['https://challenges.cloudflare.com/turnstile/v0/siteverify'] = array(
+		$GLOBALS['relaypress_test_http']['POST']['https://challenges.cloudflare.com/turnstile/v0/siteverify'] = array(
 			'response' => array( 'code' => 200 ),
 			'body'     => wp_json_encode( array( 'success' => true ) ),
 		);
-		$GLOBALS['uve_mr_test_http']['POST']['https://api.test/api/v1/subscribers'] = array(
+		$GLOBALS['relaypress_test_http']['POST']['https://api.test/api/v1/subscribers'] = array(
 			'response' => array( 'code' => 201 ),
 			'body'     => wp_json_encode( array( 'id' => 123 ) ),
 		);
 	}
 
 	protected function tearDown(): void {
-		unset( $GLOBALS['uve_mr_test_no_exit'], $GLOBALS['uve_mr_test_nonce_ok'] );
+		unset( $GLOBALS['relaypress_test_no_exit'], $GLOBALS['relaypress_test_nonce_ok'] );
 		$_POST = array();
 	}
 
 	private function base_post(): array {
 		return array(
 			'_wpnonce' => 'nonce',
-			'uve_mr_hp' => '',
+			'relaypress_hp' => '',
 			'cf-turnstile-response' => 'token',
-			'uve_mr_group_ids' => '1,2',
-			'uve_mr_page_url' => 'https://example.test/page',
+			'relaypress_group_ids' => '1,2',
+			'relaypress_page_url' => 'https://example.test/page',
 			'subscriber' => array(
 				'email' => 'test@example.com',
 				'subscribed_with_acceptance' => '1',
@@ -62,7 +62,7 @@ final class AjaxSubmitTest extends TestCase {
 		$_POST = $this->base_post();
 
 		ob_start();
-		UVE_MR_Submit::handle_submit_ajax();
+		RelayPress_Submit::handle_submit_ajax();
 		$output = (string) ob_get_clean();
 
 		$data = json_decode( $output, true );
@@ -71,11 +71,11 @@ final class AjaxSubmitTest extends TestCase {
 	}
 
 	public function test_ajax_invalid_nonce_returns_ok_payload(): void {
-		$GLOBALS['uve_mr_test_nonce_ok'] = false;
+		$GLOBALS['relaypress_test_nonce_ok'] = false;
 		$_POST = $this->base_post();
 
 		ob_start();
-		UVE_MR_Submit::handle_submit_ajax();
+		RelayPress_Submit::handle_submit_ajax();
 		$output = (string) ob_get_clean();
 
 		$data = json_decode( $output, true );
@@ -88,7 +88,7 @@ final class AjaxSubmitTest extends TestCase {
 		$_POST['subscriber']['email'] = 'not-an-email';
 
 		ob_start();
-		UVE_MR_Submit::handle_submit_ajax();
+		RelayPress_Submit::handle_submit_ajax();
 		$output = (string) ob_get_clean();
 
 		$data = json_decode( $output, true );
@@ -98,10 +98,10 @@ final class AjaxSubmitTest extends TestCase {
 
 	public function test_ajax_honeypot_returns_ok_payload(): void {
 		$_POST = $this->base_post();
-		$_POST['uve_mr_hp'] = 'spam';
+		$_POST['relaypress_hp'] = 'spam';
 
 		ob_start();
-		UVE_MR_Submit::handle_submit_ajax();
+		RelayPress_Submit::handle_submit_ajax();
 		$output = (string) ob_get_clean();
 
 		$data = json_decode( $output, true );
@@ -114,7 +114,7 @@ final class AjaxSubmitTest extends TestCase {
 		$_POST['subscriber']['subscribed_with_acceptance'] = '0';
 
 		ob_start();
-		UVE_MR_Submit::handle_submit_ajax();
+		RelayPress_Submit::handle_submit_ajax();
 		$output = (string) ob_get_clean();
 
 		$data = json_decode( $output, true );
@@ -123,14 +123,14 @@ final class AjaxSubmitTest extends TestCase {
 	}
 
 	public function test_ajax_captcha_failure_returns_error_payload(): void {
-		$GLOBALS['uve_mr_test_http']['POST']['https://challenges.cloudflare.com/turnstile/v0/siteverify'] = array(
+		$GLOBALS['relaypress_test_http']['POST']['https://challenges.cloudflare.com/turnstile/v0/siteverify'] = array(
 			'response' => array( 'code' => 200 ),
 			'body'     => wp_json_encode( array( 'success' => false ) ),
 		);
 		$_POST = $this->base_post();
 
 		ob_start();
-		UVE_MR_Submit::handle_submit_ajax();
+		RelayPress_Submit::handle_submit_ajax();
 		$output = (string) ob_get_clean();
 
 		$data = json_decode( $output, true );
@@ -139,12 +139,12 @@ final class AjaxSubmitTest extends TestCase {
 	}
 
 	public function test_ajax_rate_limit_returns_ok_payload(): void {
-		$key = 'uve_mr_rl_' . md5( '203.0.113.10|test@example.com' );
-		$GLOBALS['uve_mr_test_transients'][ $key ] = 5;
+		$key = 'relaypress_rl_' . md5( '203.0.113.10|test@example.com' );
+		$GLOBALS['relaypress_test_transients'][ $key ] = 5;
 		$_POST = $this->base_post();
 
 		ob_start();
-		UVE_MR_Submit::handle_submit_ajax();
+		RelayPress_Submit::handle_submit_ajax();
 		$output = (string) ob_get_clean();
 
 		$data = json_decode( $output, true );
@@ -154,13 +154,13 @@ final class AjaxSubmitTest extends TestCase {
 
 	public function test_ajax_group_ids_intersect_with_config(): void {
 		$_POST                   = $this->base_post();
-		$_POST['uve_mr_group_ids'] = '2,3';
+		$_POST['relaypress_group_ids'] = '2,3';
 
 		ob_start();
-		UVE_MR_Submit::handle_submit_ajax();
+		RelayPress_Submit::handle_submit_ajax();
 		ob_end_clean();
 
-		$last = $GLOBALS['uve_mr_test_last_http'];
+		$last = $GLOBALS['relaypress_test_last_http'];
 		$this->assertSame( 'POST', $last['method'] ?? '' );
 		$this->assertSame( 'https://api.test/api/v1/subscribers', $last['url'] ?? '' );
 		$payload = json_decode( $last['args']['body'] ?? '', true );
@@ -169,13 +169,13 @@ final class AjaxSubmitTest extends TestCase {
 
 	public function test_ajax_group_ids_falls_back_to_config(): void {
 		$_POST = $this->base_post();
-		unset( $_POST['uve_mr_group_ids'] );
+		unset( $_POST['relaypress_group_ids'] );
 
 		ob_start();
-		UVE_MR_Submit::handle_submit_ajax();
+		RelayPress_Submit::handle_submit_ajax();
 		ob_end_clean();
 
-		$last = $GLOBALS['uve_mr_test_last_http'];
+		$last = $GLOBALS['relaypress_test_last_http'];
 		$this->assertSame( 'https://api.test/api/v1/subscribers', $last['url'] ?? '' );
 		$payload = json_decode( $last['args']['body'] ?? '', true );
 		$this->assertSame( array( 1, 2 ), $payload['group_ids'] ?? array() );

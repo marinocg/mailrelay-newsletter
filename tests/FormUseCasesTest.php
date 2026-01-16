@@ -5,9 +5,9 @@ use PHPUnit\Framework\TestCase;
 
 final class FormUseCasesTest extends TestCase {
 	protected function setUp(): void {
-		$GLOBALS['uve_mr_test_filters'] = array();
-		$GLOBALS['uve_mr_test_actions'] = array();
-		if ( class_exists( 'UVE_MR_Test_Premium' ) ) {
+		$GLOBALS['relaypress_test_filters'] = array();
+		$GLOBALS['relaypress_test_actions'] = array();
+		if ( class_exists( 'RelayPress_Test_Premium' ) ) {
 			// no-op, class cannot be undefined in PHP.
 		}
 	}
@@ -20,7 +20,7 @@ final class FormUseCasesTest extends TestCase {
 		);
 		$this->set_repo( new Test_Single_Form_Repository( $forms ) );
 
-		$form = UVE_MR_Form_Use_Cases::get_form_for_render( 999 );
+		$form = RelayPress_Form_Use_Cases::get_form_for_render( 999 );
 
 		$this->assertNotNull( $form );
 		$this->assertSame( 1, $form->id );
@@ -33,7 +33,7 @@ final class FormUseCasesTest extends TestCase {
 		);
 		$this->set_repo( new FormUseCases_Test_Form_Repository( $forms ) );
 
-		$form = UVE_MR_Form_Use_Cases::get_form_for_render( 5 );
+		$form = RelayPress_Form_Use_Cases::get_form_for_render( 5 );
 
 		$this->assertNotNull( $form );
 		$this->assertSame( 5, $form->id );
@@ -46,7 +46,7 @@ final class FormUseCasesTest extends TestCase {
 		);
 		$this->set_repo( new FormUseCases_Test_Form_Repository( $forms ) );
 
-		$form = UVE_MR_Form_Use_Cases::get_primary_form_for_admin();
+		$form = RelayPress_Form_Use_Cases::get_primary_form_for_admin();
 
 		$this->assertNotNull( $form );
 		$this->assertSame( 2, $form->id );
@@ -59,13 +59,13 @@ final class FormUseCasesTest extends TestCase {
 		);
 		$this->set_repo( new Test_Single_Form_Repository( $forms ) );
 
-		$form = UVE_MR_Form_Use_Cases::get_form_for_render( null );
+		$form = RelayPress_Form_Use_Cases::get_form_for_render( null );
 
 		$this->assertNull( $form );
 	}
 
-	private function make_form( int $id, string $status ): UVE_MR_Form {
-		$form            = new UVE_MR_Form();
+	private function make_form( int $id, string $status ): RelayPress_Form {
+		$form            = new RelayPress_Form();
 		$form->id        = $id;
 		$form->name      = 'Form ' . $id;
 		$form->status    = $status;
@@ -75,9 +75,9 @@ final class FormUseCasesTest extends TestCase {
 		return $form;
 	}
 
-	private function set_repo( UVE_MR_Form_Repository_Interface $repo ): void {
+	private function set_repo( RelayPress_Form_Repository_Interface $repo ): void {
 		add_filter(
-			'uve_mr_form_repository',
+			'relaypress_form_repository',
 			static function () use ( $repo ) {
 				return $repo;
 			}
@@ -86,20 +86,20 @@ final class FormUseCasesTest extends TestCase {
 
 }
 
-final class FormUseCases_Test_Form_Repository implements UVE_MR_Form_Repository_Interface {
+final class FormUseCases_Test_Form_Repository implements RelayPress_Form_Repository_Interface {
 	/**
-	 * @var UVE_MR_Form[]
+	 * @var RelayPress_Form[]
 	 */
 	private array $forms;
 
 	/**
-	 * @param UVE_MR_Form[] $forms
+	 * @param RelayPress_Form[] $forms
 	 */
 	public function __construct( array $forms ) {
 		$this->forms = $forms;
 	}
 
-	public function get( int $id ): ?UVE_MR_Form {
+	public function get( int $id ): ?RelayPress_Form {
 		foreach ( $this->forms as $form ) {
 			if ( $form->id === $id ) {
 				return $form;
@@ -121,7 +121,7 @@ final class FormUseCases_Test_Form_Repository implements UVE_MR_Form_Repository_
 			$forms = array_values(
 				array_filter(
 					$forms,
-					static function ( UVE_MR_Form $form ) use ( $allowed ): bool {
+					static function ( RelayPress_Form $form ) use ( $allowed ): bool {
 						return in_array( $form->status, $allowed, true );
 					}
 				)
@@ -130,7 +130,7 @@ final class FormUseCases_Test_Form_Repository implements UVE_MR_Form_Repository_
 		if ( ( $args['orderby'] ?? '' ) === 'ID' ) {
 			usort(
 				$forms,
-				static function ( UVE_MR_Form $a, UVE_MR_Form $b ) use ( $args ): int {
+				static function ( RelayPress_Form $a, RelayPress_Form $b ) use ( $args ): int {
 					$cmp = $a->id <=> $b->id;
 					$order = strtoupper( (string) ( $args['order'] ?? 'ASC' ) );
 					return 'DESC' === $order ? -$cmp : $cmp;
@@ -144,11 +144,11 @@ final class FormUseCases_Test_Form_Repository implements UVE_MR_Form_Repository_
 		return $forms;
 	}
 
-	public function create( string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function create( string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 
-	public function update( int $id, string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function update( int $id, string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 
@@ -171,17 +171,17 @@ final class FormUseCases_Test_Form_Repository implements UVE_MR_Form_Repository_
 	}
 }
 
-final class Test_Single_Form_Repository implements UVE_MR_Form_Repository_Interface {
+final class Test_Single_Form_Repository implements RelayPress_Form_Repository_Interface {
 	private FormUseCases_Test_Form_Repository $repo;
 
 	/**
-	 * @param UVE_MR_Form[] $forms
+	 * @param RelayPress_Form[] $forms
 	 */
 	public function __construct( array $forms ) {
 		$this->repo = new FormUseCases_Test_Form_Repository( $forms );
 	}
 
-	public function get( int $id ): ?UVE_MR_Form {
+	public function get( int $id ): ?RelayPress_Form {
 		return $this->get_primary();
 	}
 
@@ -190,11 +190,11 @@ final class Test_Single_Form_Repository implements UVE_MR_Form_Repository_Interf
 		return $primary ? array( $primary ) : array();
 	}
 
-	public function create( string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function create( string $name, array $config, string $status ): ?RelayPress_Form {
 		return $this->repo->create( $name, $config, $status );
 	}
 
-	public function update( int $id, string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function update( int $id, string $name, array $config, string $status ): ?RelayPress_Form {
 		return $this->repo->update( $id, $name, $config, $status );
 	}
 
@@ -206,7 +206,7 @@ final class Test_Single_Form_Repository implements UVE_MR_Form_Repository_Interf
 		return $this->repo->count_published( $exclude_id );
 	}
 
-	private function get_primary(): ?UVE_MR_Form {
+	private function get_primary(): ?RelayPress_Form {
 		$forms = $this->repo->list(
 			array(
 				'post_status'    => array( 'publish' ),

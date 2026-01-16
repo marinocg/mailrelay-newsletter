@@ -6,10 +6,10 @@ use PHPUnit\Framework\TestCase;
 final class AjaxFrontendTest extends TestCase {
 
 	protected function setUp(): void {
-		$GLOBALS['uve_mr_test_filters'] = array();
-		$GLOBALS['uve_mr_test_actions'] = array();
-		$GLOBALS['uve_mr_test_options'] = array(
-			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+		$GLOBALS['relaypress_test_filters'] = array();
+		$GLOBALS['relaypress_test_actions'] = array();
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
 				'title' => 'Title',
 				'description' => 'Desc',
 				'email_placeholder' => 'Email...',
@@ -31,27 +31,27 @@ final class AjaxFrontendTest extends TestCase {
 	}
 
 	public function test_shortcode_renders_non_ajax_by_default(): void {
-		$html = UVE_MR_Frontend::shortcode();
+		$html = RelayPress_Frontend::shortcode();
 		$this->assertStringContainsString('data-ajax="0"', $html);
 		$this->assertStringContainsString('data-ajax-url="https://example.test/wp-admin/admin-ajax.php"', $html);
 	}
 
 	public function test_shortcode_renders_ajax_when_enabled(): void {
-		$GLOBALS['uve_mr_test_options'][ UVE_Mailrelay_Newsletter::OPT_KEY ]['ajax_mode'] = '1';
+		$GLOBALS['relaypress_test_options'][ RelayPress_Newsletter::OPT_KEY ]['ajax_mode'] = '1';
 
-		$html = UVE_MR_Frontend::shortcode();
+		$html = RelayPress_Frontend::shortcode();
 		$this->assertStringContainsString('data-ajax="1"', $html);
 	}
 
 	public function test_shortcode_ajax_attribute_overrides_option(): void {
-		$GLOBALS['uve_mr_test_options'][ UVE_Mailrelay_Newsletter::OPT_KEY ]['ajax_mode'] = '1';
+		$GLOBALS['relaypress_test_options'][ RelayPress_Newsletter::OPT_KEY ]['ajax_mode'] = '1';
 
-		$html = UVE_MR_Frontend::shortcode( array( 'ajax' => '0' ) );
+		$html = RelayPress_Frontend::shortcode( array( 'ajax' => '0' ) );
 		$this->assertStringContainsString('data-ajax="0"', $html);
 	}
 
-	private function make_form( int $id, string $status ): UVE_MR_Form {
-		$form             = new UVE_MR_Form();
+	private function make_form( int $id, string $status ): RelayPress_Form {
+		$form             = new RelayPress_Form();
 		$form->id         = $id;
 		$form->name       = 'Form ' . $id;
 		$form->status     = $status;
@@ -61,9 +61,9 @@ final class AjaxFrontendTest extends TestCase {
 		return $form;
 	}
 
-	private function set_repo( UVE_MR_Form_Repository_Interface $repo ): void {
+	private function set_repo( RelayPress_Form_Repository_Interface $repo ): void {
 		add_filter(
-			'uve_mr_form_repository',
+			'relaypress_form_repository',
 			static function () use ( $repo ) {
 				return $repo;
 			}
@@ -71,20 +71,20 @@ final class AjaxFrontendTest extends TestCase {
 	}
 }
 
-final class AjaxFrontend_Test_Form_Repository implements UVE_MR_Form_Repository_Interface {
+final class AjaxFrontend_Test_Form_Repository implements RelayPress_Form_Repository_Interface {
 	/**
-	 * @var UVE_MR_Form[]
+	 * @var RelayPress_Form[]
 	 */
 	private array $forms;
 
 	/**
-	 * @param UVE_MR_Form[] $forms
+	 * @param RelayPress_Form[] $forms
 	 */
 	public function __construct( array $forms ) {
 		$this->forms = $forms;
 	}
 
-	public function get( int $id ): ?UVE_MR_Form {
+	public function get( int $id ): ?RelayPress_Form {
 		foreach ( $this->forms as $form ) {
 			if ( $form->id === $id ) {
 				return $form;
@@ -106,7 +106,7 @@ final class AjaxFrontend_Test_Form_Repository implements UVE_MR_Form_Repository_
 			$forms = array_values(
 				array_filter(
 					$forms,
-					static function ( UVE_MR_Form $form ) use ( $allowed ): bool {
+					static function ( RelayPress_Form $form ) use ( $allowed ): bool {
 						return in_array( $form->status, $allowed, true );
 					}
 				)
@@ -115,7 +115,7 @@ final class AjaxFrontend_Test_Form_Repository implements UVE_MR_Form_Repository_
 		if ( ( $args['orderby'] ?? '' ) === 'ID' ) {
 			usort(
 				$forms,
-				static function ( UVE_MR_Form $a, UVE_MR_Form $b ) use ( $args ): int {
+				static function ( RelayPress_Form $a, RelayPress_Form $b ) use ( $args ): int {
 					$cmp = $a->id <=> $b->id;
 					$order = strtoupper( (string) ( $args['order'] ?? 'ASC' ) );
 					return 'DESC' === $order ? -$cmp : $cmp;
@@ -129,11 +129,11 @@ final class AjaxFrontend_Test_Form_Repository implements UVE_MR_Form_Repository_
 		return $forms;
 	}
 
-	public function create( string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function create( string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 
-	public function update( int $id, string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function update( int $id, string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 
