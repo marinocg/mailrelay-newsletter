@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PLUGIN_SLUG="uve-mailrelay-newsletter"
+PLUGIN_SLUG="relaypress-newsletter"
 OUT_DIR="$ROOT_DIR/dist"
 ZIP_PATH="$OUT_DIR/$PLUGIN_SLUG.zip"
 

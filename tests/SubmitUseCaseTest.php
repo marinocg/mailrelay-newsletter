@@ -5,8 +5,8 @@ use PHPUnit\Framework\TestCase;
 
 final class SubmitUseCaseTest extends TestCase {
 	public function test_submit_use_case_calls_mailrelay_with_configured_groups(): void {
-		$GLOBALS['uve_mr_test_options'] = array(
-			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
 				'api_base_url'                  => 'https://api.test/api/v1',
 				'api_token'                     => 'token',
 				'group_ids'                     => '1,2',
@@ -30,7 +30,7 @@ final class SubmitUseCaseTest extends TestCase {
 		$sanitizer       = new Test_Input_Sanitizer();
 		$forms           = new Test_Form_Repository();
 
-		$use_case = new UVE_MR_Submit_Use_Case(
+		$use_case = new RelayPress_Submit_Use_Case(
 			$mailrelay,
 			$options,
 			$logs,
@@ -43,8 +43,8 @@ final class SubmitUseCaseTest extends TestCase {
 
 		$result = $use_case->process_submission(
 			array(
-				'uve_mr_hp'        => '',
-				'uve_mr_group_ids' => '1,2',
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1,2',
 				'subscriber'       => array(
 					'email'                     => 'test@example.com',
 					'subscribed_with_acceptance' => '1',
@@ -57,8 +57,8 @@ final class SubmitUseCaseTest extends TestCase {
 	}
 
 	public function test_submit_use_case_passes_country_field(): void {
-		$GLOBALS['uve_mr_test_options'] = array(
-			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
 				'api_base_url'                  => 'https://api.test/api/v1',
 				'api_token'                     => 'token',
 				'group_ids'                     => '1',
@@ -72,7 +72,7 @@ final class SubmitUseCaseTest extends TestCase {
 			),
 		);
 
-		$form = new UVE_MR_Form();
+		$form = new RelayPress_Form();
 		$form->id     = 12;
 		$form->name   = 'Form 12';
 		$form->status = 'publish';
@@ -98,7 +98,7 @@ final class SubmitUseCaseTest extends TestCase {
 		$sanitizer       = new Test_Input_Sanitizer();
 		$forms           = new SubmitUseCase_Test_Form_Repository( $form );
 
-		$use_case = new UVE_MR_Submit_Use_Case(
+		$use_case = new RelayPress_Submit_Use_Case(
 			$mailrelay,
 			$options,
 			$logs,
@@ -111,9 +111,9 @@ final class SubmitUseCaseTest extends TestCase {
 
 		$result = $use_case->process_submission(
 			array(
-				'uve_mr_form_id'   => 12,
-				'uve_mr_hp'        => '',
-				'uve_mr_group_ids' => '1',
+				'relaypress_form_id'   => 12,
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
 				'subscriber'       => array(
 					'email'                     => 'test@example.com',
 					'subscribed_with_acceptance' => '1',
@@ -127,8 +127,8 @@ final class SubmitUseCaseTest extends TestCase {
 	}
 
 	public function test_submit_use_case_rejects_invalid_country_when_required(): void {
-		$GLOBALS['uve_mr_test_options'] = array(
-			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
 				'api_base_url'                  => 'https://api.test/api/v1',
 				'api_token'                     => 'token',
 				'group_ids'                     => '1',
@@ -142,7 +142,7 @@ final class SubmitUseCaseTest extends TestCase {
 			),
 		);
 
-		$form = new UVE_MR_Form();
+		$form = new RelayPress_Form();
 		$form->id     = 13;
 		$form->name   = 'Form 13';
 		$form->status = 'publish';
@@ -168,7 +168,7 @@ final class SubmitUseCaseTest extends TestCase {
 		$sanitizer       = new Test_Input_Sanitizer();
 		$forms           = new SubmitUseCase_Test_Form_Repository( $form );
 
-		$use_case = new UVE_MR_Submit_Use_Case(
+		$use_case = new RelayPress_Submit_Use_Case(
 			$mailrelay,
 			$options,
 			$logs,
@@ -181,9 +181,9 @@ final class SubmitUseCaseTest extends TestCase {
 
 		$result = $use_case->process_submission(
 			array(
-				'uve_mr_form_id'   => 13,
-				'uve_mr_hp'        => '',
-				'uve_mr_group_ids' => '1',
+				'relaypress_form_id'   => 13,
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
 				'subscriber'       => array(
 					'email'                     => 'test@example.com',
 					'subscribed_with_acceptance' => '1',
@@ -196,8 +196,8 @@ final class SubmitUseCaseTest extends TestCase {
 	}
 
 	public function test_submit_use_case_uses_forced_locale(): void {
-		$GLOBALS['uve_mr_test_options'] = array(
-			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
 				'api_base_url'                  => 'https://api.test/api/v1',
 				'api_token'                     => 'token',
 				'group_ids'                     => '1',
@@ -212,7 +212,7 @@ final class SubmitUseCaseTest extends TestCase {
 			),
 		);
 
-		$form = new UVE_MR_Form();
+		$form = new RelayPress_Form();
 		$form->id     = 99;
 		$form->name   = 'Form 99';
 		$form->status = 'publish';
@@ -234,7 +234,7 @@ final class SubmitUseCaseTest extends TestCase {
 		$sanitizer       = new Test_Input_Sanitizer();
 		$forms           = new SubmitUseCase_Test_Form_Repository( $form );
 
-		$use_case = new UVE_MR_Submit_Use_Case(
+		$use_case = new RelayPress_Submit_Use_Case(
 			$mailrelay,
 			$options,
 			$logs,
@@ -247,9 +247,9 @@ final class SubmitUseCaseTest extends TestCase {
 
 		$use_case->process_submission(
 			array(
-				'uve_mr_form_id'   => 99,
-				'uve_mr_hp'        => '',
-				'uve_mr_group_ids' => '1',
+				'relaypress_form_id'   => 99,
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
 				'subscriber'       => array(
 					'email'                     => 'test@example.com',
 					'subscribed_with_acceptance' => '1',
@@ -261,8 +261,8 @@ final class SubmitUseCaseTest extends TestCase {
 	}
 
 	public function test_submit_use_case_falls_back_when_locale_unsupported(): void {
-		$GLOBALS['uve_mr_test_options'] = array(
-			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
 				'api_base_url'                  => 'https://api.test/api/v1',
 				'api_token'                     => 'token',
 				'group_ids'                     => '1',
@@ -286,7 +286,7 @@ final class SubmitUseCaseTest extends TestCase {
 		$sanitizer       = new Test_Input_Sanitizer();
 		$forms           = new Test_Form_Repository();
 
-		$use_case = new UVE_MR_Submit_Use_Case(
+		$use_case = new RelayPress_Submit_Use_Case(
 			$mailrelay,
 			$options,
 			$logs,
@@ -299,8 +299,8 @@ final class SubmitUseCaseTest extends TestCase {
 
 		$use_case->process_submission(
 			array(
-				'uve_mr_hp'        => '',
-				'uve_mr_group_ids' => '1',
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
 				'subscriber'       => array(
 					'email'                     => 'test@example.com',
 					'subscribed_with_acceptance' => '1',
@@ -312,8 +312,8 @@ final class SubmitUseCaseTest extends TestCase {
 	}
 
 	public function test_submit_use_case_uses_browser_locale_when_supported(): void {
-		$GLOBALS['uve_mr_test_options'] = array(
-			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
 				'api_base_url'                  => 'https://api.test/api/v1',
 				'api_token'                     => 'token',
 				'group_ids'                     => '1',
@@ -337,7 +337,7 @@ final class SubmitUseCaseTest extends TestCase {
 		$sanitizer       = new Test_Input_Sanitizer();
 		$forms           = new Test_Form_Repository();
 
-		$use_case = new UVE_MR_Submit_Use_Case(
+		$use_case = new RelayPress_Submit_Use_Case(
 			$mailrelay,
 			$options,
 			$logs,
@@ -350,8 +350,8 @@ final class SubmitUseCaseTest extends TestCase {
 
 		$use_case->process_submission(
 			array(
-				'uve_mr_hp'        => '',
-				'uve_mr_group_ids' => '1',
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
 				'subscriber'       => array(
 					'email'                     => 'test@example.com',
 					'subscribed_with_acceptance' => '1',
@@ -363,8 +363,8 @@ final class SubmitUseCaseTest extends TestCase {
 	}
 
 	public function test_submit_use_case_inherits_global_force_locale(): void {
-		$GLOBALS['uve_mr_test_options'] = array(
-			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
 				'api_base_url'                  => 'https://api.test/api/v1',
 				'api_token'                     => 'token',
 				'group_ids'                     => '1',
@@ -381,7 +381,7 @@ final class SubmitUseCaseTest extends TestCase {
 			),
 		);
 
-		$form = new UVE_MR_Form();
+		$form = new RelayPress_Form();
 		$form->id     = 11;
 		$form->name   = 'Form 11';
 		$form->status = 'publish';
@@ -402,7 +402,7 @@ final class SubmitUseCaseTest extends TestCase {
 		$sanitizer       = new Test_Input_Sanitizer();
 		$forms           = new SubmitUseCase_Test_Form_Repository( $form );
 
-		$use_case = new UVE_MR_Submit_Use_Case(
+		$use_case = new RelayPress_Submit_Use_Case(
 			$mailrelay,
 			$options,
 			$logs,
@@ -415,9 +415,9 @@ final class SubmitUseCaseTest extends TestCase {
 
 		$use_case->process_submission(
 			array(
-				'uve_mr_form_id'   => 11,
-				'uve_mr_hp'        => '',
-				'uve_mr_group_ids' => '1',
+				'relaypress_form_id'   => 11,
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
 				'subscriber'       => array(
 					'email'                     => 'test@example.com',
 					'subscribed_with_acceptance' => '1',
@@ -429,8 +429,8 @@ final class SubmitUseCaseTest extends TestCase {
 	}
 
 	public function test_submit_use_case_skips_turnstile_when_not_configured(): void {
-		$GLOBALS['uve_mr_test_options'] = array(
-			UVE_Mailrelay_Newsletter::OPT_KEY => array(
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
 				'api_base_url'                  => 'https://api.test/api/v1',
 				'api_token'                     => 'token',
 				'group_ids'                     => '1',
@@ -454,7 +454,7 @@ final class SubmitUseCaseTest extends TestCase {
 		$sanitizer       = new Test_Input_Sanitizer();
 		$forms           = new Test_Form_Repository();
 
-		$use_case = new UVE_MR_Submit_Use_Case(
+		$use_case = new RelayPress_Submit_Use_Case(
 			$mailrelay,
 			$options,
 			$logs,
@@ -467,8 +467,8 @@ final class SubmitUseCaseTest extends TestCase {
 
 		$result = $use_case->process_submission(
 			array(
-				'uve_mr_hp'        => '',
-				'uve_mr_group_ids' => '1',
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
 				'subscriber'       => array(
 					'email'                     => 'test@example.com',
 					'subscribed_with_acceptance' => '1',
@@ -481,7 +481,7 @@ final class SubmitUseCaseTest extends TestCase {
 	}
 }
 
-final class Test_Mailrelay_Client implements UVE_MR_Mailrelay_Client {
+final class Test_Mailrelay_Client implements RelayPress_Mailrelay_Client {
 	/**
 	 * @var array<int>
 	 */
@@ -506,25 +506,25 @@ final class Test_Mailrelay_Client implements UVE_MR_Mailrelay_Client {
 	}
 }
 
-final class Test_Options_Repository implements UVE_MR_Options_Repository {
+final class Test_Options_Repository implements RelayPress_Options_Repository {
 	public function get_options(): array {
-		return UVE_Mailrelay_Newsletter::get_options();
+		return RelayPress_Newsletter::get_options();
 	}
 }
 
-final class Test_Logs_Repository implements UVE_MR_Logs_Repository {
+final class Test_Logs_Repository implements RelayPress_Logs_Repository {
 	public function ensure_table(): void {}
 
 	public function store_consent_log( array $data ): void {}
 }
 
-final class Test_Turnstile_Verifier implements UVE_MR_Turnstile_Verifier {
+final class Test_Turnstile_Verifier implements RelayPress_Turnstile_Verifier {
 	public function verify( string $token, string $ip ): bool {
 		return true;
 	}
 }
 
-final class Test_Turnstile_Verifier_Tracker implements UVE_MR_Turnstile_Verifier {
+final class Test_Turnstile_Verifier_Tracker implements RelayPress_Turnstile_Verifier {
 	public int $calls = 0;
 
 	public function verify( string $token, string $ip ): bool {
@@ -533,13 +533,13 @@ final class Test_Turnstile_Verifier_Tracker implements UVE_MR_Turnstile_Verifier
 	}
 }
 
-final class Test_Rate_Limiter implements UVE_MR_Rate_Limiter {
+final class Test_Rate_Limiter implements RelayPress_Rate_Limiter {
 	public function hit( string $key, int $max, int $window_seconds ): bool {
 		return true;
 	}
 }
 
-final class Test_Request_Context implements UVE_MR_Request_Context {
+final class Test_Request_Context implements RelayPress_Request_Context {
 	private string $accept_language;
 
 	public function __construct( string $accept_language = '' ) {
@@ -567,7 +567,7 @@ final class Test_Request_Context implements UVE_MR_Request_Context {
 	}
 }
 
-final class Test_Input_Sanitizer implements UVE_MR_Input_Sanitizer {
+final class Test_Input_Sanitizer implements RelayPress_Input_Sanitizer {
 	public function unslash( $value ): string {
 		return is_scalar( $value ) ? (string) $value : '';
 	}
@@ -589,8 +589,8 @@ final class Test_Input_Sanitizer implements UVE_MR_Input_Sanitizer {
 	}
 }
 
-final class Test_Form_Repository implements UVE_MR_Form_Repository_Interface {
-	public function get( int $id ): ?UVE_MR_Form {
+final class Test_Form_Repository implements RelayPress_Form_Repository_Interface {
+	public function get( int $id ): ?RelayPress_Form {
 		return null;
 	}
 
@@ -598,11 +598,11 @@ final class Test_Form_Repository implements UVE_MR_Form_Repository_Interface {
 		return array();
 	}
 
-	public function create( string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function create( string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 
-	public function update( int $id, string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function update( int $id, string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 
@@ -615,14 +615,14 @@ final class Test_Form_Repository implements UVE_MR_Form_Repository_Interface {
 	}
 }
 
-final class SubmitUseCase_Test_Form_Repository implements UVE_MR_Form_Repository_Interface {
-	private ?UVE_MR_Form $form;
+final class SubmitUseCase_Test_Form_Repository implements RelayPress_Form_Repository_Interface {
+	private ?RelayPress_Form $form;
 
-	public function __construct( ?UVE_MR_Form $form = null ) {
+	public function __construct( ?RelayPress_Form $form = null ) {
 		$this->form = $form;
 	}
 
-	public function get( int $id ): ?UVE_MR_Form {
+	public function get( int $id ): ?RelayPress_Form {
 		if ( $this->form && $this->form->id === $id ) {
 			return $this->form;
 		}
@@ -633,11 +633,11 @@ final class SubmitUseCase_Test_Form_Repository implements UVE_MR_Form_Repository
 		return $this->form ? array( $this->form ) : array();
 	}
 
-	public function create( string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function create( string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 
-	public function update( int $id, string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function update( int $id, string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 

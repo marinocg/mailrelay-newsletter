@@ -5,16 +5,40 @@ use PHPUnit\Framework\TestCase;
 
 final class GutenbergBlockTest extends TestCase {
 	protected function setUp(): void {
-		$GLOBALS['uve_mr_test_filters'] = array();
-		$GLOBALS['uve_mr_test_actions'] = array();
+		$GLOBALS['relaypress_test_filters'] = array();
+		$GLOBALS['relaypress_test_actions'] = array();
 	}
 
-	public function test_register_block_excludes_form_id_attribute_by_default(): void {
-		UVE_MR_Gutenberg::register_block();
+	public function test_register_block_includes_form_id_attribute_by_default(): void {
+		RelayPress_Gutenberg::register_block();
 
-		$block = $GLOBALS['uve_mr_test_blocks']['uve-mr/newsletter'] ?? array();
+		$block = $GLOBALS['relaypress_test_blocks']['relaypress/newsletter'] ?? array();
 		$this->assertArrayHasKey( 'attributes', $block );
-		$this->assertArrayNotHasKey( 'formId', $block['attributes'] );
+		$this->assertArrayHasKey( 'formId', $block['attributes'] );
+		$this->assertSame( '', $block['attributes']['formId']['default'] ?? 'fallback' );
+	}
+
+	public function test_register_block_includes_form_options(): void {
+		$this->set_repo(
+			new Gutenberg_Test_Form_Repository(
+				array(
+					$this->make_form( 2, 'publish' ),
+					$this->make_form( 1, 'publish' ),
+				)
+			)
+		);
+
+		RelayPress_Gutenberg::register_block();
+
+		$data = $GLOBALS['relaypress_test_script_data'][ RelayPress_Gutenberg::SCRIPT_HANDLE ]['relaypressNewsletterBlockData'] ?? array();
+		$options = $data['formOptions'] ?? array();
+
+		$labels = array();
+		foreach ( $options as $option ) {
+			$labels[] = $option['label'] ?? '';
+		}
+		$this->assertContains( 'Form 1', $labels );
+		$this->assertContains( 'Form 2', $labels );
 	}
 
 	public function test_render_uses_primary_form_when_free(): void {
@@ -27,13 +51,13 @@ final class GutenbergBlockTest extends TestCase {
 			)
 		);
 
-		$output = UVE_MR_Gutenberg::render_block(
+		$output = RelayPress_Gutenberg::render_block(
 			array(
 				'title' => 'Example',
 			)
 		);
 
-		$this->assertStringContainsString( 'name="uve_mr_form_id" value="1"', $output );
+		$this->assertStringContainsString( 'name="relaypress_form_id" value="1"', $output );
 	}
 
 	public function test_render_uses_selected_form_when_form_id_set(): void {
@@ -46,17 +70,17 @@ final class GutenbergBlockTest extends TestCase {
 			)
 		);
 
-		$output = UVE_MR_Gutenberg::render_block(
+		$output = RelayPress_Gutenberg::render_block(
 			array(
 				'formId' => '3',
 			)
 		);
 
-		$this->assertStringContainsString( 'name="uve_mr_form_id" value="3"', $output );
+		$this->assertStringContainsString( 'name="relaypress_form_id" value="3"', $output );
 	}
 
-	private function make_form( int $id, string $status ): UVE_MR_Form {
-		$form             = new UVE_MR_Form();
+	private function make_form( int $id, string $status ): RelayPress_Form {
+		$form             = new RelayPress_Form();
 		$form->id         = $id;
 		$form->name       = 'Form ' . $id;
 		$form->status     = $status;
@@ -66,9 +90,9 @@ final class GutenbergBlockTest extends TestCase {
 		return $form;
 	}
 
-	private function set_repo( UVE_MR_Form_Repository_Interface $repo ): void {
+	private function set_repo( RelayPress_Form_Repository_Interface $repo ): void {
 		add_filter(
-			'uve_mr_form_repository',
+			'relaypress_form_repository',
 			static function () use ( $repo ) {
 				return $repo;
 			}
@@ -76,20 +100,20 @@ final class GutenbergBlockTest extends TestCase {
 	}
 }
 
-final class Gutenberg_Test_Form_Repository implements UVE_MR_Form_Repository_Interface {
+final class Gutenberg_Test_Form_Repository implements RelayPress_Form_Repository_Interface {
 	/**
-	 * @var UVE_MR_Form[]
+	 * @var RelayPress_Form[]
 	 */
 	private array $forms;
 
 	/**
-	 * @param UVE_MR_Form[] $forms
+	 * @param RelayPress_Form[] $forms
 	 */
 	public function __construct( array $forms ) {
 		$this->forms = $forms;
 	}
 
-	public function get( int $id ): ?UVE_MR_Form {
+	public function get( int $id ): ?RelayPress_Form {
 		foreach ( $this->forms as $form ) {
 			if ( $form->id === $id ) {
 				return $form;
@@ -111,7 +135,7 @@ final class Gutenberg_Test_Form_Repository implements UVE_MR_Form_Repository_Int
 			$forms = array_values(
 				array_filter(
 					$forms,
-					static function ( UVE_MR_Form $form ) use ( $allowed ): bool {
+					static function ( RelayPress_Form $form ) use ( $allowed ): bool {
 						return in_array( $form->status, $allowed, true );
 					}
 				)
@@ -120,7 +144,7 @@ final class Gutenberg_Test_Form_Repository implements UVE_MR_Form_Repository_Int
 		if ( ( $args['orderby'] ?? '' ) === 'ID' ) {
 			usort(
 				$forms,
-				static function ( UVE_MR_Form $a, UVE_MR_Form $b ) use ( $args ): int {
+				static function ( RelayPress_Form $a, RelayPress_Form $b ) use ( $args ): int {
 					$cmp = $a->id <=> $b->id;
 					$order = strtoupper( (string) ( $args['order'] ?? 'ASC' ) );
 					return 'DESC' === $order ? -$cmp : $cmp;
@@ -134,11 +158,11 @@ final class Gutenberg_Test_Form_Repository implements UVE_MR_Form_Repository_Int
 		return $forms;
 	}
 
-	public function create( string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function create( string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 
-	public function update( int $id, string $name, array $config, string $status ): ?UVE_MR_Form {
+	public function update( int $id, string $name, array $config, string $status ): ?RelayPress_Form {
 		return null;
 	}
 

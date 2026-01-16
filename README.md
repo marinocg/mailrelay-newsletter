@@ -24,7 +24,7 @@ RelayPress is a WordPress plugin that adds a Mailrelay newsletter form with Clou
 ## Usage
 Shortcode:
 ```
-[uve_mailrelay_newsletter]
+[relaypress_newsletter]
 ```
 
 Widget:
@@ -35,7 +35,7 @@ Elementor:
 
 ## Theme template override
 You can override the frontend form by adding a template file in your theme:
-- `your-theme/uve-mr-newsletter/form.php`
+- `your-theme/relaypress-newsletter/form.php`
 - or `your-theme/mr4wp/form.php`
 
 The plugin will load the first matching file and fall back to its own template at `templates/form.php`.
@@ -79,8 +79,8 @@ CI compiles MO files during release. To package locally, make sure you compile t
 
 Compile translations (requires `msgfmt`):
 ```
-msgfmt languages/uve-mailrelay-newsletter-es_ES.po -o languages/uve-mailrelay-newsletter-es_ES.mo
-msgfmt languages/uve-mailrelay-newsletter-en_US.po -o languages/uve-mailrelay-newsletter-en_US.mo
+msgfmt languages/relaypress-newsletter-es_ES.po -o languages/relaypress-newsletter-es_ES.mo
+msgfmt languages/relaypress-newsletter-en_US.po -o languages/relaypress-newsletter-en_US.mo
 ```
 
 Create a ZIP from the plugin root (PowerShell example):

@@ -6,20 +6,21 @@ use PHPUnit\Framework\TestCase;
 final class LogsTableTest extends TestCase {
 
 	protected function setUp(): void {
-		$GLOBALS['uve_mr_test_wpdb_columns']      = array();
-		$GLOBALS['uve_mr_test_wpdb_get_results']  = array();
-		$GLOBALS['uve_mr_test_wpdb_tables_like']  = null;
-		$GLOBALS['uve_mr_test_wpdb_count']        = 0;
-		$GLOBALS['uve_mr_test_nonce_ok']          = true;
+		$GLOBALS['relaypress_test_wpdb_columns']      = array();
+		$GLOBALS['relaypress_test_wpdb_get_results']  = array();
+		$GLOBALS['relaypress_test_wpdb_tables_like']  = null;
+		$GLOBALS['relaypress_test_wpdb_tables_like_map'] = null;
+		$GLOBALS['relaypress_test_wpdb_count']        = 0;
+		$GLOBALS['relaypress_test_nonce_ok']          = true;
 		$_GET                                     = array();
 		$_SERVER                                  = array();
 	}
 
 	public function test_logs_table_renders_sort_indicators_and_pagination(): void {
-		$table = $GLOBALS['wpdb']->prefix . UVE_Mailrelay_Newsletter::TABLE;
+		$table = $GLOBALS['wpdb']->prefix . RelayPress_Newsletter::TABLE;
 
-		$GLOBALS['uve_mr_test_wpdb_tables_like'] = $table;
-		$GLOBALS['uve_mr_test_wpdb_columns']     = array(
+		$GLOBALS['relaypress_test_wpdb_tables_like'] = $table;
+		$GLOBALS['relaypress_test_wpdb_columns']     = array(
 			array( 'Field' => 'id' ),
 			array( 'Field' => 'created_at' ),
 			array( 'Field' => 'email' ),
@@ -31,7 +32,7 @@ final class LogsTableTest extends TestCase {
 			array( 'Field' => 'confirmation_requested_at' ),
 			array( 'Field' => 'confirmation_http_code' ),
 		);
-		$GLOBALS['uve_mr_test_wpdb_get_results'] = array(
+		$GLOBALS['relaypress_test_wpdb_get_results'] = array(
 			array(
 				'id'                        => 10,
 				'created_at'                => '2025-12-31 08:23:56',
@@ -45,7 +46,7 @@ final class LogsTableTest extends TestCase {
 				'confirmation_http_code'    => 204,
 			),
 		);
-		$GLOBALS['uve_mr_test_wpdb_count'] = 45;
+		$GLOBALS['relaypress_test_wpdb_count'] = 45;
 
 		$_GET = array(
 			'_wpnonce' => 'testnonce',
@@ -56,7 +57,7 @@ final class LogsTableTest extends TestCase {
 		);
 
 		ob_start();
-		UVE_MR_Logs::render_logs_table_safe();
+		RelayPress_Logs::render_logs_table_safe();
 		$html = (string) ob_get_clean();
 
 		$this->assertStringContainsString( 'sorting-indicators', $html );
@@ -66,10 +67,10 @@ final class LogsTableTest extends TestCase {
 	}
 
 	public function test_logs_table_renders_email_primary_first_with_toggle(): void {
-		$table = $GLOBALS['wpdb']->prefix . UVE_Mailrelay_Newsletter::TABLE;
+		$table = $GLOBALS['wpdb']->prefix . RelayPress_Newsletter::TABLE;
 
-		$GLOBALS['uve_mr_test_wpdb_tables_like'] = $table;
-		$GLOBALS['uve_mr_test_wpdb_columns']     = array(
+		$GLOBALS['relaypress_test_wpdb_tables_like'] = $table;
+		$GLOBALS['relaypress_test_wpdb_columns']     = array(
 			array( 'Field' => 'id' ),
 			array( 'Field' => 'created_at' ),
 			array( 'Field' => 'email' ),
@@ -79,7 +80,7 @@ final class LogsTableTest extends TestCase {
 			array( 'Field' => 'page_url' ),
 			array( 'Field' => 'mailrelay_http_code' ),
 		);
-		$GLOBALS['uve_mr_test_wpdb_get_results'] = array(
+		$GLOBALS['relaypress_test_wpdb_get_results'] = array(
 			array(
 				'id'                  => 5,
 				'created_at'          => '2026-01-01 10:00:00',
@@ -91,7 +92,7 @@ final class LogsTableTest extends TestCase {
 				'mailrelay_http_code' => 201,
 			),
 		);
-		$GLOBALS['uve_mr_test_wpdb_count'] = 1;
+		$GLOBALS['relaypress_test_wpdb_count'] = 1;
 
 		$_GET = array(
 			'_wpnonce' => 'testnonce',
@@ -100,7 +101,7 @@ final class LogsTableTest extends TestCase {
 		);
 
 		ob_start();
-		UVE_MR_Logs::render_logs_table_safe();
+		RelayPress_Logs::render_logs_table_safe();
 		$html = (string) ob_get_clean();
 
 		$pos_email = strpos( $html, 'column-email' );

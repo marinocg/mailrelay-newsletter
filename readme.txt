@@ -1,5 +1,5 @@
 === RelayPress ===
-Contributors: uve
+Contributors: relaypress
 Tags: newsletter, mailrelay, turnstile, gdpr
 Requires at least: 6.0
 Tested up to: 6.6
