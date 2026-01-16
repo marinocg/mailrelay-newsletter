@@ -9,12 +9,36 @@ final class GutenbergBlockTest extends TestCase {
 		$GLOBALS['uve_mr_test_actions'] = array();
 	}
 
-	public function test_register_block_excludes_form_id_attribute_by_default(): void {
+	public function test_register_block_includes_form_id_attribute_by_default(): void {
 		UVE_MR_Gutenberg::register_block();
 
 		$block = $GLOBALS['uve_mr_test_blocks']['uve-mr/newsletter'] ?? array();
 		$this->assertArrayHasKey( 'attributes', $block );
-		$this->assertArrayNotHasKey( 'formId', $block['attributes'] );
+		$this->assertArrayHasKey( 'formId', $block['attributes'] );
+		$this->assertSame( '', $block['attributes']['formId']['default'] ?? 'fallback' );
+	}
+
+	public function test_register_block_includes_form_options(): void {
+		$this->set_repo(
+			new Gutenberg_Test_Form_Repository(
+				array(
+					$this->make_form( 2, 'publish' ),
+					$this->make_form( 1, 'publish' ),
+				)
+			)
+		);
+
+		UVE_MR_Gutenberg::register_block();
+
+		$data = $GLOBALS['uve_mr_test_script_data'][ UVE_MR_Gutenberg::SCRIPT_HANDLE ]['uveMrNewsletterBlockData'] ?? array();
+		$options = $data['formOptions'] ?? array();
+
+		$labels = array();
+		foreach ( $options as $option ) {
+			$labels[] = $option['label'] ?? '';
+		}
+		$this->assertContains( 'Form 1', $labels );
+		$this->assertContains( 'Form 2', $labels );
 	}
 
 	public function test_render_uses_primary_form_when_free(): void {

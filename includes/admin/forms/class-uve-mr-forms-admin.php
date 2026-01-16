@@ -50,6 +50,19 @@ final class UVE_MR_Forms_Admin {
 		if ( isset( $_POST['uve_mr_form_save'] ) ) {
 			self::handle_save();
 		}
+
+		$page = sanitize_text_field( (string) wp_unslash( $_GET['page'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( 'uve-mr-newsletter-forms' === $page && isset( $_GET['action'], $_GET['form_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$nonce = sanitize_text_field( (string) wp_unslash( $_GET['_wpnonce'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( '' === $nonce || ! wp_verify_nonce( $nonce, 'uve_mr_forms_action' ) ) {
+				return;
+			}
+			$action  = sanitize_text_field( (string) wp_unslash( $_GET['action'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$form_id = absint( wp_unslash( $_GET['form_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( in_array( $action, array( 'duplicate', 'trash', 'restore', 'delete', 'publish', 'draft' ), true ) ) {
+				self::handle_row_action( $action, $form_id );
+			}
+		}
 	}
 
 	/**
@@ -93,7 +106,13 @@ final class UVE_MR_Forms_Admin {
 			return;
 		}
 
-		self::render_single_form_page();
+		$action = sanitize_text_field( (string) wp_unslash( $_GET['action'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( in_array( $action, array( 'edit', 'new' ), true ) ) {
+			UVE_MR_Forms_Editor_Page::render();
+			return;
+		}
+
+		UVE_MR_Forms_List_Page::render();
 	}
 
 	/**
@@ -102,19 +121,8 @@ final class UVE_MR_Forms_Admin {
 	 * @return string
 	 */
 	private static function forms_menu_label(): string {
-		$default = __( 'Form', 'uve-mailrelay-newsletter' );
+		$default = __( 'Forms', 'uve-mailrelay-newsletter' );
 		return (string) apply_filters( 'uve_mr_forms_menu_label', $default );
-	}
-
-	/**
-	 * Render the single-form editor view.
-	 *
-	 * @return void
-	 */
-	private static function render_single_form_page(): void {
-		$form    = UVE_MR_Form_Use_Cases::get_primary_form_for_admin();
-		$form_id = $form ? $form->id : 0;
-		UVE_MR_Forms_Editor_Page::render( $form_id );
 	}
 
 	/**
@@ -148,26 +156,89 @@ final class UVE_MR_Forms_Admin {
 			: UVE_MR_Form_Use_Cases::create_form( $name, $config, $status );
 
 		if ( ! $form ) {
-			self::redirect_with_notice( 'error' );
+			self::redirect_with_notice( 'error', $form_id );
 		}
 
-		self::redirect_with_notice( $notice );
+		self::redirect_with_notice( $notice, $form->id );
 	}
 
 	/**
-	 * Redirect to editor with notice.
+	 * Handle row actions.
 	 *
-	 * @param string $notice Notice key.
+	 * @param string $action Action name.
+	 * @param int    $form_id Form ID.
 	 * @return void
 	 */
-	private static function redirect_with_notice( string $notice ): void {
-		$url = add_query_arg(
-			array(
-				'page'          => 'uve-mr-newsletter-forms',
-				'uve_mr_status' => $notice,
-			),
-			admin_url( 'admin.php' )
+	private static function handle_row_action( string $action, int $form_id ): void {
+		if ( ! $form_id ) {
+			self::redirect_with_notice( 'error' );
+		}
+
+		check_admin_referer( 'uve_mr_forms_action' );
+
+		if ( 'duplicate' === $action ) {
+			$form = UVE_MR_Form_Use_Cases::duplicate_form( $form_id );
+			self::redirect_with_notice( $form ? 'duplicated' : 'error' );
+		}
+
+		if ( 'trash' === $action ) {
+			$ok = UVE_MR_Form_Use_Cases::trash_form( $form_id );
+			self::redirect_with_notice( $ok ? 'trashed' : 'error' );
+		}
+
+		if ( 'publish' === $action ) {
+			$ok = wp_update_post(
+				array(
+					'ID'          => $form_id,
+					'post_status' => 'publish',
+				)
+			);
+			self::redirect_with_notice( $ok ? 'saved' : 'error' );
+		}
+
+		if ( 'draft' === $action ) {
+			$ok = wp_update_post(
+				array(
+					'ID'          => $form_id,
+					'post_status' => 'draft',
+				)
+			);
+			self::redirect_with_notice( $ok ? 'saved' : 'error' );
+		}
+
+		if ( 'restore' === $action ) {
+			$ok = wp_update_post(
+				array(
+					'ID'          => $form_id,
+					'post_status' => 'publish',
+				)
+			);
+			self::redirect_with_notice( $ok ? 'bulk-updated' : 'error' );
+		}
+
+		if ( 'delete' === $action ) {
+			$ok = wp_delete_post( $form_id, true );
+			self::redirect_with_notice( $ok ? 'bulk-updated' : 'error' );
+		}
+	}
+
+	/**
+	 * Redirect with notice.
+	 *
+	 * @param string $notice Notice key.
+	 * @param int    $form_id Form ID.
+	 * @return void
+	 */
+	private static function redirect_with_notice( string $notice, int $form_id = 0 ): void {
+		$args = array(
+			'page'   => 'uve-mr-newsletter-forms',
+			'notice' => $notice,
 		);
+		if ( $form_id ) {
+			$args['action']  = 'edit';
+			$args['form_id'] = $form_id;
+		}
+		$url = add_query_arg( $args, admin_url( 'admin.php' ) );
 		wp_safe_redirect( $url );
 		exit;
 	}

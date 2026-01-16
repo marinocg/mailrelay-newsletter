@@ -10,13 +10,13 @@ final class FormsAdminMenuTest extends TestCase {
 		require_once __DIR__ . '/../includes/admin/forms/class-uve-mr-forms-admin.php';
 	}
 
-	public function test_forms_menu_uses_single_label_by_default(): void {
+	public function test_forms_menu_uses_plural_label_by_default(): void {
 		UVE_MR_Forms_Admin::admin_menu();
 
 		$this->assertCount( 1, $GLOBALS['uve_mr_test_submenu_pages'] );
 		$menu = $GLOBALS['uve_mr_test_submenu_pages'][0];
-		$this->assertSame( 'Form', $menu['page_title'] );
-		$this->assertSame( 'Form', $menu['menu_title'] );
+		$this->assertSame( 'Forms', $menu['page_title'] );
+		$this->assertSame( 'Forms', $menu['menu_title'] );
 		$this->assertSame( 'uve-mr-newsletter-forms', $menu['menu_slug'] );
 	}
 

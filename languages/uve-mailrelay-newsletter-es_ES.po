@@ -2076,3 +2076,22 @@ msgstr "Zambia"
 #: includes/class-uve-mr-utils.php:306
 msgid "Zimbabwe"
 msgstr "Zimbabue"
+
+msgid "No forms yet. Create your first form."
+msgstr "Aun no hay formularios. Crea tu primer formulario."
+
+msgid "Create a form"
+msgstr "Crear un formulario"
+
+#. translators: %s: link to create form.
+msgid "No forms yet. <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Create your first form</a>."
+msgstr "Aun no hay formularios. <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Crea tu primer formulario</a>."
+
+msgid "No forms yet."
+msgstr "Aun no hay formularios."
+
+msgid "Create your first form"
+msgstr "Crea tu primer formulario"
+
+msgid "RelayPress is active, but no forms are published yet."
+msgstr "RelayPress esta activo, pero no hay formularios publicados."

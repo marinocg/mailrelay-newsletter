@@ -10,17 +10,10 @@ final class ElementorWidgetTest extends TestCase {
 	protected function setUp(): void {
 		$GLOBALS['uve_mr_test_filters'] = array();
 		$GLOBALS['uve_mr_test_actions'] = array();
+		add_action( 'uve_mr_elementor_register_controls', array( 'UVE_MR_Elementor', 'register_form_controls' ), 10, 2 );
 	}
 
-	public function test_register_controls_skips_form_select_when_free(): void {
-		$widget = new Test_Elementor_Widget();
-		$widget->run_register_controls();
-
-		$this->assertArrayNotHasKey( 'form_id', $widget->controls );
-	}
-
-	public function test_register_controls_adds_form_select_when_premium(): void {
-		$this->add_elementor_form_control();
+	public function test_register_controls_includes_form_select(): void {
 		$this->set_repo(
 			new Elementor_Test_Form_Repository(
 				array(
@@ -35,7 +28,6 @@ final class ElementorWidgetTest extends TestCase {
 
 		$this->assertArrayHasKey( 'form_id', $widget->controls );
 		$options = $widget->controls['form_id']['options'] ?? array();
-		$this->assertSame( 'Use legacy overrides', $options['0'] ?? '' );
 		$this->assertSame( 'Form 1', $options['1'] ?? '' );
 	}
 
@@ -95,34 +87,6 @@ final class ElementorWidgetTest extends TestCase {
 		);
 	}
 
-	private function add_elementor_form_control(): void {
-		add_action(
-			'uve_mr_elementor_register_controls',
-			static function ( $widget ): void {
-				$forms        = UVE_MR_Form_Use_Cases::list_forms(
-					array(
-						'post_status'    => array( 'publish' ),
-						'posts_per_page' => 100,
-					)
-				);
-				$form_options = array(
-					'0' => __( 'Use legacy overrides', 'uve-mailrelay-newsletter' ),
-				);
-				foreach ( $forms as $form ) {
-					$form_options[ (string) $form->id ] = $form->name;
-				}
-				$widget->add_control(
-					'form_id',
-					array(
-						'label'   => __( 'Form', 'uve-mailrelay-newsletter' ),
-						'type'    => 'select',
-						'options' => $form_options,
-						'default' => '0',
-					)
-				);
-			}
-		);
-	}
 }
 
 final class Test_Elementor_Widget extends UVE_MR_Elementor_Newsletter_Widget {

@@ -66,4 +66,66 @@ final class UVE_MR_Elementor {
 			$widgets_manager->register_widget_type( $widget );
 		}
 	}
+
+	/**
+	 * Register form selector control for the Elementor widget.
+	 *
+	 * @param object $widget Elementor widget instance.
+	 * @param array  $opts   Default options.
+	 * @return void
+	 */
+	public static function register_form_controls( $widget, array $opts ): void {
+		unset( $opts );
+		if ( ! is_object( $widget ) || ! method_exists( $widget, 'add_control' ) ) {
+			return;
+		}
+
+		$forms = UVE_MR_Form_Use_Cases::list_forms(
+			array(
+				'post_status'    => array( 'publish' ),
+				'posts_per_page' => 100,
+			)
+		);
+		if ( empty( $forms ) ) {
+			$create_url = add_query_arg(
+				array(
+					'page'   => 'uve-mr-newsletter-forms',
+					'action' => 'new',
+				),
+				admin_url( 'admin.php' )
+			);
+			$message    = sprintf(
+				/* translators: %s: link to create form. */
+				__( 'No forms yet. <a href="%s" target="_blank" rel="noopener noreferrer">Create your first form</a>.', 'uve-mailrelay-newsletter' ),
+				esc_url( $create_url )
+			);
+			$widget->add_control(
+				'form_empty_notice',
+				array(
+					'type'            => defined( 'Elementor\\Controls_Manager::RAW_HTML' ) ? \Elementor\Controls_Manager::RAW_HTML : 'raw_html',
+					'raw'             => wp_kses_post( $message ),
+					'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
+				)
+			);
+			return;
+		}
+
+		$form_options = array();
+		foreach ( $forms as $form ) {
+			$form_options[ (string) $form->id ] = $form->name;
+		}
+
+		$select_control = defined( 'Elementor\\Controls_Manager::SELECT' )
+			? \Elementor\Controls_Manager::SELECT
+			: 'select';
+
+		$widget->add_control(
+			'form_id',
+			array(
+				'label'   => __( 'Form', 'uve-mailrelay-newsletter' ),
+				'type'    => $select_control,
+				'options' => $form_options,
+			)
+		);
+	}
 }

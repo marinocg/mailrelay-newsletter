@@ -958,3 +958,32 @@ msgstr ""
 #: includes/class-uve-mr-elementor-newsletter-widget.php:179
 msgid "No"
 msgstr ""
+
+#: includes/class-uve-mr-gutenberg.php:40
+msgid "No forms yet. Create your first form."
+msgstr ""
+
+#: includes/class-uve-mr-gutenberg.php:41
+msgid "Create a form"
+msgstr ""
+
+#. translators: %s: link to create form.
+#: includes/class-uve-mr-elementor.php:94
+msgid "No forms yet. <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Create your first form</a>."
+msgstr ""
+
+#: includes/class-uve-mr-newsletter-widget.php:88
+msgid "No forms yet."
+msgstr ""
+
+#: includes/class-uve-mr-newsletter-widget.php:90
+msgid "Create your first form"
+msgstr ""
+
+#: includes/class-uve-mr-frontend.php:90
+msgid "RelayPress is active, but no forms are published yet."
+msgstr ""
+
+#: includes/class-uve-mr-frontend.php:92
+msgid "Create a form"
+msgstr ""

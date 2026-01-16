@@ -17,6 +17,9 @@
 
 	var attributes = blockData.attributes || {};
 	var formOptions = Array.isArray(blockData.formOptions) ? blockData.formOptions : [];
+	var formEmptyMessage = blockData.formEmptyMessage || '';
+	var formCreateLabel = blockData.formCreateLabel || '';
+	var formCreateUrl = blockData.formCreateUrl || '';
 	var hasFormId = Object.prototype.hasOwnProperty.call(attributes, 'formId');
 
 	function normalizeOptions(options) {
@@ -42,12 +45,25 @@
 				controls.push(
 					createElement(SelectControl, {
 						label: __('Form', 'uve-mailrelay-newsletter'),
-						value: String(attrs.formId || '0'),
+						value: String(attrs.formId || ''),
 						options: normalizeOptions(formOptions),
 						onChange: function (value) {
 							props.setAttributes({ formId: String(value) });
 						}
 					})
+				);
+			} else if (hasFormId && formEmptyMessage && formCreateUrl) {
+				controls.push(
+					createElement(
+						'p',
+						null,
+						formEmptyMessage + ' ',
+						createElement(
+							'a',
+							{ href: formCreateUrl, target: '_blank', rel: 'noopener noreferrer' },
+							formCreateLabel || __('Create a form', 'uve-mailrelay-newsletter')
+						)
+					)
 				);
 			}
 

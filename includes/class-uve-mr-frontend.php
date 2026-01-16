@@ -79,16 +79,42 @@ final class UVE_MR_Frontend {
 
 		$form_id = isset( $atts['id'] ) ? (int) $atts['id'] : 0;
 		$form    = UVE_MR_Form_Use_Cases::get_form_for_render( $form_id );
-		if ( $form_id && ! $form ) {
-			return '';
+		if ( ! $form ) {
+			return self::render_missing_form_notice();
 		}
-		$config = $form ? $form->merge_config( $defaults ) : $defaults;
+		$config = $form->merge_config( $defaults );
 		$config = self::apply_legacy_overrides( $config, $raw_atts );
 
 		$extra_class = sanitize_text_field( (string) ( $atts['class'] ?? '' ) );
-		$render_id   = $form ? $form->id : 0;
+		$render_id   = $form->id;
 
 		return self::render_form( $config, $extra_class, $render_id );
+	}
+
+	/**
+	 * Render admin-only placeholder when no form is available.
+	 *
+	 * @return string
+	 */
+	private static function render_missing_form_notice(): string {
+		if ( function_exists( 'current_user_can' ) && current_user_can( 'manage_options' ) ) {
+			$create_url = add_query_arg(
+				array(
+					'page'   => 'uve-mr-newsletter-forms',
+					'action' => 'new',
+				),
+				admin_url( 'admin.php' )
+			);
+			$message    = sprintf(
+				'%s <a href="%s">%s</a>.',
+				esc_html__( 'RelayPress is active, but no forms are published yet.', 'uve-mailrelay-newsletter' ),
+				esc_url( $create_url ),
+				esc_html__( 'Create a form', 'uve-mailrelay-newsletter' )
+			);
+
+			return '<div class="uve-mr-empty-form-notice">' . wp_kses_post( $message ) . '</div>';
+		}
+		return '';
 	}
 
 	/**

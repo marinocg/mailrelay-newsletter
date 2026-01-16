@@ -432,4 +432,8 @@ function sanitize_key( string $key ): string {
 	return preg_replace( '/[^a-z0-9_]/', '', strtolower( $key ) );
 }
 
+function absint( $value ): int {
+	return abs( (int) $value );
+}
+
 require_once __DIR__ . '/../class-uve-mailrelay-newsletter.php';

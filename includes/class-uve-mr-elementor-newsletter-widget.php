@@ -176,8 +176,9 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 		$settings    = $this->get_settings_for_display();
 		$privacy     = $settings['privacy_url']['url'] ?? '';
 		$has_form_id = array_key_exists( 'form_id', $settings );
-		$form_id     = $has_form_id ? (int) $settings['form_id'] : 0;
-		if ( ! $has_form_id ) {
+		$form_id_raw = $has_form_id ? (string) $settings['form_id'] : '';
+		$form_id     = absint( $form_id_raw );
+		if ( ! $form_id ) {
 			$primary_form = UVE_MR_Form_Use_Cases::get_primary_form_for_admin();
 			$form_id      = $primary_form ? $primary_form->id : 0;
 		}
@@ -188,17 +189,8 @@ class UVE_MR_Elementor_Newsletter_Widget extends \Elementor\Widget_Base {
 				'class' => $settings['extra_class'] ?? '',
 			);
 		} else {
-			$form_args = array(
-				'title'             => $settings['title'] ?? '',
-				'description'       => $settings['description'] ?? '',
-				'email_placeholder' => $settings['email_placeholder'] ?? '',
-				'submit_label'      => $settings['submit_label'] ?? '',
-				'group_ids'         => $settings['group_ids'] ?? '',
-				'privacy_url'       => $privacy,
-				'consent_label'     => $settings['consent_label'] ?? '',
-				'class'             => $settings['extra_class'] ?? '',
-				'ajax'              => $settings['ajax_mode'] ?? '0',
-			);
+			echo UVE_MR_Frontend::shortcode(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			return;
 		}
 
 				echo UVE_MR_Frontend::shortcode( $form_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

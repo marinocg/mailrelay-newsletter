@@ -65,8 +65,8 @@ final class UVE_MR_Upgrade_Admin {
 		}
 
 		$upgrade_url = (string) apply_filters( 'uve_mr_premium_upgrade_url', 'https://relaypress.io' );
-		$title       = (string) apply_filters( 'uve_mr_premium_upgrade_title', __( 'Unlock unlimited published forms', 'uve-mailrelay-newsletter' ) );
-		$message     = (string) apply_filters( 'uve_mr_premium_upgrade_message', __( 'Publish as many signup forms as you want and keep your campaigns segmented.', 'uve-mailrelay-newsletter' ) );
+		$title       = (string) apply_filters( 'uve_mr_premium_upgrade_title', __( 'Unlock premium tools and integrations', 'uve-mailrelay-newsletter' ) );
+		$message     = (string) apply_filters( 'uve_mr_premium_upgrade_message', __( 'Get advanced segmentation, integrations, and priority support.', 'uve-mailrelay-newsletter' ) );
 		$cta_label   = (string) apply_filters( 'uve_mr_premium_upgrade_cta', __( 'Upgrade to Premium', 'uve-mailrelay-newsletter' ) );
 		?>
 		<div class="wrap">
@@ -75,7 +75,7 @@ final class UVE_MR_Upgrade_Admin {
 				<h2><?php echo esc_html( $title ); ?></h2>
 				<p><?php echo esc_html( $message ); ?></p>
 				<ul>
-					<li><?php echo esc_html__( 'Unlimited published forms', 'uve-mailrelay-newsletter' ); ?></li>
+					<li><?php echo esc_html__( 'Premium integrations', 'uve-mailrelay-newsletter' ); ?></li>
 					<li><?php echo esc_html__( 'Advanced segmentation and testing', 'uve-mailrelay-newsletter' ); ?></li>
 					<li><?php echo esc_html__( 'Priority support', 'uve-mailrelay-newsletter' ); ?></li>
 				</ul>

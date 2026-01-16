@@ -48,13 +48,17 @@ final class UVE_MR_Forms_Editor_Page {
 		<div class="wrap">
 			<h1><?php echo esc_html( $form ? __( 'Edit Form', 'uve-mailrelay-newsletter' ) : __( 'Add New Form', 'uve-mailrelay-newsletter' ) ); ?></h1>
 			<?php
+			$notice = isset( $_GET['notice'] ) ? sanitize_text_field( (string) wp_unslash( $_GET['notice'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$status = isset( $_GET['uve_mr_status'] ) ? sanitize_text_field( (string) wp_unslash( $_GET['uve_mr_status'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			if ( 'saved' === $status ) :
+			if ( '' === $notice ) {
+				$notice = $status;
+			}
+			if ( 'saved' === $notice ) :
 				?>
 				<div class="notice notice-success is-dismissible">
 					<p><?php echo esc_html__( 'Form saved successfully.', 'uve-mailrelay-newsletter' ); ?></p>
 				</div>
-			<?php elseif ( 'error' === $status ) : ?>
+			<?php elseif ( 'error' === $notice ) : ?>
 				<div class="notice notice-error is-dismissible">
 					<p><?php echo esc_html__( 'Something went wrong while saving the form.', 'uve-mailrelay-newsletter' ); ?></p>
 				</div>

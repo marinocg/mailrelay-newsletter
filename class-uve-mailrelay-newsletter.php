@@ -45,6 +45,7 @@ require_once __DIR__ . '/includes/domain/forms/class-uve-mr-form.php';
 require_once __DIR__ . '/includes/domain/forms/class-uve-mr-form-config.php';
 require_once __DIR__ . '/includes/ports/forms/interface-uve-mr-form-repository.php';
 require_once __DIR__ . '/includes/adapters/forms/class-uve-mr-single-form-repository.php';
+require_once __DIR__ . '/includes/adapters/forms/class-uve-mr-form-repository.php';
 require_once __DIR__ . '/includes/use-cases/forms/class-uve-mr-form-use-cases.php';
 require_once __DIR__ . '/includes/domain/forms/class-uve-mr-forms.php';
 require_once __DIR__ . '/includes/class-uve-mr-submit.php';
@@ -79,6 +80,7 @@ final class UVE_Mailrelay_Newsletter {
 		add_action( 'widgets_init', array( 'UVE_MR_Widgets', 'register_widget' ) );
 		add_action( 'elementor/widgets/register', array( 'UVE_MR_Elementor', 'register_elementor_widget' ) );
 		add_action( 'elementor/elements/categories_registered', array( 'UVE_MR_Elementor', 'register_elementor_category' ) );
+		add_action( 'uve_mr_elementor_register_controls', array( 'UVE_MR_Elementor', 'register_form_controls' ), 10, 2 );
 		add_action( 'admin_menu', array( 'UVE_MR_Admin', 'admin_menu' ) );
 		add_action( 'admin_menu', array( 'UVE_MR_Admin', 'reorder_submenu' ), 999 );
 		add_action( 'admin_init', array( 'UVE_MR_Admin', 'admin_init' ) );
@@ -86,6 +88,8 @@ final class UVE_Mailrelay_Newsletter {
 		add_action( 'admin_menu', array( 'UVE_MR_Upgrade_Admin', 'admin_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( 'UVE_MR_Upgrade_Admin', 'admin_enqueue' ) );
 		if ( function_exists( 'is_admin' ) && is_admin() ) {
+			require_once __DIR__ . '/includes/admin/forms/class-uve-mr-forms-table.php';
+			require_once __DIR__ . '/includes/admin/forms/class-uve-mr-forms-list-page.php';
 			require_once __DIR__ . '/includes/admin/forms/class-uve-mr-forms-editor-page.php';
 			require_once __DIR__ . '/includes/admin/forms/class-uve-mr-forms-admin.php';
 			add_action( 'admin_menu', array( 'UVE_MR_Forms_Admin', 'admin_menu' ) );

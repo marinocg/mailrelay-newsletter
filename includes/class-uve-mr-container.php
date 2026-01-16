@@ -86,7 +86,7 @@ final class UVE_MR_Container {
 		if ( $repo instanceof UVE_MR_Form_Repository_Interface ) {
 			return $repo;
 		}
-		return new UVE_MR_Single_Form_Repository();
+		return new UVE_MR_Form_Repository();
 	}
 
 	/**

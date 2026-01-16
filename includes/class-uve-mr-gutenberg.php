@@ -44,8 +44,11 @@ final class UVE_MR_Gutenberg {
 			self::SCRIPT_HANDLE,
 			'uveMrNewsletterBlockData',
 			array(
-				'attributes'  => self::get_block_attributes(),
-				'formOptions' => self::get_block_form_options(),
+				'attributes'       => self::get_block_attributes(),
+				'formOptions'      => self::get_block_form_options(),
+				'formEmptyMessage' => __( 'No forms yet. Create your first form.', 'uve-mailrelay-newsletter' ),
+				'formCreateLabel'  => __( 'Create a form', 'uve-mailrelay-newsletter' ),
+				'formCreateUrl'    => self::get_forms_create_url(),
 			)
 		);
 
@@ -69,6 +72,10 @@ final class UVE_MR_Gutenberg {
 		$opts = UVE_Mailrelay_Newsletter::get_options();
 
 		$attributes = array(
+			'formId'           => array(
+				'type'    => 'string',
+				'default' => '',
+			),
 			'title'            => array(
 				'type'    => 'string',
 				'default' => $opts['title'],
@@ -117,7 +124,22 @@ final class UVE_MR_Gutenberg {
 	 * @return array
 	 */
 	private static function get_block_form_options(): array {
-		$options = apply_filters( 'uve_mr_block_form_options', array() );
+		$forms   = UVE_MR_Form_Use_Cases::list_forms(
+			array(
+				'post_status'    => array( 'publish' ),
+				'posts_per_page' => 100,
+			)
+		);
+		$options = array();
+
+		foreach ( $forms as $form ) {
+			$options[] = array(
+				'value' => (string) $form->id,
+				'label' => $form->name,
+			);
+		}
+
+		$options = apply_filters( 'uve_mr_block_form_options', $options );
 		return is_array( $options ) ? array_values( $options ) : array();
 	}
 
@@ -129,9 +151,10 @@ final class UVE_MR_Gutenberg {
 	 */
 	public static function render_block( array $attributes ): string {
 		$has_form_id = array_key_exists( 'formId', $attributes );
-		$form_id     = $has_form_id ? (int) $attributes['formId'] : 0;
+		$form_id_raw = $has_form_id ? (string) $attributes['formId'] : '';
+		$form_id     = absint( $form_id_raw );
 
-		if ( ! $has_form_id ) {
+		if ( ! $form_id ) {
 			$primary_form = UVE_MR_Form_Use_Cases::get_primary_form_for_admin();
 			$form_id      = $primary_form ? $primary_form->id : 0;
 		}
@@ -142,19 +165,24 @@ final class UVE_MR_Gutenberg {
 				'class' => $attributes['extraClass'] ?? '',
 			);
 		} else {
-			$form_args = array(
-				'title'             => $attributes['title'] ?? '',
-				'description'       => $attributes['description'] ?? '',
-				'email_placeholder' => $attributes['emailPlaceholder'] ?? '',
-				'submit_label'      => $attributes['submitLabel'] ?? '',
-				'group_ids'         => $attributes['groupIds'] ?? '',
-				'privacy_url'       => $attributes['privacyUrl'] ?? '',
-				'consent_label'     => $attributes['consentLabel'] ?? '',
-				'class'             => $attributes['extraClass'] ?? '',
-				'ajax'              => ! empty( $attributes['ajaxMode'] ) ? '1' : '0',
-			);
+			return UVE_MR_Frontend::shortcode();
 		}
 
 		return UVE_MR_Frontend::shortcode( $form_args );
+	}
+
+	/**
+	 * Build the admin URL to create a form.
+	 *
+	 * @return string
+	 */
+	private static function get_forms_create_url(): string {
+		return add_query_arg(
+			array(
+				'page'   => 'uve-mr-newsletter-forms',
+				'action' => 'new',
+			),
+			admin_url( 'admin.php' )
+		);
 	}
 }

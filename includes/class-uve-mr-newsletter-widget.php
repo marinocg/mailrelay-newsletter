@@ -36,6 +36,10 @@ class UVE_MR_Newsletter_Widget extends WP_Widget {
 		echo wp_kses_post( $args['before_widget'] ?? '' );
 		$opts    = UVE_Mailrelay_Newsletter::get_options();
 		$form_id = isset( $instance['form_id'] ) ? (int) $instance['form_id'] : 0;
+		if ( ! $form_id ) {
+			$primary_form = UVE_MR_Form_Use_Cases::get_primary_form_for_admin();
+			$form_id      = $primary_form ? $primary_form->id : 0;
+		}
 
 		if ( $form_id ) {
 			$form_args = array(
@@ -47,18 +51,6 @@ class UVE_MR_Newsletter_Widget extends WP_Widget {
 			return;
 		}
 
-		$form_args = array(
-			'title'             => $instance['title'] ?? $opts['title'],
-			'description'       => $instance['description'] ?? $opts['description'],
-			'email_placeholder' => $instance['email_placeholder'] ?? $opts['email_placeholder'],
-			'submit_label'      => $instance['submit_label'] ?? $opts['submit_label'],
-			'group_ids'         => $instance['group_ids'] ?? $opts['group_ids'],
-			'privacy_url'       => $instance['privacy_url'] ?? $opts['privacy_url'],
-			'consent_label'     => $instance['consent_label'] ?? $opts['consent_label'],
-			'class'             => $instance['class'] ?? '',
-		);
-
-		echo UVE_MR_Frontend::shortcode( $form_args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo wp_kses_post( $args['after_widget'] ?? '' );
 	}
 
@@ -86,9 +78,31 @@ class UVE_MR_Newsletter_Widget extends WP_Widget {
 		$consent_label     = $instance['consent_label'] ?? $opts['consent_label'];
 		$class             = $instance['class'] ?? '';
 		?>
+		<?php if ( empty( $forms ) ) : ?>
+			<p>
+				<?php esc_html_e( 'No forms yet.', 'uve-mailrelay-newsletter' ); ?>
+				<a href="
+				<?php
+				echo esc_url(
+					add_query_arg(
+						array(
+							'page'   => 'uve-mr-newsletter-forms',
+							'action' => 'new',
+						),
+						admin_url( 'admin.php' )
+					)
+				);
+				?>
+							" target="_blank" rel="noopener noreferrer">
+					<?php esc_html_e( 'Create your first form', 'uve-mailrelay-newsletter' ); ?>
+				</a>
+			</p>
+			<?php
+			return;
+		endif;
+		?>
 		<p><label><?php echo esc_html__( 'Form', 'uve-mailrelay-newsletter' ); ?><br>
 				<select class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'form_id' ) ); ?>">
-					<option value="0"><?php echo esc_html__( 'Use legacy overrides', 'uve-mailrelay-newsletter' ); ?></option>
 					<?php foreach ( $forms as $form ) : ?>
 						<option value="<?php echo esc_attr( (string) $form->id ); ?>" <?php selected( $form_id, $form->id ); ?>>
 							<?php echo esc_html( $form->name ); ?>
