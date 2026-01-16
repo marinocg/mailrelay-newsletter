@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: RelayPress 1.8.0"
+"Project-Id-Version: RelayPress 1.8.0Report-Msgid-Bugs-To: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-01 14:05+0100\n"
+"POT-Creation-Date: 2026-01-16 20:24+0100\n"
 "PO-Revision-Date: 2025-01-01 00:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -12,370 +12,332 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: class-relaypress-newsletter.php:113
-msgid "Newsletter"
-msgstr "Newsletter"
+#: includes/class-relaypress-gutenberg.php:49
+msgid "No forms yet. Create your first form."
+msgstr "Aun no hay formularios. Crea tu primer formulario."
 
-#: class-relaypress-newsletter.php:114
-msgid "Subscribe and stay up to date with our news"
-msgstr "Suscríbete y estarás al tanto de nuestras novedades"
+#: includes/class-relaypress-gutenberg.php:50
+#: includes/class-relaypress-frontend.php:112
+msgid "Create a form"
+msgstr "Crear un formulario"
 
-#: class-relaypress-newsletter.php:115
-#: includes/class-relaypress-frontend.php:278
-msgid "Email..."
-msgstr "Email..."
-
-#: class-relaypress-newsletter.php:116
-#: includes/class-relaypress-frontend.php:281
-msgid "Subscribe"
-msgstr "Suscribir"
-
-#: class-relaypress-newsletter.php:121
-msgid "I agree to receive the newsletter and have read the privacy policy"
-msgstr "Acepto recibir la newsletter y he leído la política de privacidad"
-
-#: class-relaypress-newsletter.php:195 includes/class-relaypress-admin.php:34
-#: includes/class-relaypress-admin.php:35
-#: includes/admin/forms/class-relaypress-forms-admin.php:179
-msgid "Settings"
-msgstr "Ajustes"
-
-#: templates/form.php:85
-msgid "Leave this field empty"
-msgstr "Deja este campo vacío"
-
-#: templates/form.php:96
-msgid "view"
-msgstr "ver"
-
-#: templates/form.php:98
-msgid "You can unsubscribe at any time using the link in each email."
-msgstr ""
-"Puedes darte de baja en cualquier momento desde el enlace de cada email."
-
-#: templates/form.php:106
-msgid "Enable JavaScript to subscribe."
-msgstr "Activa JavaScript para poder suscribirte."
-
-#: templates/form.php:109
-msgid "Turnstile is not configured (Site Key)."
-msgstr "Falta configurar Turnstile (Site Key)."
-
-#: includes/class-relaypress-frontend.php:284
-msgid "I accept the privacy policy"
-msgstr "Acepto la política de privacidad"
-
-#: includes/class-relaypress-frontend.php:287
-#: includes/domain/forms/class-relaypress-form-config.php:106
-msgid "We could not complete the request. Please try again."
-msgstr "No se pudo completar la solicitud. Inténtalo de nuevo."
-
-#: includes/class-relaypress-utils.php:28
-msgid "English"
-msgstr "Inglés"
-
-#: includes/class-relaypress-utils.php:29
-msgid "Spanish"
-msgstr "Español"
-
-#: includes/class-relaypress-utils.php:30
-msgid "Portuguese (Brazil)"
-msgstr "Portugués (Brasil)"
-
-#: includes/class-relaypress-utils.php:31
-msgid "French"
-msgstr "Francés"
-
-#: includes/class-relaypress-utils.php:32
-msgid "Galician"
-msgstr "Gallego"
-
-#: includes/class-relaypress-utils.php:33
-msgid "Catalan"
-msgstr "Catalán"
-
-#: includes/class-relaypress-utils.php:34
-msgid "Basque"
-msgstr "Euskera"
-
-#: includes/class-relaypress-utils.php:35
-msgid "Italian"
-msgstr "Italiano"
-
-#: includes/class-relaypress-admin.php:24 includes/class-relaypress-admin.php:25
-#: includes/class-relaypress-admin.php:146
-#: includes/class-relaypress-newsletter-widget.php:23
+#: includes/class-relaypress-admin.php:24
+#: includes/class-relaypress-admin.php:25
+#: includes/class-relaypress-admin.php:218
 #: includes/class-relaypress-elementor-newsletter-widget.php:36
+#: includes/class-relaypress-newsletter-widget.php:23
 msgid "RelayPress"
 msgstr "RelayPress"
 
-#: includes/class-relaypress-admin.php:43 includes/class-relaypress-admin.php:44
+#: includes/class-relaypress-admin.php:34
+#: includes/class-relaypress-admin.php:35 class-relaypress-newsletter.php:225
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:93
+msgid "Settings"
+msgstr "Ajustes"
+
+#: includes/class-relaypress-admin.php:43
+#: includes/class-relaypress-admin.php:44
 msgid "Logs"
 msgstr "Registros"
 
-#: includes/class-relaypress-admin.php:197
+#: includes/class-relaypress-admin.php:224
 msgid "Settings saved successfully."
 msgstr "Configuración guardada correctamente."
 
-#: includes/class-relaypress-admin.php:153
+#: includes/class-relaypress-admin.php:233
 msgid "Mailrelay API"
 msgstr "API de Mailrelay"
 
-#: includes/class-relaypress-admin.php:156
+#: includes/class-relaypress-admin.php:236
 msgid "Mailrelay API base URL"
 msgstr "URL base de la API de Mailrelay"
 
-#: includes/class-relaypress-admin.php:162
+#: includes/class-relaypress-admin.php:242
 msgid "Format example: https://YOURACCOUNT.ipzmarketing.com/api/v1"
 msgstr "Ejemplo de formato: https://YOURACCOUNT.ipzmarketing.com/api/v1"
 
-#: includes/class-relaypress-admin.php:167
+#: includes/class-relaypress-admin.php:247
 msgid "Mailrelay API token"
 msgstr "Token de la API de Mailrelay"
 
-#: includes/class-relaypress-admin.php:173
+#: includes/class-relaypress-admin.php:253
 msgid "API key documentation"
 msgstr "Documentación de la clave de la API"
 
-#: includes/class-relaypress-admin.php:174
+#: includes/class-relaypress-admin.php:254
 msgid "(opens in a new tab)"
 msgstr "(se abre en una nueva pestaña)"
 
-#: includes/class-relaypress-admin.php:184
+#: includes/class-relaypress-admin.php:264
 msgid "Defaults for new forms"
 msgstr "Valores por defecto para nuevos formularios"
 
-#: includes/class-relaypress-admin.php:187
+#: includes/class-relaypress-admin.php:267
 msgid "Default groups"
 msgstr "Grupos por defecto"
 
-#: includes/class-relaypress-admin.php:206
-#: includes/admin/forms/class-relaypress-forms-admin.php:210
+#: includes/class-relaypress-admin.php:286
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:124
 msgid "Available groups"
 msgstr "Grupos disponibles"
 
-#: includes/class-relaypress-admin.php:219
-#: includes/admin/forms/class-relaypress-forms-admin.php:223
+#: includes/class-relaypress-admin.php:299
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:137
 msgid "Available"
 msgstr "Disponibles"
 
-#: includes/class-relaypress-admin.php:222
-#: includes/admin/forms/class-relaypress-forms-admin.php:226
+#: includes/class-relaypress-admin.php:302
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:140
 msgid "Add →"
 msgstr "Añadir →"
 
-#: includes/class-relaypress-admin.php:223
-#: includes/admin/forms/class-relaypress-forms-admin.php:227
+#: includes/class-relaypress-admin.php:303
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:141
 msgid "← Remove"
 msgstr "← Quitar"
 
-#: includes/class-relaypress-admin.php:226
-#: includes/admin/forms/class-relaypress-forms-admin.php:230
+#: includes/class-relaypress-admin.php:306
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:144
 msgid "Selected groups"
 msgstr "Grupos seleccionados"
 
-#: includes/class-relaypress-admin.php:239
-#: includes/admin/forms/class-relaypress-forms-admin.php:243
+#: includes/class-relaypress-admin.php:319
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:157
 msgid "Selected"
 msgstr "Seleccionados"
 
-#: includes/class-relaypress-admin.php:243
+#: includes/class-relaypress-admin.php:323
 msgid "These groups will be preselected when creating a new form."
 msgstr "Estos grupos se preseleccionarán al crear un nuevo formulario."
 
-#: includes/class-relaypress-admin.php:244
-#: includes/admin/forms/class-relaypress-forms-admin.php:247
+#: includes/class-relaypress-admin.php:324
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:161
 msgid "Refresh groups"
 msgstr "Actualizar grupos"
 
-#: includes/class-relaypress-admin.php:247
-#: includes/admin/forms/class-relaypress-forms-admin.php:250
+#: includes/class-relaypress-admin.php:327
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:164
 msgid "No groups found or API not configured."
 msgstr "No se encontraron grupos o la API no está configurada."
 
-#: includes/admin/forms/class-relaypress-forms-editor-page.php:46
-msgid "Form saved successfully."
-msgstr "Formulario guardado correctamente."
-
-#: includes/admin/forms/class-relaypress-forms-editor-page.php:50
-msgid "Something went wrong while saving the form."
-msgstr "Se produjo un error al guardar el formulario."
-
-#: includes/class-relaypress-admin.php:252
+#: includes/class-relaypress-admin.php:332
 msgid "Subscription mode"
 msgstr "Modo suscripción"
 
-#: includes/class-relaypress-admin.php:262
-msgid "Default locale fallback"
-msgstr "Idioma de respaldo por defecto"
-
-#: includes/class-relaypress-admin.php:274
-msgid "Used when the browser language is not supported."
-msgstr "Se usa cuando el idioma del navegador no está soportado."
-
-#: includes/class-relaypress-admin.php:284
-msgid "Default locale mode"
-msgstr "Modo de idioma por defecto"
-
-#: includes/class-relaypress-admin.php:288
-#: includes/admin/forms/class-relaypress-forms-editor-page.php:140
-msgid "Use browser language"
-msgstr "Usar idioma del navegador"
-
-#: includes/class-relaypress-admin.php:291
-#: includes/admin/forms/class-relaypress-forms-editor-page.php:141
-msgid "Force a specific language"
-msgstr "Forzar un idioma específico"
-
-#: includes/class-relaypress-admin.php:296
-msgid "Default forced language"
-msgstr "Idioma forzado por defecto"
-
-#: includes/class-relaypress-admin.php:309
-msgid "Used when forcing a language globally."
-msgstr "Se usa al forzar un idioma globalmente."
-
-#: includes/class-relaypress-admin.php:255
+#: includes/class-relaypress-admin.php:335
 msgid "Double opt-in (inactive + confirmation)"
 msgstr "Double opt-in (inactive + confirmación)"
 
-#: includes/class-relaypress-admin.php:256
+#: includes/class-relaypress-admin.php:336
 msgid "Single opt-in (active)"
 msgstr "Single opt-in (active)"
 
-#: includes/class-relaypress-admin.php:264
-#: includes/admin/forms/class-relaypress-forms-admin.php:426
+#: includes/class-relaypress-admin.php:341
+msgid "Default locale fallback"
+msgstr "Idioma de respaldo por defecto"
+
+#: includes/class-relaypress-admin.php:357
+msgid "Used when the browser language is not supported."
+msgstr "Se usa cuando el idioma del navegador no está soportado."
+
+#: includes/class-relaypress-admin.php:361
+msgid "Default locale mode"
+msgstr "Modo de idioma por defecto"
+
+#: includes/class-relaypress-admin.php:365
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:182
+msgid "Use browser language"
+msgstr "Usar idioma del navegador"
+
+#: includes/class-relaypress-admin.php:368
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:183
+msgid "Force a specific language"
+msgstr "Forzar un idioma específico"
+
+#: includes/class-relaypress-admin.php:374
+msgid "Default forced language"
+msgstr "Idioma forzado por defecto"
+
+#: includes/class-relaypress-admin.php:389
+msgid "Used when forcing a language globally."
+msgstr "Se usa al forzar un idioma globalmente."
+
+#: includes/class-relaypress-admin.php:396
+msgid "Phone normalization"
+msgstr "Normalización de teléfono"
+
+#: includes/class-relaypress-admin.php:399
+msgid "Default phone country"
+msgstr "País predeterminado para teléfono"
+
+#: includes/class-relaypress-admin.php:420
+msgid "No default"
+msgstr "Sin predeterminado"
+
+#: includes/class-relaypress-admin.php:427
+msgid ""
+"Used to normalize local phone numbers when no country is provided in the "
+"form."
+msgstr ""
+"Se usa para normalizar números de teléfono locales cuando no se indica un "
+"país en el formulario."
+
+#: includes/class-relaypress-admin.php:431
+msgid "Phone prefix selector"
+msgstr "Selector de prefijo de teléfono"
+
+#: includes/class-relaypress-admin.php:435
+msgid "Hide the phone prefix selector and use the default country prefix"
+msgstr ""
+"Ocultar el selector de prefijo del teléfono y usar el prefijo predeterminado "
+"del país"
+
+#: includes/class-relaypress-admin.php:436
+msgid "Select a default phone country to enable this option."
+msgstr ""
+"Selecciona un país de teléfono predeterminado para habilitar esta opción."
+
+#: includes/class-relaypress-admin.php:437
+msgid ""
+"If the user enters a phone prefix, it will be used instead of the default."
+msgstr ""
+"Si el usuario introduce un prefijo de teléfono, se usará en lugar del "
+"predeterminado."
+
+#: includes/class-relaypress-admin.php:441
+msgid "Raw phone fallback"
+msgstr "Usar teléfono sin procesar"
+
+#: includes/class-relaypress-admin.php:444
+msgid "Send raw phone to Mailrelay when normalization fails"
+msgstr ""
+"Enviar el teléfono sin procesar a Mailrelay cuando falle la normalización"
+
+#: includes/class-relaypress-admin.php:445
+msgid ""
+"Unprocessed phone numbers may be rejected by Mailrelay and are not "
+"recommended."
+msgstr ""
+"Los números de teléfono sin procesar pueden ser rechazados por Mailrelay y "
+"no se recomiendan."
+
+#: includes/class-relaypress-admin.php:452
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:389
 msgid "Spam protection"
 msgstr "Protección anti-spam"
 
-#: includes/admin/forms/class-relaypress-forms-editor-page.php:135
-msgid "Locale"
-msgstr "Idioma"
-
-#: includes/admin/forms/class-relaypress-forms-editor-page.php:139
-msgid "Use global setting"
-msgstr "Usar configuración global"
-
-#: includes/admin/forms/class-relaypress-forms-editor-page.php:143
-msgid "If the browser language is unsupported, the global fallback is used."
-msgstr "Si el idioma del navegador no es compatible, se usa el valor global."
-
-#: includes/admin/forms/class-relaypress-forms-editor-page.php:148
-msgid "Forced language"
-msgstr "Idioma forzado"
-
-#: includes/admin/forms/class-relaypress-forms-editor-page.php:155
-msgid "Used only when forcing a language for this form."
-msgstr "Se usa solo al forzar un idioma para este formulario."
-
-#: includes/class-relaypress-admin.php:267
+#: includes/class-relaypress-admin.php:455
 msgid "Turnstile Site Key"
 msgstr "Turnstile Site Key"
 
-#: includes/class-relaypress-admin.php:274
+#: includes/class-relaypress-admin.php:462
 msgid "Turnstile Secret Key"
 msgstr "Turnstile Secret Key"
 
-#: includes/class-relaypress-admin.php:284
+#: includes/class-relaypress-admin.php:472
 msgid "Text defaults"
 msgstr "Textos por defecto"
 
-#: includes/class-relaypress-admin.php:287
-#: includes/class-relaypress-newsletter-widget.php:94
-#: includes/admin/forms/class-relaypress-forms-admin.php:343
-#: includes/class-relaypress-elementor-newsletter-widget.php:96
+#: includes/class-relaypress-admin.php:475
+#: includes/class-relaypress-elementor-newsletter-widget.php:78
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:281
+#: includes/class-relaypress-newsletter-widget.php:113
 msgid "Title"
 msgstr "Título"
 
-#: includes/class-relaypress-admin.php:293
-#: includes/class-relaypress-newsletter-widget.php:97
-#: includes/admin/forms/class-relaypress-forms-admin.php:349
-#: includes/class-relaypress-elementor-newsletter-widget.php:106
+#: includes/class-relaypress-admin.php:481
+#: includes/class-relaypress-elementor-newsletter-widget.php:88
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:287
+#: includes/class-relaypress-newsletter-widget.php:116
 msgid "Description"
 msgstr "Descripción"
 
-#: includes/class-relaypress-admin.php:299
-#: includes/class-relaypress-newsletter-widget.php:100
-#: includes/class-relaypress-elementor-newsletter-widget.php:116
+#: includes/class-relaypress-admin.php:487
+#: includes/class-relaypress-elementor-newsletter-widget.php:98
+#: includes/class-relaypress-newsletter-widget.php:119
 msgid "Email placeholder"
 msgstr "Placeholder email"
 
-#: includes/class-relaypress-admin.php:305
-#: includes/class-relaypress-newsletter-widget.php:103
-#: includes/class-relaypress-elementor-newsletter-widget.php:126
+#: includes/class-relaypress-admin.php:493
+#: includes/class-relaypress-elementor-newsletter-widget.php:108
+#: includes/class-relaypress-newsletter-widget.php:122
 msgid "Button text"
 msgstr "Texto botón"
 
-#: includes/class-relaypress-admin.php:311
-#: includes/class-relaypress-elementor-newsletter-widget.php:176
+#: includes/class-relaypress-admin.php:499
+#: includes/class-relaypress-elementor-newsletter-widget.php:158
 msgid "Enable AJAX submissions"
 msgstr "Activar envíos por AJAX"
 
-#: includes/class-relaypress-admin.php:314
-#: includes/admin/forms/class-relaypress-forms-admin.php:472
+#: includes/class-relaypress-admin.php:502
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:435
 msgid "Submit via AJAX"
 msgstr "Enviar vía AJAX"
 
-#: includes/class-relaypress-admin.php:321
+#: includes/class-relaypress-admin.php:509
 msgid "GDPR + Logs"
 msgstr "RGPD + Logs"
 
-#: includes/class-relaypress-admin.php:324
+#: includes/class-relaypress-admin.php:512
 msgid "Privacy policy URL"
 msgstr "URL política de privacidad"
 
-#: includes/class-relaypress-admin.php:331
+#: includes/class-relaypress-admin.php:519
 msgid "Checkbox text"
 msgstr "Texto del checkbox"
 
-#: includes/class-relaypress-admin.php:338
+#: includes/class-relaypress-admin.php:526
 msgid "Consent logging"
 msgstr "Registro del consentimiento"
 
-#: includes/class-relaypress-admin.php:341
+#: includes/class-relaypress-admin.php:529
 msgid "Store log in database"
 msgstr "Guardar log en BD"
 
-#: includes/class-relaypress-admin.php:343
+#: includes/class-relaypress-admin.php:531
+msgid "Store raw phone input in logs"
+msgstr "Guardar el teléfono sin procesar en los registros"
+
+#: includes/class-relaypress-admin.php:533
 msgid "Store IP as hash"
 msgstr "Guardar IP como hash"
 
-#: includes/class-relaypress-admin.php:347
+#: includes/class-relaypress-admin.php:537
 msgid "Retention (days)"
 msgstr "Retención (días)"
 
-#: includes/class-relaypress-admin.php:357
+#: includes/class-relaypress-admin.php:547
 msgid "Rate limit"
 msgstr "Rate limit"
 
-#: includes/class-relaypress-admin.php:360
+#: includes/class-relaypress-admin.php:550
 msgid "Max attempts per IP+email"
 msgstr "Máx intentos por IP+email"
 
-#: includes/class-relaypress-admin.php:367
-#: includes/admin/forms/class-relaypress-forms-admin.php:464
+#: includes/class-relaypress-admin.php:557
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:427
 msgid "Window (seconds)"
 msgstr "Ventana (segundos)"
 
-#: includes/class-relaypress-admin.php:374
+#: includes/class-relaypress-admin.php:564
 msgid "Max confirmation resends per IP+email (0 = disable)"
 msgstr "Máx reenvíos confirmación por IP+email (0 = desactivar)"
 
-#: includes/class-relaypress-admin.php:381
+#: includes/class-relaypress-admin.php:571
 msgid "Confirmation window (seconds)"
 msgstr "Ventana confirmación (segundos)"
 
-#: includes/class-relaypress-admin.php:393
+#: includes/class-relaypress-admin.php:583
 msgid "How settings are used"
 msgstr "Cómo se usan los ajustes"
 
-#: includes/class-relaypress-admin.php:395
+#: includes/class-relaypress-admin.php:585
 msgid "API credentials are required to load groups and send subscribers."
 msgstr ""
 "Las credenciales de la API son necesarias para cargar grupos y enviar "
 "suscriptores."
 
-#: includes/class-relaypress-admin.php:396
+#: includes/class-relaypress-admin.php:586
 msgid ""
 "These defaults are applied when creating new forms, but each form can "
 "override them."
@@ -383,470 +345,1167 @@ msgstr ""
 "Estos valores por defecto se aplican al crear nuevos formularios, pero cada "
 "formulario puede sobrescribirlos."
 
-#: includes/class-relaypress-admin.php:397
+#: includes/class-relaypress-admin.php:587
 msgid "Turnstile keys are shared across all forms."
 msgstr "Las claves de Turnstile se comparten en todos los formularios."
 
-#: includes/class-relaypress-admin.php:398
+#: includes/class-relaypress-admin.php:588
 msgid "Rate limit values reduce abuse but can block repeated tests."
 msgstr ""
 "Los límites de tasa reducen el abuso, pero pueden bloquear pruebas repetidas."
 
-#: includes/class-relaypress-admin.php:403
+#: includes/class-relaypress-admin.php:593
 msgid "Shortcodes"
 msgstr "Shortcodes"
 
-#: includes/class-relaypress-admin.php:404
+#: includes/class-relaypress-admin.php:594
 msgid "Use a form shortcode from the Forms screen, for example:"
 msgstr ""
 "Usa un shortcode de formulario desde la pantalla de Formularios, por ejemplo:"
 
-#: includes/class-relaypress-admin.php:411
+#: includes/class-relaypress-admin.php:601
 msgid "Save Changes"
 msgstr "Guardar cambios"
 
 #. translators: %s: number of records deleted.
-#: includes/class-relaypress-admin.php:592
+#: includes/class-relaypress-admin.php:806
 #, php-format
 msgid "Purged %s records."
 msgstr "Purgados %s registros."
 
-#: includes/class-relaypress-admin.php:596
+#: includes/class-relaypress-admin.php:810
 msgid "RelayPress Logs"
 msgstr "Registros de RelayPress"
 
-#: includes/class-relaypress-admin.php:602
+#: includes/class-relaypress-admin.php:816
 msgid "Purge now"
 msgstr "Purgar ahora"
 
-#: includes/class-relaypress-newsletter-widget.php:24
-msgid ""
-"Newsletter form with Turnstile + Mailrelay API + double opt-in (neutral "
-"message) and logs."
+#: includes/class-relaypress-utils.php:32
+msgid "English"
+msgstr "Inglés"
+
+#: includes/class-relaypress-utils.php:33
+msgid "Spanish"
+msgstr "Español"
+
+#: includes/class-relaypress-utils.php:34
+msgid "Portuguese (Brazil)"
+msgstr "Portugués (Brasil)"
+
+#: includes/class-relaypress-utils.php:35
+msgid "French"
+msgstr "Francés"
+
+#: includes/class-relaypress-utils.php:36
+msgid "Galician"
+msgstr "Gallego"
+
+#: includes/class-relaypress-utils.php:37
+msgid "Catalan"
+msgstr "Catalán"
+
+#: includes/class-relaypress-utils.php:38
+msgid "Basque"
+msgstr "Euskera"
+
+#: includes/class-relaypress-utils.php:39
+msgid "Italian"
+msgstr "Italiano"
+
+#: includes/class-relaypress-utils.php:52
+msgid "Afghanistan"
+msgstr "Afganistán"
+
+#: includes/class-relaypress-utils.php:53
+msgid "Aland Islands"
+msgstr "Islas Aland"
+
+#: includes/class-relaypress-utils.php:54
+msgid "Albania"
+msgstr "Albania"
+
+#: includes/class-relaypress-utils.php:55
+msgid "Algeria"
+msgstr "Argelia"
+
+#: includes/class-relaypress-utils.php:56
+msgid "American Samoa"
+msgstr "Samoa Americana"
+
+#: includes/class-relaypress-utils.php:57
+msgid "Andorra"
+msgstr "Andorra"
+
+#: includes/class-relaypress-utils.php:58
+msgid "Angola"
+msgstr "Angola"
+
+#: includes/class-relaypress-utils.php:59
+msgid "Anguilla"
+msgstr "Anguila"
+
+#: includes/class-relaypress-utils.php:60
+msgid "Antarctica"
+msgstr "Antártida"
+
+#: includes/class-relaypress-utils.php:61
+msgid "Antigua and Barbuda"
+msgstr "Antigua y Barbuda"
+
+#: includes/class-relaypress-utils.php:62
+msgid "Argentina"
+msgstr "Argentina"
+
+#: includes/class-relaypress-utils.php:63
+msgid "Armenia"
+msgstr "Armenia"
+
+#: includes/class-relaypress-utils.php:64
+msgid "Aruba"
+msgstr "Aruba"
+
+#: includes/class-relaypress-utils.php:65
+msgid "Australia"
+msgstr "Australia"
+
+#: includes/class-relaypress-utils.php:66
+msgid "Austria"
+msgstr "Austria"
+
+#: includes/class-relaypress-utils.php:67
+msgid "Azerbaijan"
+msgstr "Azerbaiyán"
+
+#: includes/class-relaypress-utils.php:68
+msgid "Bahamas"
+msgstr "Bahamas"
+
+#: includes/class-relaypress-utils.php:69
+msgid "Bahrain"
+msgstr "Baréin"
+
+#: includes/class-relaypress-utils.php:70
+msgid "Bangladesh"
+msgstr "Bangladés"
+
+#: includes/class-relaypress-utils.php:71
+msgid "Barbados"
+msgstr "Barbados"
+
+#: includes/class-relaypress-utils.php:72
+msgid "Belarus"
+msgstr "Bielorrusia"
+
+#: includes/class-relaypress-utils.php:73
+msgid "Belgium"
+msgstr "Bélgica"
+
+#: includes/class-relaypress-utils.php:74
+msgid "Belize"
+msgstr "Belice"
+
+#: includes/class-relaypress-utils.php:75
+msgid "Benin"
+msgstr "Benín"
+
+#: includes/class-relaypress-utils.php:76
+msgid "Bermuda"
+msgstr "Bermudas"
+
+#: includes/class-relaypress-utils.php:77
+msgid "Bhutan"
+msgstr "Bután"
+
+#: includes/class-relaypress-utils.php:78
+msgid "Bolivia"
+msgstr "Bolivia"
+
+#: includes/class-relaypress-utils.php:79
+msgid "Bonaire, Sint Eustatius and Saba"
+msgstr "Bonaire, San Eustaquio y Saba"
+
+#: includes/class-relaypress-utils.php:80
+msgid "Bosnia and Herzegovina"
+msgstr "Bosnia y Herzegovina"
+
+#: includes/class-relaypress-utils.php:81
+msgid "Botswana"
+msgstr "Botsuana"
+
+#: includes/class-relaypress-utils.php:82
+msgid "Bouvet Island"
+msgstr "Isla Bouvet"
+
+#: includes/class-relaypress-utils.php:83
+msgid "Brazil"
+msgstr "Brasil"
+
+#: includes/class-relaypress-utils.php:84
+msgid "British Indian Ocean Territory"
+msgstr "Territorio Británico del Océano Índico"
+
+#: includes/class-relaypress-utils.php:85
+msgid "Brunei Darussalam"
+msgstr "Brunéi"
+
+#: includes/class-relaypress-utils.php:86
+msgid "Bulgaria"
+msgstr "Bulgaria"
+
+#: includes/class-relaypress-utils.php:87
+msgid "Burkina Faso"
+msgstr "Burkina Faso"
+
+#: includes/class-relaypress-utils.php:88
+msgid "Burundi"
+msgstr "Burundi"
+
+#: includes/class-relaypress-utils.php:89
+msgid "Cambodia"
+msgstr "Camboya"
+
+#: includes/class-relaypress-utils.php:90
+msgid "Cameroon"
+msgstr "Camerún"
+
+#: includes/class-relaypress-utils.php:91
+msgid "Canada"
+msgstr "Canadá"
+
+#: includes/class-relaypress-utils.php:92
+msgid "Cabo Verde"
+msgstr "Cabo Verde"
+
+#: includes/class-relaypress-utils.php:93
+msgid "Cayman Islands"
+msgstr "Islas Caimán"
+
+#: includes/class-relaypress-utils.php:94
+msgid "Central African Republic"
+msgstr "República Centroafricana"
+
+#: includes/class-relaypress-utils.php:95
+msgid "Chad"
+msgstr "Chad"
+
+#: includes/class-relaypress-utils.php:96
+msgid "Chile"
+msgstr "Chile"
+
+#: includes/class-relaypress-utils.php:97
+msgid "China"
+msgstr "China"
+
+#: includes/class-relaypress-utils.php:98
+msgid "Christmas Island"
+msgstr "Isla de Navidad"
+
+#: includes/class-relaypress-utils.php:99
+msgid "Cocos (Keeling) Islands"
+msgstr "Islas Cocos (Keeling)"
+
+#: includes/class-relaypress-utils.php:100
+msgid "Colombia"
+msgstr "Colombia"
+
+#: includes/class-relaypress-utils.php:101
+msgid "Comoros"
+msgstr "Comoras"
+
+#: includes/class-relaypress-utils.php:102
+msgid "Congo"
+msgstr "Congo"
+
+#: includes/class-relaypress-utils.php:103
+msgid "Congo, Democratic Republic of the"
+msgstr "República Democrática del Congo"
+
+#: includes/class-relaypress-utils.php:104
+msgid "Cook Islands"
+msgstr "Islas Cook"
+
+#: includes/class-relaypress-utils.php:105
+msgid "Costa Rica"
+msgstr "Costa Rica"
+
+#: includes/class-relaypress-utils.php:106
+msgid "Cote d'Ivoire"
+msgstr "Costa de Marfil"
+
+#: includes/class-relaypress-utils.php:107
+msgid "Croatia"
+msgstr "Croacia"
+
+#: includes/class-relaypress-utils.php:108
+msgid "Cuba"
+msgstr "Cuba"
+
+#: includes/class-relaypress-utils.php:109
+msgid "Curacao"
+msgstr "Curazao"
+
+#: includes/class-relaypress-utils.php:110
+msgid "Cyprus"
+msgstr "Chipre"
+
+#: includes/class-relaypress-utils.php:111
+msgid "Czechia"
+msgstr "Chequia"
+
+#: includes/class-relaypress-utils.php:112
+msgid "Denmark"
+msgstr "Dinamarca"
+
+#: includes/class-relaypress-utils.php:113
+msgid "Djibouti"
+msgstr "Yibuti"
+
+#: includes/class-relaypress-utils.php:114
+msgid "Dominica"
+msgstr "Dominica"
+
+#: includes/class-relaypress-utils.php:115
+msgid "Dominican Republic"
+msgstr "República Dominicana"
+
+#: includes/class-relaypress-utils.php:116
+msgid "Ecuador"
+msgstr "Ecuador"
+
+#: includes/class-relaypress-utils.php:117
+msgid "Egypt"
+msgstr "Egipto"
+
+#: includes/class-relaypress-utils.php:118
+msgid "El Salvador"
+msgstr "El Salvador"
+
+#: includes/class-relaypress-utils.php:119
+msgid "Equatorial Guinea"
+msgstr "Guinea Ecuatorial"
+
+#: includes/class-relaypress-utils.php:120
+msgid "Eritrea"
+msgstr "Eritrea"
+
+#: includes/class-relaypress-utils.php:121
+msgid "Estonia"
+msgstr "Estonia"
+
+#: includes/class-relaypress-utils.php:122
+msgid "Eswatini"
+msgstr "Esuatini"
+
+#: includes/class-relaypress-utils.php:123
+msgid "Ethiopia"
+msgstr "Etiopía"
+
+#: includes/class-relaypress-utils.php:124
+msgid "Falkland Islands (Malvinas)"
+msgstr "Islas Malvinas"
+
+#: includes/class-relaypress-utils.php:125
+msgid "Faroe Islands"
+msgstr "Islas Feroe"
+
+#: includes/class-relaypress-utils.php:126
+msgid "Fiji"
+msgstr "Fiyi"
+
+#: includes/class-relaypress-utils.php:127
+msgid "Finland"
+msgstr "Finlandia"
+
+#: includes/class-relaypress-utils.php:128
+msgid "France"
+msgstr "Francia"
+
+#: includes/class-relaypress-utils.php:129
+msgid "French Guiana"
+msgstr "Guayana Francesa"
+
+#: includes/class-relaypress-utils.php:130
+msgid "French Polynesia"
+msgstr "Polinesia Francesa"
+
+#: includes/class-relaypress-utils.php:131
+msgid "French Southern Territories"
+msgstr "Territorios Australes Franceses"
+
+#: includes/class-relaypress-utils.php:132
+msgid "Gabon"
+msgstr "Gabón"
+
+#: includes/class-relaypress-utils.php:133
+msgid "Gambia"
+msgstr "Gambia"
+
+#: includes/class-relaypress-utils.php:134
+msgid "Georgia"
+msgstr "Georgia"
+
+#: includes/class-relaypress-utils.php:135
+msgid "Germany"
+msgstr "Alemania"
+
+#: includes/class-relaypress-utils.php:136
+msgid "Ghana"
+msgstr "Ghana"
+
+#: includes/class-relaypress-utils.php:137
+msgid "Gibraltar"
+msgstr "Gibraltar"
+
+#: includes/class-relaypress-utils.php:138
+msgid "Greece"
+msgstr "Grecia"
+
+#: includes/class-relaypress-utils.php:139
+msgid "Greenland"
+msgstr "Groenlandia"
+
+#: includes/class-relaypress-utils.php:140
+msgid "Grenada"
+msgstr "Granada"
+
+#: includes/class-relaypress-utils.php:141
+msgid "Guadeloupe"
+msgstr "Guadalupe"
+
+#: includes/class-relaypress-utils.php:142
+msgid "Guam"
+msgstr "Guam"
+
+#: includes/class-relaypress-utils.php:143
+msgid "Guatemala"
+msgstr "Guatemala"
+
+#: includes/class-relaypress-utils.php:144
+msgid "Guernsey"
+msgstr "Guernesey"
+
+#: includes/class-relaypress-utils.php:145
+msgid "Guinea"
+msgstr "Guinea"
+
+#: includes/class-relaypress-utils.php:146
+msgid "Guinea-Bissau"
+msgstr "Guinea-Bisáu"
+
+#: includes/class-relaypress-utils.php:147
+msgid "Guyana"
+msgstr "Guyana"
+
+#: includes/class-relaypress-utils.php:148
+msgid "Haiti"
+msgstr "Haití"
+
+#: includes/class-relaypress-utils.php:149
+msgid "Heard Island and McDonald Islands"
+msgstr "Isla Heard y Islas McDonald"
+
+#: includes/class-relaypress-utils.php:150
+msgid "Holy See"
+msgstr "Santa Sede"
+
+#: includes/class-relaypress-utils.php:151
+msgid "Honduras"
+msgstr "Honduras"
+
+#: includes/class-relaypress-utils.php:152
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+#: includes/class-relaypress-utils.php:153
+msgid "Hungary"
+msgstr "Hungría"
+
+#: includes/class-relaypress-utils.php:154
+msgid "Iceland"
+msgstr "Islandia"
+
+#: includes/class-relaypress-utils.php:155
+msgid "India"
+msgstr "India"
+
+#: includes/class-relaypress-utils.php:156
+msgid "Indonesia"
+msgstr "Indonesia"
+
+#: includes/class-relaypress-utils.php:157
+msgid "Iran, Islamic Republic of"
+msgstr "Irán"
+
+#: includes/class-relaypress-utils.php:158
+msgid "Iraq"
+msgstr "Irak"
+
+#: includes/class-relaypress-utils.php:159
+msgid "Ireland"
+msgstr "Irlanda"
+
+#: includes/class-relaypress-utils.php:160
+msgid "Isle of Man"
+msgstr "Isla de Man"
+
+#: includes/class-relaypress-utils.php:161
+msgid "Israel"
+msgstr "Israel"
+
+#: includes/class-relaypress-utils.php:162
+msgid "Italy"
+msgstr "Italia"
+
+#: includes/class-relaypress-utils.php:163
+msgid "Jamaica"
+msgstr "Jamaica"
+
+#: includes/class-relaypress-utils.php:164
+msgid "Japan"
+msgstr "Japón"
+
+#: includes/class-relaypress-utils.php:165
+msgid "Jersey"
+msgstr "Jersey"
+
+#: includes/class-relaypress-utils.php:166
+msgid "Jordan"
+msgstr "Jordania"
+
+#: includes/class-relaypress-utils.php:167
+msgid "Kazakhstan"
+msgstr "Kazajistán"
+
+#: includes/class-relaypress-utils.php:168
+msgid "Kenya"
+msgstr "Kenia"
+
+#: includes/class-relaypress-utils.php:169
+msgid "Kiribati"
+msgstr "Kiribati"
+
+#: includes/class-relaypress-utils.php:170
+msgid "Korea, Democratic People's Republic of"
+msgstr "Corea, República Popular Democrática de"
+
+#: includes/class-relaypress-utils.php:171
+msgid "Korea, Republic of"
+msgstr "Corea, República de"
+
+#: includes/class-relaypress-utils.php:172
+msgid "Kuwait"
+msgstr "Kuwait"
+
+#: includes/class-relaypress-utils.php:173
+msgid "Kyrgyzstan"
+msgstr "Kirguistán"
+
+#: includes/class-relaypress-utils.php:174
+msgid "Lao People's Democratic Republic"
+msgstr "República Democrática Popular Lao"
+
+#: includes/class-relaypress-utils.php:175
+msgid "Latvia"
+msgstr "Letonia"
+
+#: includes/class-relaypress-utils.php:176
+msgid "Lebanon"
+msgstr "Líbano"
+
+#: includes/class-relaypress-utils.php:177
+msgid "Lesotho"
+msgstr "Lesoto"
+
+#: includes/class-relaypress-utils.php:178
+msgid "Liberia"
+msgstr "Liberia"
+
+#: includes/class-relaypress-utils.php:179
+msgid "Libya"
+msgstr "Libia"
+
+#: includes/class-relaypress-utils.php:180
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
+#: includes/class-relaypress-utils.php:181
+msgid "Lithuania"
+msgstr "Lituania"
+
+#: includes/class-relaypress-utils.php:182
+msgid "Luxembourg"
+msgstr "Luxemburgo"
+
+#: includes/class-relaypress-utils.php:183
+msgid "Macao"
+msgstr "Macao"
+
+#: includes/class-relaypress-utils.php:184
+msgid "Madagascar"
+msgstr "Madagascar"
+
+#: includes/class-relaypress-utils.php:185
+msgid "Malawi"
+msgstr "Malawi"
+
+#: includes/class-relaypress-utils.php:186
+msgid "Malaysia"
+msgstr "Malasia"
+
+#: includes/class-relaypress-utils.php:187
+msgid "Maldives"
+msgstr "Maldivas"
+
+#: includes/class-relaypress-utils.php:188
+msgid "Mali"
+msgstr "Mali"
+
+#: includes/class-relaypress-utils.php:189
+msgid "Malta"
+msgstr "Malta"
+
+#: includes/class-relaypress-utils.php:190
+msgid "Marshall Islands"
+msgstr "Islas Marshall"
+
+#: includes/class-relaypress-utils.php:191
+msgid "Martinique"
+msgstr "Martinica"
+
+#: includes/class-relaypress-utils.php:192
+msgid "Mauritania"
+msgstr "Mauritania"
+
+#: includes/class-relaypress-utils.php:193
+msgid "Mauritius"
+msgstr "Mauricio"
+
+#: includes/class-relaypress-utils.php:194
+msgid "Mayotte"
+msgstr "Mayotte"
+
+#: includes/class-relaypress-utils.php:195
+msgid "Mexico"
+msgstr "México"
+
+#: includes/class-relaypress-utils.php:196
+msgid "Micronesia, Federated States of"
+msgstr "Micronesia, Estados Federados de"
+
+#: includes/class-relaypress-utils.php:197
+msgid "Moldova, Republic of"
+msgstr "Moldavia"
+
+#: includes/class-relaypress-utils.php:198
+msgid "Monaco"
+msgstr "Mónaco"
+
+#: includes/class-relaypress-utils.php:199
+msgid "Mongolia"
+msgstr "Mongolia"
+
+#: includes/class-relaypress-utils.php:200
+msgid "Montenegro"
+msgstr "Montenegro"
+
+#: includes/class-relaypress-utils.php:201
+msgid "Montserrat"
+msgstr "Montserrat"
+
+#: includes/class-relaypress-utils.php:202
+msgid "Morocco"
+msgstr "Marruecos"
+
+#: includes/class-relaypress-utils.php:203
+msgid "Mozambique"
+msgstr "Mozambique"
+
+#: includes/class-relaypress-utils.php:204
+msgid "Myanmar"
+msgstr "Myanmar"
+
+#: includes/class-relaypress-utils.php:205
+msgid "Namibia"
+msgstr "Namibia"
+
+#: includes/class-relaypress-utils.php:206
+msgid "Nauru"
+msgstr "Nauru"
+
+#: includes/class-relaypress-utils.php:207
+msgid "Nepal"
+msgstr "Nepal"
+
+#: includes/class-relaypress-utils.php:208
+msgid "Netherlands"
+msgstr "Países Bajos"
+
+#: includes/class-relaypress-utils.php:209
+msgid "New Caledonia"
+msgstr "Nueva Caledonia"
+
+#: includes/class-relaypress-utils.php:210
+msgid "New Zealand"
+msgstr "Nueva Zelanda"
+
+#: includes/class-relaypress-utils.php:211
+msgid "Nicaragua"
+msgstr "Nicaragua"
+
+#: includes/class-relaypress-utils.php:212
+msgid "Niger"
+msgstr "Níger"
+
+#: includes/class-relaypress-utils.php:213
+msgid "Nigeria"
+msgstr "Nigeria"
+
+#: includes/class-relaypress-utils.php:214
+msgid "Niue"
+msgstr "Niue"
+
+#: includes/class-relaypress-utils.php:215
+msgid "Norfolk Island"
+msgstr "Isla Norfolk"
+
+#: includes/class-relaypress-utils.php:216
+msgid "North Macedonia"
+msgstr "Macedonia del Norte"
+
+#: includes/class-relaypress-utils.php:217
+msgid "Northern Mariana Islands"
+msgstr "Islas Marianas del Norte"
+
+#: includes/class-relaypress-utils.php:218
+msgid "Norway"
+msgstr "Noruega"
+
+#: includes/class-relaypress-utils.php:219
+msgid "Oman"
+msgstr "Omán"
+
+#: includes/class-relaypress-utils.php:220
+msgid "Pakistan"
+msgstr "Pakistán"
+
+#: includes/class-relaypress-utils.php:221
+msgid "Palau"
+msgstr "Palaos"
+
+#: includes/class-relaypress-utils.php:222
+msgid "Palestine, State of"
+msgstr "Palestina, Estado de"
+
+#: includes/class-relaypress-utils.php:223
+msgid "Panama"
+msgstr "Panamá"
+
+#: includes/class-relaypress-utils.php:224
+msgid "Papua New Guinea"
+msgstr "Papúa Nueva Guinea"
+
+#: includes/class-relaypress-utils.php:225
+msgid "Paraguay"
+msgstr "Paraguay"
+
+#: includes/class-relaypress-utils.php:226
+msgid "Peru"
+msgstr "Perú"
+
+#: includes/class-relaypress-utils.php:227
+msgid "Philippines"
+msgstr "Filipinas"
+
+#: includes/class-relaypress-utils.php:228
+msgid "Pitcairn"
+msgstr "Pitcairn"
+
+#: includes/class-relaypress-utils.php:229
+msgid "Poland"
+msgstr "Polonia"
+
+#: includes/class-relaypress-utils.php:230
+msgid "Portugal"
+msgstr "Portugal"
+
+#: includes/class-relaypress-utils.php:231
+msgid "Puerto Rico"
+msgstr "Puerto Rico"
+
+#: includes/class-relaypress-utils.php:232
+msgid "Qatar"
+msgstr "Catar"
+
+#: includes/class-relaypress-utils.php:233
+msgid "Reunion"
+msgstr "Reunión"
+
+#: includes/class-relaypress-utils.php:234
+msgid "Romania"
+msgstr "Rumanía"
+
+#: includes/class-relaypress-utils.php:235
+msgid "Russian Federation"
+msgstr "Federación de Rusia"
+
+#: includes/class-relaypress-utils.php:236
+msgid "Rwanda"
+msgstr "Ruanda"
+
+#: includes/class-relaypress-utils.php:237
+msgid "Saint Barthelemy"
+msgstr "San Bartolomé"
+
+#: includes/class-relaypress-utils.php:238
+msgid "Saint Helena, Ascension and Tristan da Cunha"
+msgstr "Santa Elena, Ascensión y Tristán de Acuña"
+
+#: includes/class-relaypress-utils.php:239
+msgid "Saint Kitts and Nevis"
+msgstr "San Cristóbal y Nieves"
+
+#: includes/class-relaypress-utils.php:240
+msgid "Saint Lucia"
+msgstr "Santa Lucía"
+
+#: includes/class-relaypress-utils.php:241
+msgid "Saint Martin (French part)"
+msgstr "San Martín (parte francesa)"
+
+#: includes/class-relaypress-utils.php:242
+msgid "Saint Pierre and Miquelon"
+msgstr "San Pedro y Miquelón"
+
+#: includes/class-relaypress-utils.php:243
+msgid "Saint Vincent and the Grenadines"
+msgstr "San Vicente y las Granadinas"
+
+#: includes/class-relaypress-utils.php:244
+msgid "Samoa"
+msgstr "Samoa"
+
+#: includes/class-relaypress-utils.php:245
+msgid "San Marino"
+msgstr "San Marino"
+
+#: includes/class-relaypress-utils.php:246
+msgid "Sao Tome and Principe"
+msgstr "Santo Tomé y Príncipe"
+
+#: includes/class-relaypress-utils.php:247
+msgid "Saudi Arabia"
+msgstr "Arabia Saudita"
+
+#: includes/class-relaypress-utils.php:248
+msgid "Senegal"
+msgstr "Senegal"
+
+#: includes/class-relaypress-utils.php:249
+msgid "Serbia"
+msgstr "Serbia"
+
+#: includes/class-relaypress-utils.php:250
+msgid "Seychelles"
+msgstr "Seychelles"
+
+#: includes/class-relaypress-utils.php:251
+msgid "Sierra Leone"
+msgstr "Sierra Leona"
+
+#: includes/class-relaypress-utils.php:252
+msgid "Singapore"
+msgstr "Singapur"
+
+#: includes/class-relaypress-utils.php:253
+msgid "Sint Maarten (Dutch part)"
+msgstr "San Martín (parte neerlandesa)"
+
+#: includes/class-relaypress-utils.php:254
+msgid "Slovakia"
+msgstr "Eslovaquia"
+
+#: includes/class-relaypress-utils.php:255
+msgid "Slovenia"
+msgstr "Eslovenia"
+
+#: includes/class-relaypress-utils.php:256
+msgid "Solomon Islands"
+msgstr "Islas Salomón"
+
+#: includes/class-relaypress-utils.php:257
+msgid "Somalia"
+msgstr "Somalia"
+
+#: includes/class-relaypress-utils.php:258
+msgid "South Africa"
+msgstr "Sudáfrica"
+
+#: includes/class-relaypress-utils.php:259
+msgid "South Georgia and the South Sandwich Islands"
+msgstr "Islas Georgia del Sur y Sandwich del Sur"
+
+#: includes/class-relaypress-utils.php:260
+msgid "South Sudan"
+msgstr "Sudán del Sur"
+
+#: includes/class-relaypress-utils.php:261
+msgid "Spain"
+msgstr "España"
+
+#: includes/class-relaypress-utils.php:262
+msgid "Sri Lanka"
+msgstr "Sri Lanka"
+
+#: includes/class-relaypress-utils.php:263
+msgid "Sudan"
+msgstr "Sudán"
+
+#: includes/class-relaypress-utils.php:264
+msgid "Suriname"
+msgstr "Surinam"
+
+#: includes/class-relaypress-utils.php:265
+msgid "Svalbard and Jan Mayen"
+msgstr "Svalbard y Jan Mayen"
+
+#: includes/class-relaypress-utils.php:266
+msgid "Sweden"
+msgstr "Suecia"
+
+#: includes/class-relaypress-utils.php:267
+msgid "Switzerland"
+msgstr "Suiza"
+
+#: includes/class-relaypress-utils.php:268
+msgid "Syrian Arab Republic"
+msgstr "República Árabe Siria"
+
+#: includes/class-relaypress-utils.php:269
+msgid "Taiwan, Province of China"
+msgstr "Taiwán, Provincia de China"
+
+#: includes/class-relaypress-utils.php:270
+msgid "Tajikistan"
+msgstr "Tayikistán"
+
+#: includes/class-relaypress-utils.php:271
+msgid "Tanzania, United Republic of"
+msgstr "Tanzania, República Unida de"
+
+#: includes/class-relaypress-utils.php:272
+msgid "Thailand"
+msgstr "Tailandia"
+
+#: includes/class-relaypress-utils.php:273
+msgid "Timor-Leste"
+msgstr "Timor-Leste"
+
+#: includes/class-relaypress-utils.php:274
+msgid "Togo"
+msgstr "Togo"
+
+#: includes/class-relaypress-utils.php:275
+msgid "Tokelau"
+msgstr "Tokelau"
+
+#: includes/class-relaypress-utils.php:276
+msgid "Tonga"
+msgstr "Tonga"
+
+#: includes/class-relaypress-utils.php:277
+msgid "Trinidad and Tobago"
+msgstr "Trinidad y Tobago"
+
+#: includes/class-relaypress-utils.php:278
+msgid "Tunisia"
+msgstr "Túnez"
+
+#: includes/class-relaypress-utils.php:279
+msgid "Turkey"
+msgstr "Turquía"
+
+#: includes/class-relaypress-utils.php:280
+msgid "Turkmenistan"
+msgstr "Turkmenistán"
+
+#: includes/class-relaypress-utils.php:281
+msgid "Turks and Caicos Islands"
+msgstr "Islas Turcas y Caicos"
+
+#: includes/class-relaypress-utils.php:282
+msgid "Tuvalu"
+msgstr "Tuvalu"
+
+#: includes/class-relaypress-utils.php:283
+msgid "Uganda"
+msgstr "Uganda"
+
+#: includes/class-relaypress-utils.php:284
+msgid "Ukraine"
+msgstr "Ucrania"
+
+#: includes/class-relaypress-utils.php:285
+msgid "United Arab Emirates"
+msgstr "Emiratos Árabes Unidos"
+
+#: includes/class-relaypress-utils.php:286
+msgid "United Kingdom"
+msgstr "Reino Unido"
+
+#: includes/class-relaypress-utils.php:287
+msgid "United States"
+msgstr "Estados Unidos"
+
+#: includes/class-relaypress-utils.php:288
+msgid "United States Minor Outlying Islands"
+msgstr "Islas menores alejadas de los Estados Unidos"
+
+#: includes/class-relaypress-utils.php:289
+msgid "Uruguay"
+msgstr "Uruguay"
+
+#: includes/class-relaypress-utils.php:290
+msgid "Uzbekistan"
+msgstr "Uzbekistán"
+
+#: includes/class-relaypress-utils.php:291
+msgid "Vanuatu"
+msgstr "Vanuatu"
+
+#: includes/class-relaypress-utils.php:292
+msgid "Venezuela, Bolivarian Republic of"
+msgstr "Venezuela, República Bolivariana de"
+
+#: includes/class-relaypress-utils.php:293
+msgid "Viet Nam"
+msgstr "Vietnam"
+
+#: includes/class-relaypress-utils.php:294
+msgid "Virgin Islands, British"
+msgstr "Islas Vírgenes Británicas"
+
+#: includes/class-relaypress-utils.php:295
+msgid "Virgin Islands, U.S."
+msgstr "Islas Vírgenes de los Estados Unidos"
+
+#: includes/class-relaypress-utils.php:296
+msgid "Wallis and Futuna"
+msgstr "Wallis y Futuna"
+
+#: includes/class-relaypress-utils.php:297
+msgid "Western Sahara"
+msgstr "Sáhara Occidental"
+
+#: includes/class-relaypress-utils.php:298
+msgid "Yemen"
+msgstr "Yemen"
+
+#: includes/class-relaypress-utils.php:299
+msgid "Zambia"
+msgstr "Zambia"
+
+#: includes/class-relaypress-utils.php:300
+msgid "Zimbabwe"
+msgstr "Zimbabue"
+
+#: class-relaypress-newsletter.php:132
+msgid "Newsletter"
+msgstr "Newsletter"
+
+#: class-relaypress-newsletter.php:133
+msgid "Subscribe and stay up to date with our news"
+msgstr "Suscríbete y estarás al tanto de nuestras novedades"
+
+#: class-relaypress-newsletter.php:134
+#: includes/class-relaypress-frontend.php:304
+msgid "Email..."
+msgstr "Email..."
+
+#: class-relaypress-newsletter.php:135
+#: includes/class-relaypress-frontend.php:307
+msgid "Subscribe"
+msgstr "Suscribir"
+
+#: class-relaypress-newsletter.php:150
+msgid "I agree to receive the newsletter and have read the privacy policy"
+msgstr "Acepto recibir la newsletter y he leído la política de privacidad"
+
+#: class-relaypress-newsletter.php:230
+#: includes/admin/class-relaypress-upgrade-admin.php:29
+#: includes/admin/class-relaypress-upgrade-admin.php:30
+#: includes/admin/class-relaypress-upgrade-admin.php:70
+#: includes/admin/class-relaypress-upgrade-admin.php:73
+msgid "Upgrade to Premium"
+msgstr "Actualizar a Premium"
+
+#: includes/class-relaypress-frontend.php:110
+msgid "RelayPress is active, but no forms are published yet."
+msgstr "RelayPress esta activo, pero no hay formularios publicados."
+
+#: includes/class-relaypress-frontend.php:310
+msgid "I accept the privacy policy"
+msgstr "Acepto la política de privacidad"
+
+#: includes/class-relaypress-frontend.php:313
+#: includes/domain/forms/class-relaypress-form-config.php:116
+msgid "We could not complete the request. Please try again."
+msgstr "No se pudo completar la solicitud. Inténtalo de nuevo."
+
+#: templates/form.php:103
+#: includes/domain/forms/class-relaypress-form-config.php:78
+msgid "Select a country"
+msgstr "Selecciona un país"
+
+#: templates/form.php:122
+msgid "Prefix"
+msgstr "Prefijo"
+
+#: templates/form.php:142
+msgid "Leave this field empty"
+msgstr "Deja este campo vacío"
+
+#: templates/form.php:153
+msgid "view"
+msgstr "ver"
+
+#: templates/form.php:155
+msgid "You can unsubscribe at any time using the link in each email."
 msgstr ""
-"Formulario de newsletter con Turnstile + Mailrelay API + double opt-in "
-"(mensaje neutro) y logs."
+"Puedes darte de baja en cualquier momento desde el enlace de cada email."
 
-#: includes/class-relaypress-newsletter-widget.php:84
-#: includes/class-relaypress-elementor-newsletter-widget.php:86
-msgid "Form"
-msgstr "Formulario"
+#: templates/form.php:163
+msgid "Enable JavaScript to subscribe."
+msgstr "Activa JavaScript para poder suscribirte."
 
-#: includes/class-relaypress-newsletter-widget.php:86
-#: includes/class-relaypress-elementor-newsletter-widget.php:66
-msgid "Use legacy overrides"
+#: templates/form.php:166
+msgid "Turnstile is not configured (Site Key)."
+msgstr "Falta configurar Turnstile (Site Key)."
+
+#: includes/admin/class-relaypress-upgrade-admin.php:68
+msgid "Unlock premium tools and integrations"
 msgstr ""
 
-#: includes/class-relaypress-newsletter-widget.php:106
-#: includes/class-relaypress-elementor-newsletter-widget.php:136
-msgid "Group IDs"
-msgstr "Group IDs"
-
-#: includes/class-relaypress-newsletter-widget.php:109
-#: includes/admin/forms/class-relaypress-forms-admin.php:417
-#: includes/class-relaypress-elementor-newsletter-widget.php:146
-msgid "Privacy URL"
-msgstr "URL privacidad"
-
-#: includes/class-relaypress-newsletter-widget.php:112
-#: includes/class-relaypress-elementor-newsletter-widget.php:156
-msgid "Consent text"
-msgstr "Texto consentimiento"
-
-#: includes/class-relaypress-newsletter-widget.php:115
-msgid "Extra CSS class (optional)"
-msgstr "Clase CSS extra (opcional)"
-
-#: includes/domain/forms/class-relaypress-form-config.php:40
-#: includes/class-relaypress-logs.php:188 includes/class-relaypress-logs.php:304
-msgid "Email"
-msgstr "Email"
-
-#: includes/domain/forms/class-relaypress-form-config.php:47
-#: includes/admin/forms/class-relaypress-forms-admin.php:157
-#: includes/admin/forms/class-relaypress-forms-table.php:103
-msgid "Name"
-msgstr "Nombre"
-
-#: includes/domain/forms/class-relaypress-form-config.php:54
-msgid "Address"
+#: includes/admin/class-relaypress-upgrade-admin.php:69
+msgid "Get advanced segmentation, integrations, and priority support."
 msgstr ""
 
-#: includes/domain/forms/class-relaypress-form-config.php:61
-msgid "City"
+#: includes/admin/class-relaypress-upgrade-admin.php:78
+msgid "Premium integrations"
 msgstr ""
 
-#: includes/domain/forms/class-relaypress-form-config.php:68
-#, fuzzy
-msgid "State"
-msgstr "Estado"
+#: includes/admin/class-relaypress-upgrade-admin.php:79
+msgid "Advanced segmentation and testing"
+msgstr "Segmentación y pruebas avanzadas"
 
-#: includes/domain/forms/class-relaypress-form-config.php:75
-msgid "Birthday"
-msgstr ""
+#: includes/admin/class-relaypress-upgrade-admin.php:80
+msgid "Priority support"
+msgstr "Soporte prioritario"
 
-#: includes/domain/forms/class-relaypress-form-config.php:82
-msgid "Website"
-msgstr ""
-
-#: includes/domain/forms/class-relaypress-form-config.php:89
-msgid "Phone"
-msgstr ""
-
-#: includes/domain/forms/class-relaypress-form-config.php:103
-msgid ""
-"Thanks. If the email is valid, you will receive a confirmation email (or you "
-"were already subscribed)."
-msgstr ""
-"Gracias. Si el email es válido, recibirás un correo para confirmar (o ya "
-"estabas suscrito)."
-
-#: includes/domain/forms/class-relaypress-form-config.php:104
-msgid "Please verify you are human."
-msgstr "Por favor, verifica que eres humano."
-
-#: includes/domain/forms/class-relaypress-form-config.php:105
-msgid "You must accept the privacy policy."
-msgstr "Debes aceptar la política de privacidad."
-
-#: includes/domain/forms/class-relaypress-forms.php:28
-#, fuzzy
-msgid "RelayPress Forms"
-msgstr "RelayPress"
-
-#: includes/domain/forms/class-relaypress-forms.php:29
-#, fuzzy
-msgid "RelayPress Form"
-msgstr "RelayPress"
-
-#: includes/domain/forms/class-relaypress-forms.php:70
-msgid "Default Form"
-msgstr ""
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:24
-#: includes/admin/forms/class-relaypress-forms-admin.php:25
-#: includes/admin/forms/class-relaypress-forms-admin.php:117
+#: includes/admin/forms/class-relaypress-forms-admin.php:124
+#: includes/admin/forms/class-relaypress-forms-list-page.php:37
 msgid "Forms"
 msgstr "Formularios"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:105
-msgid "Form saved."
-msgstr "Formulario guardado."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:107
-msgid "Form duplicated."
-msgstr "Formulario duplicado."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:109
-msgid "Form moved to trash."
-msgstr "Formulario movido a la papelera."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:111
-msgid "Forms updated."
-msgstr "Formularios actualizados."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:113
-msgid "Something went wrong."
-msgstr "Algo salió mal."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:118
-msgid "Add New"
-msgstr "Añadir nuevo"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:151
-msgid "Edit Form"
-msgstr "Editar formulario"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:151
-msgid "Add New Form"
-msgstr "Añadir nuevo formulario"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:163
-#: includes/admin/forms/class-relaypress-forms-table.php:104
-msgid "Shortcode"
-msgstr "Shortcode"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:167
-msgid "Paste this shortcode in posts, pages, or widgets."
-msgstr "Pega este shortcode en entradas, páginas o widgets."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:170
-msgid "Save the form to generate the shortcode."
-msgstr "Guarda el formulario para generar el shortcode."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:177
-msgid "Fields"
-msgstr "Campos"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:178
-msgid "Messages"
-msgstr "Mensajes"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:186
-msgid "Destination"
-msgstr "Destino"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:189
-msgid "Groups"
-msgstr "Grupos"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:255
-msgid "Subscriber status"
-msgstr "Estado del suscriptor"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:258
-msgid "Inactive (double opt-in)"
-msgstr "Inactivo (doble opt-in)"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:259
-msgid "Active (single opt-in)"
-msgstr "Activo (single opt-in)"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:267
-msgid "Subscriber fields"
-msgstr "Campos del suscriptor"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:272
-msgid "Field"
-msgstr "Campo"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:273
-msgid "Enable"
-msgstr "Activar"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:274
-msgid "Required"
-msgstr "Obligatorio"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:275
-msgid "Label"
-msgstr "Etiqueta"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:276
-msgid "Placeholder"
-msgstr "Marcador"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:309
-msgid "Email is required by Mailrelay."
-msgstr "El email es obligatorio en Mailrelay."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:315
-msgid ""
-"Use E.164 format (e.g., +34666666666). Sent to both SMS and WhatsApp in "
-"Mailrelay."
-msgstr ""
-"Usa el formato E.164 (p. ej., +34666666666). Se envía a SMS y WhatsApp en "
-"Mailrelay."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:326
-msgid "Quick guide"
-msgstr "Guía rápida"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:328
-msgid "Pick one or more groups so subscribers land in the right lists."
-msgstr ""
-"Selecciona uno o más grupos para que los suscriptores lleguen a las listas "
-"correctas."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:329
-msgid ""
-"Keep fields minimal to reduce drop-offs. Email is required by Mailrelay."
-msgstr ""
-"Mantén pocos campos para reducir abandonos. El email es obligatorio en "
-"Mailrelay."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:330
-msgid "Use E.164 for Phone (for example, +34666666666) to avoid API errors."
-msgstr ""
-"Usa E.164 para el teléfono (por ejemplo, +34666666666) para evitar errores "
-"de la API."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:331
-msgid "Phone populates both SMS and WhatsApp fields in Mailrelay."
-msgstr "El teléfono rellena los campos de SMS y WhatsApp en Mailrelay."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:355
-msgid "Submit button text"
-msgstr "Texto del botón"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:361
-msgid "Success message"
-msgstr "Mensaje de éxito"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:367
-msgid "Captcha error"
-msgstr "Error de captcha"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:373
-msgid "Consent error"
-msgstr "Error de consentimiento"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:379
-msgid "Generic error"
-msgstr "Error genérico"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:388
-msgid "Tone and clarity"
-msgstr "Tono y claridad"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:390
-msgid "Keep messages short; they appear inline under the form."
-msgstr ""
-"Mantén los mensajes cortos; se muestran en línea debajo del formulario."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:391
-msgid "Avoid technical wording. Tell users what to do next."
-msgstr "Evita lenguaje técnico. Indica al usuario qué hacer a continuación."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:392
-msgid "Match your site voice (formal, friendly, or direct)."
-msgstr "Mantén el tono de tu sitio (formal, cercano o directo)."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:402
-#: includes/class-relaypress-logs.php:189 includes/class-relaypress-logs.php:305
-msgid "Consent"
-msgstr "Consentimiento"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:405
-msgid "Use default consent settings"
-msgstr "Usar ajustes de consentimiento por defecto"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:407
-msgid "Inherit global consent text and URL"
-msgstr "Heredar texto y URL globales de consentimiento"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:411
-msgid "Consent label"
-msgstr "Etiqueta de consentimiento"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:429
-msgid "Turnstile"
-msgstr "Turnstile"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:433
-msgid "Inherit global setting"
-msgstr "Heredar configuración global"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:436
-msgid "Enabled"
-msgstr "Activado"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:439
-msgid "Disabled"
-msgstr "Desactivado"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:442
-msgid "Choose how this form handles spam protection."
-msgstr "Elige cómo gestionar la protección anti-spam en este formulario."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:449
-msgid "Advanced"
-msgstr "Avanzado"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:452
-msgid "Use default rate limit"
-msgstr "Usar límite de tasa por defecto"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:454
-msgid "Inherit global rate limits"
-msgstr "Heredar límites globales"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:458
-msgid "Max attempts"
-msgstr "Máximo de intentos"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:470
-msgid "Enable AJAX"
-msgstr "Activar AJAX"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:479
-msgid "Defaults and overrides"
-msgstr "Valores por defecto y ajustes"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:481
-msgid ""
-"Inherited settings use the global defaults from the main plugin settings "
-"page."
-msgstr ""
-"Los ajustes heredados usan los valores globales de la página principal del "
-"plugin."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:482
-msgid "Override only when this form needs different behavior."
-msgstr ""
-"Cambia solo cuando este formulario necesite un comportamiento distinto."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:483
-msgid "Turning off Turnstile disables it for this form only."
-msgstr "Desactivar Turnstile lo deshabilita solo en este formulario."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:490
-msgid "Save Form"
-msgstr "Guardar formulario"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:491
-msgid "Back to list"
-msgstr "Volver a la lista"
-
-#: includes/admin/forms/class-relaypress-forms-table.php:92
-msgid "No forms found."
-msgstr "No se encontraron formularios."
-
-#: includes/admin/forms/class-relaypress-forms-table.php:105
-msgid "Group"
-msgstr "Grupo"
-
-#: includes/admin/forms/class-relaypress-forms-table.php:106
-msgid "Status"
-msgstr "Estado"
-
-#: includes/admin/forms/class-relaypress-forms-table.php:107
-msgid "Updated"
-msgstr "Actualizado"
-
-#: includes/admin/forms/class-relaypress-forms-table.php:190
-#: includes/admin/forms/class-relaypress-forms-table.php:269
-msgid "Restore"
-msgstr "Restaurar"
-
-#: includes/admin/forms/class-relaypress-forms-table.php:191
-#: includes/admin/forms/class-relaypress-forms-table.php:270
-msgid "Delete Permanently"
-msgstr "Eliminar permanentemente"
-
-#: includes/admin/forms/class-relaypress-forms-table.php:195
-msgid "Edit"
-msgstr "Editar"
-
-#: includes/admin/forms/class-relaypress-forms-table.php:196
-msgid "Duplicate"
-msgstr "Duplicar"
-
-#: includes/admin/forms/class-relaypress-forms-table.php:197
-msgid "Trash"
-msgstr "Papelera"
-
-#: includes/admin/forms/class-relaypress-forms-table.php:275
-msgid "Move to Trash"
-msgstr "Mover a la papelera"
-
-#. translators: %d: number of forms.
-#: includes/admin/forms/class-relaypress-forms-table.php:299
-#, php-format
-msgid "All (%d)"
-msgstr "Todo (%d)"
-
-#. translators: %d: number of forms.
-#: includes/admin/forms/class-relaypress-forms-table.php:307
-#, php-format
-msgid "Active (%d)"
-msgstr "Activos (%d)"
-
-#. translators: %d: number of forms.
-#: includes/admin/forms/class-relaypress-forms-table.php:315
-#, php-format
-msgid "Trash (%d)"
-msgstr "Papelera (%d)"
 
 #: includes/class-relaypress-logs.php:127
 msgid ""
@@ -860,19 +1519,35 @@ msgstr ""
 msgid "The table exists but columns could not be read."
 msgstr "La tabla existe pero no se pudieron leer columnas."
 
-#: includes/class-relaypress-logs.php:186 includes/class-relaypress-logs.php:302
+#: includes/class-relaypress-logs.php:186
+#: includes/class-relaypress-logs.php:304
 msgid "ID"
 msgstr "ID"
 
-#: includes/class-relaypress-logs.php:187 includes/class-relaypress-logs.php:303
+#: includes/class-relaypress-logs.php:187
+#: includes/class-relaypress-logs.php:303
 msgid "Date"
 msgstr "Fecha"
 
-#: includes/class-relaypress-logs.php:190 includes/class-relaypress-logs.php:308
+#: includes/class-relaypress-logs.php:188
+#: includes/class-relaypress-logs.php:302
+#: includes/domain/forms/class-relaypress-form-config.php:42
+msgid "Email"
+msgstr "Email"
+
+#: includes/class-relaypress-logs.php:189
+#: includes/class-relaypress-logs.php:305
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:365
+msgid "Consent"
+msgstr "Consentimiento"
+
+#: includes/class-relaypress-logs.php:190
+#: includes/class-relaypress-logs.php:308
 msgid "Signup"
 msgstr "Alta"
 
-#: includes/class-relaypress-logs.php:191 includes/class-relaypress-logs.php:311
+#: includes/class-relaypress-logs.php:191
+#: includes/class-relaypress-logs.php:311
 msgid "Confirmation email"
 msgstr "Confirmación email"
 
@@ -923,7 +1598,8 @@ msgid "Search"
 msgstr "Buscar"
 
 #. translators: %1$s: number of items.
-#: includes/class-relaypress-logs.php:293 includes/class-relaypress-logs.php:391
+#: includes/class-relaypress-logs.php:293
+#: includes/class-relaypress-logs.php:391
 #, php-format
 msgid "%1$s items"
 msgstr "%1$s elementos"
@@ -944,7 +1620,7 @@ msgstr "Orden ascendente."
 msgid "Sort descending."
 msgstr "Orden descendente."
 
-#: includes/class-relaypress-logs.php:374
+#: includes/class-relaypress-logs.php:372
 msgid "Show more details"
 msgstr "Mostrar más detalles"
 
@@ -964,1134 +1640,519 @@ msgstr ""
 "Aún no existen columnas de confirmación. El plugin debería añadirlas "
 "automáticamente al activarse (dbDelta)."
 
+#: includes/class-relaypress-elementor-newsletter-widget.php:68
+msgid "Content"
+msgstr "Contenido"
+
+#: includes/class-relaypress-elementor-newsletter-widget.php:118
+#: includes/class-relaypress-newsletter-widget.php:125
+msgid "Group IDs"
+msgstr "Group IDs"
+
+#: includes/class-relaypress-elementor-newsletter-widget.php:128
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:380
+#: includes/class-relaypress-newsletter-widget.php:128
+msgid "Privacy URL"
+msgstr "URL privacidad"
+
+#: includes/class-relaypress-elementor-newsletter-widget.php:138
+#: includes/class-relaypress-newsletter-widget.php:131
+msgid "Consent text"
+msgstr "Texto consentimiento"
+
+#: includes/class-relaypress-elementor-newsletter-widget.php:148
+msgid "Extra CSS class"
+msgstr "Clase CSS extra"
+
+#: includes/class-relaypress-elementor-newsletter-widget.php:160
+msgid "Yes"
+msgstr "Sí"
+
+#: includes/class-relaypress-elementor-newsletter-widget.php:161
+msgid "No"
+msgstr "No"
+
+#: includes/admin/forms/class-relaypress-forms-list-page.php:38
+msgid "Add New"
+msgstr "Añadir nuevo"
+
+#: includes/admin/forms/class-relaypress-forms-list-page.php:57
+msgid "Form saved."
+msgstr "Formulario guardado."
+
+#: includes/admin/forms/class-relaypress-forms-list-page.php:59
+msgid "Form duplicated."
+msgstr "Formulario duplicado."
+
+#: includes/admin/forms/class-relaypress-forms-list-page.php:61
+msgid "Form moved to trash."
+msgstr "Formulario movido a la papelera."
+
+#: includes/admin/forms/class-relaypress-forms-list-page.php:63
+msgid "Forms updated."
+msgstr "Formularios actualizados."
+
+#: includes/admin/forms/class-relaypress-forms-list-page.php:65
+msgid "Something went wrong."
+msgstr "Algo salió mal."
+
+#: includes/admin/forms/class-relaypress-forms-table.php:112
+msgid "No forms found."
+msgstr "No se encontraron formularios."
+
+#: includes/admin/forms/class-relaypress-forms-table.php:123
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:71
+#: includes/domain/forms/class-relaypress-form-config.php:49
+msgid "Name"
+msgstr "Nombre"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:124
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:77
+msgid "Shortcode"
+msgstr "Shortcode"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:125
+msgid "Group"
+msgstr "Grupo"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:126
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:346
+msgid "Status"
+msgstr "Estado"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:127
+msgid "Created"
+msgstr "Creado"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:128
+msgid "Updated"
+msgstr "Actualizado"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:211
+#: includes/admin/forms/class-relaypress-forms-table.php:339
+msgid "Restore"
+msgstr "Restaurar"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:212
+#: includes/admin/forms/class-relaypress-forms-table.php:340
+msgid "Delete Permanently"
+msgstr "Eliminar permanentemente"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:217
+msgid "Move to Draft"
+msgstr "Mover a borrador"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:220
+msgid "Publish"
+msgstr "Publicar"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:236
+msgid "Edit"
+msgstr "Editar"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:237
+msgid "Duplicate"
+msgstr "Duplicar"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:239
+msgid "Trash"
+msgstr "Papelera"
+
+#: includes/admin/forms/class-relaypress-forms-table.php:345
+msgid "Move to Trash"
+msgstr "Mover a la papelera"
+
+#. translators: %d: number of forms.
+#: includes/admin/forms/class-relaypress-forms-table.php:370
+#, php-format
+msgid "All (%d)"
+msgstr "Todo (%d)"
+
+#. translators: %d: number of forms.
+#: includes/admin/forms/class-relaypress-forms-table.php:378
+#, php-format
+msgid "Published (%d)"
+msgstr ""
+
+#. translators: %d: number of forms.
+#: includes/admin/forms/class-relaypress-forms-table.php:386
+#, php-format
+msgid "Draft (%d)"
+msgstr ""
+
+#. translators: %d: number of forms.
+#: includes/admin/forms/class-relaypress-forms-table.php:394
+#, php-format
+msgid "Trash (%d)"
+msgstr "Papelera (%d)"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:49
+msgid "Edit Form"
+msgstr "Editar formulario"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:49
+msgid "Add New Form"
+msgstr "Añadir nuevo formulario"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:59
+msgid "Form saved successfully."
+msgstr "Formulario guardado correctamente."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:63
+msgid "Something went wrong while saving the form."
+msgstr "Se produjo un error al guardar el formulario."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:81
+msgid "Paste this shortcode in posts, pages, or widgets."
+msgstr "Pega este shortcode en entradas, páginas o widgets."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:84
+msgid "Save the form to generate the shortcode."
+msgstr "Guarda el formulario para generar el shortcode."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:91
+msgid "Fields"
+msgstr "Campos"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:92
+msgid "Messages"
+msgstr "Mensajes"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:100
+msgid "Destination"
+msgstr "Destino"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:103
+msgid "Groups"
+msgstr "Grupos"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:169
+msgid "Subscriber status"
+msgstr "Estado del suscriptor"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:172
+msgid "Inactive (double opt-in)"
+msgstr "Inactivo (doble opt-in)"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:173
+msgid "Active (single opt-in)"
+msgstr "Activo (single opt-in)"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:178
+msgid "Locale"
+msgstr "Idioma"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:181
+msgid "Use global setting"
+msgstr "Usar configuración global"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:185
+msgid "If the browser language is unsupported, the global fallback is used."
+msgstr "Si el idioma del navegador no es compatible, se usa el valor global."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:189
+msgid "Forced language"
+msgstr "Idioma forzado"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:198
+msgid "Used only when forcing a language for this form."
+msgstr "Se usa solo al forzar un idioma para este formulario."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:205
+msgid "Subscriber fields"
+msgstr "Campos del suscriptor"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:210
+msgid "Field"
+msgstr "Campo"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:211
+msgid "Enable"
+msgstr "Activar"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:212
+msgid "Required"
+msgstr "Obligatorio"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:213
+msgid "Label"
+msgstr "Etiqueta"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:214
+msgid "Placeholder"
+msgstr "Marcador"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:247
+msgid "Email is required by Mailrelay."
+msgstr "El email es obligatorio en Mailrelay."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:253
+msgid ""
+"Accepts E.164 (e.g., +34666666666) or local numbers with a default country. "
+"Sent to both SMS and WhatsApp in Mailrelay."
+msgstr ""
+"Acepta E.164 (p. ej., +34666666666) o números locales con un país "
+"predeterminado. Se envía a SMS y WhatsApp en Mailrelay."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:264
+msgid "Quick guide"
+msgstr "Guía rápida"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:266
+msgid "Pick one or more groups so subscribers land in the right lists."
+msgstr ""
+"Selecciona uno o más grupos para que los suscriptores lleguen a las listas "
+"correctas."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:267
+msgid ""
+"Keep fields minimal to reduce drop-offs. Email is required by Mailrelay."
+msgstr ""
+"Mantén pocos campos para reducir abandonos. El email es obligatorio en "
+"Mailrelay."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:268
+msgid "Use E.164 for Phone (for example, +34666666666) to avoid API errors."
+msgstr ""
+"Usa E.164 para el teléfono (por ejemplo, +34666666666) para evitar errores "
+"de la API."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:269
+msgid "Phone populates both SMS and WhatsApp fields in Mailrelay."
+msgstr "El teléfono rellena los campos de SMS y WhatsApp en Mailrelay."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:293
+msgid "Submit button text"
+msgstr "Texto del botón"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:299
+msgid "Success message"
+msgstr "Mensaje de éxito"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:305
+msgid "Captcha error"
+msgstr "Error de captcha"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:311
+msgid "Consent error"
+msgstr "Error de consentimiento"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:317
+msgid "Phone error"
+msgstr "Error de teléfono"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:323
+msgid "Generic error"
+msgstr "Error genérico"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:332
+msgid "Tone and clarity"
+msgstr "Tono y claridad"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:334
+msgid "Keep messages short; they appear inline under the form."
+msgstr ""
+"Mantén los mensajes cortos; se muestran en línea debajo del formulario."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:335
+msgid "Avoid technical wording. Tell users what to do next."
+msgstr "Evita lenguaje técnico. Indica al usuario qué hacer a continuación."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:336
+msgid "Match your site voice (formal, friendly, or direct)."
+msgstr "Mantén el tono de tu sitio (formal, cercano o directo)."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:349
+msgid "Visibility"
+msgstr "Visibilidad"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:353
+msgid "Published"
+msgstr "Publicado"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:356
+msgid "Draft"
+msgstr "Borrador"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:368
+msgid "Use default consent settings"
+msgstr "Usar ajustes de consentimiento por defecto"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:370
+msgid "Inherit global consent text and URL"
+msgstr "Heredar texto y URL globales de consentimiento"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:374
+msgid "Consent label"
+msgstr "Etiqueta de consentimiento"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:392
+msgid "Turnstile"
+msgstr "Turnstile"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:396
+msgid "Inherit global setting"
+msgstr "Heredar configuración global"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:399
+msgid "Enabled"
+msgstr "Activado"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:402
+msgid "Disabled"
+msgstr "Desactivado"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:405
+msgid "Choose how this form handles spam protection."
+msgstr "Elige cómo gestionar la protección anti-spam en este formulario."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:412
+msgid "Advanced"
+msgstr "Avanzado"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:415
+msgid "Use default rate limit"
+msgstr "Usar límite de tasa por defecto"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:417
+msgid "Inherit global rate limits"
+msgstr "Heredar límites globales"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:421
+msgid "Max attempts"
+msgstr "Máximo de intentos"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:433
+msgid "Enable AJAX"
+msgstr "Activar AJAX"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:442
+msgid "Defaults and overrides"
+msgstr "Valores por defecto y ajustes"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:444
+msgid ""
+"Inherited settings use the global defaults from the main plugin settings "
+"page."
+msgstr ""
+"Los ajustes heredados usan los valores globales de la página principal del "
+"plugin."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:445
+msgid "Override only when this form needs different behavior."
+msgstr ""
+"Cambia solo cuando este formulario necesite un comportamiento distinto."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:446
+msgid "Turning off Turnstile disables it for this form only."
+msgstr "Desactivar Turnstile lo deshabilita solo en este formulario."
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:453
+msgid "Save Form"
+msgstr "Guardar formulario"
+
+#: includes/admin/forms/class-relaypress-forms-editor-page.php:454
+msgid "Back to list"
+msgstr "Volver a la lista"
+
+#: includes/class-relaypress-newsletter-widget.php:24
+msgid ""
+"Newsletter form with Turnstile + Mailrelay API + double opt-in (neutral "
+"message) and logs."
+msgstr ""
+"Formulario de newsletter con Turnstile + Mailrelay API + double opt-in "
+"(mensaje neutro) y logs."
+
+#: includes/class-relaypress-newsletter-widget.php:83
+msgid "No forms yet."
+msgstr "Aun no hay formularios."
+
+#: includes/class-relaypress-newsletter-widget.php:97
+msgid "Create your first form"
+msgstr "Crea tu primer formulario"
+
+#: includes/class-relaypress-newsletter-widget.php:104
+#: includes/class-relaypress-elementor.php:125
+msgid "Form"
+msgstr "Formulario"
+
+#: includes/class-relaypress-newsletter-widget.php:134
+msgid "Extra CSS class (optional)"
+msgstr "Clase CSS extra (opcional)"
+
 #: includes/class-relaypress-elementor.php:31
 msgid "Uve Mailrelay"
 msgstr "Uve Mailrelay"
 
-#: includes/class-relaypress-elementor-newsletter-widget.php:78
-msgid "Content"
-msgstr "Contenido"
+#. translators: %s: link to create form.
+#: includes/class-relaypress-elementor.php:99
+#, php-format
+msgid ""
+"No forms yet. <a href=\"%s\" target=\"_blank\" rel=\"noopener "
+"noreferrer\">Create your first form</a>."
+msgstr ""
+"Aun no hay formularios. <a href=\"%s\" target=\"_blank\" rel=\"noopener "
+"noreferrer\">Crea tu primer formulario</a>."
 
-#: includes/class-relaypress-elementor-newsletter-widget.php:166
-msgid "Extra CSS class"
-msgstr "Clase CSS extra"
+#: includes/domain/forms/class-relaypress-form-config.php:56
+msgid "Address"
+msgstr ""
 
-#: includes/class-relaypress-elementor-newsletter-widget.php:178
-msgid "Yes"
-msgstr "Sí"
+#: includes/domain/forms/class-relaypress-form-config.php:63
+msgid "City"
+msgstr ""
 
-#: includes/class-relaypress-elementor-newsletter-widget.php:179
-msgid "No"
-msgstr "No"
+#: includes/domain/forms/class-relaypress-form-config.php:70
+#, fuzzy
+msgid "State"
+msgstr "Estado"
 
-#: includes/admin/forms/class-relaypress-forms-admin.php:409
-msgid "Visibility"
-msgstr "Visibilidad"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:413
-msgid "Published"
-msgstr "Publicado"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:416
-msgid "Draft"
-msgstr "Borrador"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:420
-msgid "Free version allows up to %d published form."
-msgid_plural "Free version allows up to %d published forms."
-msgstr[0] "La versión gratuita permite hasta %d formulario publicado."
-msgstr[1] "La versión gratuita permite hasta %d formularios publicados."
-
-#: includes/admin/forms/class-relaypress-forms-table.php:176
-msgid "Move to Draft"
-msgstr "Mover a borrador"
-
-#: includes/admin/forms/class-relaypress-forms-table.php:179
-msgid "Publish"
-msgstr "Publicar"
-
-#: includes/admin/forms/class-relaypress-forms-table.php:126
-msgid "Created"
-msgstr "Creado"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:113
-msgid "Your form was saved as a draft. %s to publish more forms."
-msgstr "El formulario se guardó como borrador. %s para publicar más formularios."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:777
-msgid "Unlock unlimited published forms"
-msgstr "Desbloquea formularios publicados ilimitados"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:778
-msgid "Publish as many signup forms as you want and keep your campaigns segmented."
-msgstr "Publica tantos formularios de suscripción como quieras y mantiene tus campañas segmentadas."
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:779
-msgid "Upgrade to Premium"
-msgstr "Actualizar a Premium"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:787
-msgid "Premium"
-msgstr "Premium"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:793
-msgid "Unlimited published forms"
-msgstr "Formularios publicados ilimitados"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:794
-msgid "Advanced segmentation and testing"
-msgstr "Segmentación y pruebas avanzadas"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:795
-msgid "Priority support"
-msgstr "Soporte prioritario"
-
-#: includes/admin/forms/class-relaypress-forms-admin.php:804
-msgid "Maybe later"
-msgstr "Quizás más tarde"
-
-#~ msgid ""
-#~ "Copy the API base URL from your Mailrelay account (API/Developers "
-#~ "section)."
-#~ msgstr ""
-#~ "Copia la URL base de la API desde tu cuenta de Mailrelay (sección API/"
-#~ "Desarrolladores)."
-
-#~ msgid "Use comma-separated IDs to prefill new forms."
-#~ msgstr "Usa IDs separados por comas para prellenar nuevos formularios."
-
-#~ msgid "Texts"
-#~ msgstr "Textos"
-
-#~ msgid "Tips"
-#~ msgstr "Consejos"
-
-#~ msgid "Tone"
-#~ msgstr "Tono"
-
-#~ msgid "Notes"
-#~ msgstr "Notas"
-
-#: includes/domain/forms/class-relaypress-form-config.php:79
+#: includes/domain/forms/class-relaypress-form-config.php:77
 msgid "Country"
 msgstr "País"
 
-#: includes/domain/forms/class-relaypress-form-config.php:80
-#: templates/form.php:69
-msgid "Select a country"
-msgstr "Selecciona un país"
-
-#: includes/class-relaypress-utils.php:58
-msgid "Afghanistan"
-msgstr "Afganistán"
-
-#: includes/class-relaypress-utils.php:59
-msgid "Aland Islands"
-msgstr "Islas Aland"
-
-#: includes/class-relaypress-utils.php:60
-msgid "Albania"
-msgstr "Albania"
-
-#: includes/class-relaypress-utils.php:61
-msgid "Algeria"
-msgstr "Argelia"
-
-#: includes/class-relaypress-utils.php:62
-msgid "American Samoa"
-msgstr "Samoa Americana"
-
-#: includes/class-relaypress-utils.php:63
-msgid "Andorra"
-msgstr "Andorra"
-
-#: includes/class-relaypress-utils.php:64
-msgid "Angola"
-msgstr "Angola"
-
-#: includes/class-relaypress-utils.php:65
-msgid "Anguilla"
-msgstr "Anguila"
-
-#: includes/class-relaypress-utils.php:66
-msgid "Antarctica"
-msgstr "Antártida"
-
-#: includes/class-relaypress-utils.php:67
-msgid "Antigua and Barbuda"
-msgstr "Antigua y Barbuda"
-
-#: includes/class-relaypress-utils.php:68
-msgid "Argentina"
-msgstr "Argentina"
-
-#: includes/class-relaypress-utils.php:69
-msgid "Armenia"
-msgstr "Armenia"
-
-#: includes/class-relaypress-utils.php:70
-msgid "Aruba"
-msgstr "Aruba"
-
-#: includes/class-relaypress-utils.php:71
-msgid "Australia"
-msgstr "Australia"
-
-#: includes/class-relaypress-utils.php:72
-msgid "Austria"
-msgstr "Austria"
-
-#: includes/class-relaypress-utils.php:73
-msgid "Azerbaijan"
-msgstr "Azerbaiyán"
-
-#: includes/class-relaypress-utils.php:74
-msgid "Bahamas"
-msgstr "Bahamas"
-
-#: includes/class-relaypress-utils.php:75
-msgid "Bahrain"
-msgstr "Baréin"
-
-#: includes/class-relaypress-utils.php:76
-msgid "Bangladesh"
-msgstr "Bangladés"
-
-#: includes/class-relaypress-utils.php:77
-msgid "Barbados"
-msgstr "Barbados"
-
-#: includes/class-relaypress-utils.php:78
-msgid "Belarus"
-msgstr "Bielorrusia"
-
-#: includes/class-relaypress-utils.php:79
-msgid "Belgium"
-msgstr "Bélgica"
-
-#: includes/class-relaypress-utils.php:80
-msgid "Belize"
-msgstr "Belice"
-
-#: includes/class-relaypress-utils.php:81
-msgid "Benin"
-msgstr "Benín"
-
-#: includes/class-relaypress-utils.php:82
-msgid "Bermuda"
-msgstr "Bermudas"
-
-#: includes/class-relaypress-utils.php:83
-msgid "Bhutan"
-msgstr "Bután"
-
-#: includes/class-relaypress-utils.php:84
-msgid "Bolivia"
-msgstr "Bolivia"
-
-#: includes/class-relaypress-utils.php:85
-msgid "Bonaire, Sint Eustatius and Saba"
-msgstr "Bonaire, San Eustaquio y Saba"
-
-#: includes/class-relaypress-utils.php:86
-msgid "Bosnia and Herzegovina"
-msgstr "Bosnia y Herzegovina"
-
-#: includes/class-relaypress-utils.php:87
-msgid "Botswana"
-msgstr "Botsuana"
-
-#: includes/class-relaypress-utils.php:88
-msgid "Bouvet Island"
-msgstr "Isla Bouvet"
-
-#: includes/class-relaypress-utils.php:89
-msgid "Brazil"
-msgstr "Brasil"
-
-#: includes/class-relaypress-utils.php:90
-msgid "British Indian Ocean Territory"
-msgstr "Territorio Británico del Océano Índico"
-
-#: includes/class-relaypress-utils.php:91
-msgid "Brunei Darussalam"
-msgstr "Brunéi"
-
-#: includes/class-relaypress-utils.php:92
-msgid "Bulgaria"
-msgstr "Bulgaria"
-
-#: includes/class-relaypress-utils.php:93
-msgid "Burkina Faso"
-msgstr "Burkina Faso"
-
-#: includes/class-relaypress-utils.php:94
-msgid "Burundi"
-msgstr "Burundi"
-
-#: includes/class-relaypress-utils.php:95
-msgid "Cambodia"
-msgstr "Camboya"
-
-#: includes/class-relaypress-utils.php:96
-msgid "Cameroon"
-msgstr "Camerún"
-
-#: includes/class-relaypress-utils.php:97
-msgid "Canada"
-msgstr "Canadá"
-
-#: includes/class-relaypress-utils.php:98
-msgid "Cabo Verde"
-msgstr "Cabo Verde"
-
-#: includes/class-relaypress-utils.php:99
-msgid "Cayman Islands"
-msgstr "Islas Caimán"
-
-#: includes/class-relaypress-utils.php:100
-msgid "Central African Republic"
-msgstr "República Centroafricana"
-
-#: includes/class-relaypress-utils.php:101
-msgid "Chad"
-msgstr "Chad"
-
-#: includes/class-relaypress-utils.php:102
-msgid "Chile"
-msgstr "Chile"
-
-#: includes/class-relaypress-utils.php:103
-msgid "China"
-msgstr "China"
-
-#: includes/class-relaypress-utils.php:104
-msgid "Christmas Island"
-msgstr "Isla de Navidad"
-
-#: includes/class-relaypress-utils.php:105
-msgid "Cocos (Keeling) Islands"
-msgstr "Islas Cocos (Keeling)"
-
-#: includes/class-relaypress-utils.php:106
-msgid "Colombia"
-msgstr "Colombia"
-
-#: includes/class-relaypress-utils.php:107
-msgid "Comoros"
-msgstr "Comoras"
-
-#: includes/class-relaypress-utils.php:108
-msgid "Congo"
-msgstr "Congo"
-
-#: includes/class-relaypress-utils.php:109
-msgid "Congo, Democratic Republic of the"
-msgstr "República Democrática del Congo"
-
-#: includes/class-relaypress-utils.php:110
-msgid "Cook Islands"
-msgstr "Islas Cook"
-
-#: includes/class-relaypress-utils.php:111
-msgid "Costa Rica"
-msgstr "Costa Rica"
-
-#: includes/class-relaypress-utils.php:112
-msgid "Cote d'Ivoire"
-msgstr "Costa de Marfil"
-
-#: includes/class-relaypress-utils.php:113
-msgid "Croatia"
-msgstr "Croacia"
-
-#: includes/class-relaypress-utils.php:114
-msgid "Cuba"
-msgstr "Cuba"
-
-#: includes/class-relaypress-utils.php:115
-msgid "Curacao"
-msgstr "Curazao"
-
-#: includes/class-relaypress-utils.php:116
-msgid "Cyprus"
-msgstr "Chipre"
-
-#: includes/class-relaypress-utils.php:117
-msgid "Czechia"
-msgstr "Chequia"
-
-#: includes/class-relaypress-utils.php:118
-msgid "Denmark"
-msgstr "Dinamarca"
-
-#: includes/class-relaypress-utils.php:119
-msgid "Djibouti"
-msgstr "Yibuti"
-
-#: includes/class-relaypress-utils.php:120
-msgid "Dominica"
-msgstr "Dominica"
-
-#: includes/class-relaypress-utils.php:121
-msgid "Dominican Republic"
-msgstr "República Dominicana"
-
-#: includes/class-relaypress-utils.php:122
-msgid "Ecuador"
-msgstr "Ecuador"
-
-#: includes/class-relaypress-utils.php:123
-msgid "Egypt"
-msgstr "Egipto"
-
-#: includes/class-relaypress-utils.php:124
-msgid "El Salvador"
-msgstr "El Salvador"
-
-#: includes/class-relaypress-utils.php:125
-msgid "Equatorial Guinea"
-msgstr "Guinea Ecuatorial"
-
-#: includes/class-relaypress-utils.php:126
-msgid "Eritrea"
-msgstr "Eritrea"
-
-#: includes/class-relaypress-utils.php:127
-msgid "Estonia"
-msgstr "Estonia"
-
-#: includes/class-relaypress-utils.php:128
-msgid "Eswatini"
-msgstr "Esuatini"
-
-#: includes/class-relaypress-utils.php:129
-msgid "Ethiopia"
-msgstr "Etiopía"
-
-#: includes/class-relaypress-utils.php:130
-msgid "Falkland Islands (Malvinas)"
-msgstr "Islas Malvinas"
-
-#: includes/class-relaypress-utils.php:131
-msgid "Faroe Islands"
-msgstr "Islas Feroe"
-
-#: includes/class-relaypress-utils.php:132
-msgid "Fiji"
-msgstr "Fiyi"
-
-#: includes/class-relaypress-utils.php:133
-msgid "Finland"
-msgstr "Finlandia"
-
-#: includes/class-relaypress-utils.php:134
-msgid "France"
-msgstr "Francia"
-
-#: includes/class-relaypress-utils.php:135
-msgid "French Guiana"
-msgstr "Guayana Francesa"
-
-#: includes/class-relaypress-utils.php:136
-msgid "French Polynesia"
-msgstr "Polinesia Francesa"
-
-#: includes/class-relaypress-utils.php:137
-msgid "French Southern Territories"
-msgstr "Territorios Australes Franceses"
-
-#: includes/class-relaypress-utils.php:138
-msgid "Gabon"
-msgstr "Gabón"
-
-#: includes/class-relaypress-utils.php:139
-msgid "Gambia"
-msgstr "Gambia"
-
-#: includes/class-relaypress-utils.php:140
-msgid "Georgia"
-msgstr "Georgia"
-
-#: includes/class-relaypress-utils.php:141
-msgid "Germany"
-msgstr "Alemania"
-
-#: includes/class-relaypress-utils.php:142
-msgid "Ghana"
-msgstr "Ghana"
-
-#: includes/class-relaypress-utils.php:143
-msgid "Gibraltar"
-msgstr "Gibraltar"
-
-#: includes/class-relaypress-utils.php:144
-msgid "Greece"
-msgstr "Grecia"
-
-#: includes/class-relaypress-utils.php:145
-msgid "Greenland"
-msgstr "Groenlandia"
-
-#: includes/class-relaypress-utils.php:146
-msgid "Grenada"
-msgstr "Granada"
-
-#: includes/class-relaypress-utils.php:147
-msgid "Guadeloupe"
-msgstr "Guadalupe"
-
-#: includes/class-relaypress-utils.php:148
-msgid "Guam"
-msgstr "Guam"
-
-#: includes/class-relaypress-utils.php:149
-msgid "Guatemala"
-msgstr "Guatemala"
-
-#: includes/class-relaypress-utils.php:150
-msgid "Guernsey"
-msgstr "Guernesey"
-
-#: includes/class-relaypress-utils.php:151
-msgid "Guinea"
-msgstr "Guinea"
-
-#: includes/class-relaypress-utils.php:152
-msgid "Guinea-Bissau"
-msgstr "Guinea-Bisáu"
-
-#: includes/class-relaypress-utils.php:153
-msgid "Guyana"
-msgstr "Guyana"
-
-#: includes/class-relaypress-utils.php:154
-msgid "Haiti"
-msgstr "Haití"
-
-#: includes/class-relaypress-utils.php:155
-msgid "Heard Island and McDonald Islands"
-msgstr "Isla Heard y Islas McDonald"
-
-#: includes/class-relaypress-utils.php:156
-msgid "Holy See"
-msgstr "Santa Sede"
-
-#: includes/class-relaypress-utils.php:157
-msgid "Honduras"
-msgstr "Honduras"
-
-#: includes/class-relaypress-utils.php:158
-msgid "Hong Kong"
-msgstr "Hong Kong"
-
-#: includes/class-relaypress-utils.php:159
-msgid "Hungary"
-msgstr "Hungría"
-
-#: includes/class-relaypress-utils.php:160
-msgid "Iceland"
-msgstr "Islandia"
-
-#: includes/class-relaypress-utils.php:161
-msgid "India"
-msgstr "India"
-
-#: includes/class-relaypress-utils.php:162
-msgid "Indonesia"
-msgstr "Indonesia"
-
-#: includes/class-relaypress-utils.php:163
-msgid "Iran, Islamic Republic of"
-msgstr "Irán"
-
-#: includes/class-relaypress-utils.php:164
-msgid "Iraq"
-msgstr "Irak"
-
-#: includes/class-relaypress-utils.php:165
-msgid "Ireland"
-msgstr "Irlanda"
-
-#: includes/class-relaypress-utils.php:166
-msgid "Isle of Man"
-msgstr "Isla de Man"
-
-#: includes/class-relaypress-utils.php:167
-msgid "Israel"
-msgstr "Israel"
-
-#: includes/class-relaypress-utils.php:168
-msgid "Italy"
-msgstr "Italia"
-
-#: includes/class-relaypress-utils.php:169
-msgid "Jamaica"
-msgstr "Jamaica"
-
-#: includes/class-relaypress-utils.php:170
-msgid "Japan"
-msgstr "Japón"
-
-#: includes/class-relaypress-utils.php:171
-msgid "Jersey"
-msgstr "Jersey"
-
-#: includes/class-relaypress-utils.php:172
-msgid "Jordan"
-msgstr "Jordania"
-
-#: includes/class-relaypress-utils.php:173
-msgid "Kazakhstan"
-msgstr "Kazajistán"
-
-#: includes/class-relaypress-utils.php:174
-msgid "Kenya"
-msgstr "Kenia"
-
-#: includes/class-relaypress-utils.php:175
-msgid "Kiribati"
-msgstr "Kiribati"
-
-#: includes/class-relaypress-utils.php:176
-msgid "Korea, Democratic People's Republic of"
-msgstr "Corea, República Popular Democrática de"
-
-#: includes/class-relaypress-utils.php:177
-msgid "Korea, Republic of"
-msgstr "Corea, República de"
-
-#: includes/class-relaypress-utils.php:178
-msgid "Kuwait"
-msgstr "Kuwait"
-
-#: includes/class-relaypress-utils.php:179
-msgid "Kyrgyzstan"
-msgstr "Kirguistán"
-
-#: includes/class-relaypress-utils.php:180
-msgid "Lao People's Democratic Republic"
-msgstr "República Democrática Popular Lao"
-
-#: includes/class-relaypress-utils.php:181
-msgid "Latvia"
-msgstr "Letonia"
-
-#: includes/class-relaypress-utils.php:182
-msgid "Lebanon"
-msgstr "Líbano"
-
-#: includes/class-relaypress-utils.php:183
-msgid "Lesotho"
-msgstr "Lesoto"
-
-#: includes/class-relaypress-utils.php:184
-msgid "Liberia"
-msgstr "Liberia"
-
-#: includes/class-relaypress-utils.php:185
-msgid "Libya"
-msgstr "Libia"
-
-#: includes/class-relaypress-utils.php:186
-msgid "Liechtenstein"
-msgstr "Liechtenstein"
-
-#: includes/class-relaypress-utils.php:187
-msgid "Lithuania"
-msgstr "Lituania"
-
-#: includes/class-relaypress-utils.php:188
-msgid "Luxembourg"
-msgstr "Luxemburgo"
-
-#: includes/class-relaypress-utils.php:189
-msgid "Macao"
-msgstr "Macao"
-
-#: includes/class-relaypress-utils.php:190
-msgid "Madagascar"
-msgstr "Madagascar"
-
-#: includes/class-relaypress-utils.php:191
-msgid "Malawi"
-msgstr "Malawi"
-
-#: includes/class-relaypress-utils.php:192
-msgid "Malaysia"
-msgstr "Malasia"
-
-#: includes/class-relaypress-utils.php:193
-msgid "Maldives"
-msgstr "Maldivas"
-
-#: includes/class-relaypress-utils.php:194
-msgid "Mali"
-msgstr "Mali"
-
-#: includes/class-relaypress-utils.php:195
-msgid "Malta"
-msgstr "Malta"
-
-#: includes/class-relaypress-utils.php:196
-msgid "Marshall Islands"
-msgstr "Islas Marshall"
-
-#: includes/class-relaypress-utils.php:197
-msgid "Martinique"
-msgstr "Martinica"
-
-#: includes/class-relaypress-utils.php:198
-msgid "Mauritania"
-msgstr "Mauritania"
-
-#: includes/class-relaypress-utils.php:199
-msgid "Mauritius"
-msgstr "Mauricio"
-
-#: includes/class-relaypress-utils.php:200
-msgid "Mayotte"
-msgstr "Mayotte"
-
-#: includes/class-relaypress-utils.php:201
-msgid "Mexico"
-msgstr "México"
-
-#: includes/class-relaypress-utils.php:202
-msgid "Micronesia, Federated States of"
-msgstr "Micronesia, Estados Federados de"
-
-#: includes/class-relaypress-utils.php:203
-msgid "Moldova, Republic of"
-msgstr "Moldavia"
-
-#: includes/class-relaypress-utils.php:204
-msgid "Monaco"
-msgstr "Mónaco"
-
-#: includes/class-relaypress-utils.php:205
-msgid "Mongolia"
-msgstr "Mongolia"
-
-#: includes/class-relaypress-utils.php:206
-msgid "Montenegro"
-msgstr "Montenegro"
-
-#: includes/class-relaypress-utils.php:207
-msgid "Montserrat"
-msgstr "Montserrat"
-
-#: includes/class-relaypress-utils.php:208
-msgid "Morocco"
-msgstr "Marruecos"
-
-#: includes/class-relaypress-utils.php:209
-msgid "Mozambique"
-msgstr "Mozambique"
-
-#: includes/class-relaypress-utils.php:210
-msgid "Myanmar"
-msgstr "Myanmar"
-
-#: includes/class-relaypress-utils.php:211
-msgid "Namibia"
-msgstr "Namibia"
-
-#: includes/class-relaypress-utils.php:212
-msgid "Nauru"
-msgstr "Nauru"
-
-#: includes/class-relaypress-utils.php:213
-msgid "Nepal"
-msgstr "Nepal"
-
-#: includes/class-relaypress-utils.php:214
-msgid "Netherlands"
-msgstr "Países Bajos"
-
-#: includes/class-relaypress-utils.php:215
-msgid "New Caledonia"
-msgstr "Nueva Caledonia"
-
-#: includes/class-relaypress-utils.php:216
-msgid "New Zealand"
-msgstr "Nueva Zelanda"
-
-#: includes/class-relaypress-utils.php:217
-msgid "Nicaragua"
-msgstr "Nicaragua"
-
-#: includes/class-relaypress-utils.php:218
-msgid "Niger"
-msgstr "Níger"
-
-#: includes/class-relaypress-utils.php:219
-msgid "Nigeria"
-msgstr "Nigeria"
-
-#: includes/class-relaypress-utils.php:220
-msgid "Niue"
-msgstr "Niue"
-
-#: includes/class-relaypress-utils.php:221
-msgid "Norfolk Island"
-msgstr "Isla Norfolk"
-
-#: includes/class-relaypress-utils.php:222
-msgid "North Macedonia"
-msgstr "Macedonia del Norte"
-
-#: includes/class-relaypress-utils.php:223
-msgid "Northern Mariana Islands"
-msgstr "Islas Marianas del Norte"
-
-#: includes/class-relaypress-utils.php:224
-msgid "Norway"
-msgstr "Noruega"
-
-#: includes/class-relaypress-utils.php:225
-msgid "Oman"
-msgstr "Omán"
-
-#: includes/class-relaypress-utils.php:226
-msgid "Pakistan"
-msgstr "Pakistán"
-
-#: includes/class-relaypress-utils.php:227
-msgid "Palau"
-msgstr "Palaos"
-
-#: includes/class-relaypress-utils.php:228
-msgid "Palestine, State of"
-msgstr "Palestina, Estado de"
-
-#: includes/class-relaypress-utils.php:229
-msgid "Panama"
-msgstr "Panamá"
-
-#: includes/class-relaypress-utils.php:230
-msgid "Papua New Guinea"
-msgstr "Papúa Nueva Guinea"
-
-#: includes/class-relaypress-utils.php:231
-msgid "Paraguay"
-msgstr "Paraguay"
-
-#: includes/class-relaypress-utils.php:232
-msgid "Peru"
-msgstr "Perú"
-
-#: includes/class-relaypress-utils.php:233
-msgid "Philippines"
-msgstr "Filipinas"
-
-#: includes/class-relaypress-utils.php:234
-msgid "Pitcairn"
-msgstr "Pitcairn"
-
-#: includes/class-relaypress-utils.php:235
-msgid "Poland"
-msgstr "Polonia"
-
-#: includes/class-relaypress-utils.php:236
-msgid "Portugal"
-msgstr "Portugal"
-
-#: includes/class-relaypress-utils.php:237
-msgid "Puerto Rico"
-msgstr "Puerto Rico"
-
-#: includes/class-relaypress-utils.php:238
-msgid "Qatar"
-msgstr "Catar"
-
-#: includes/class-relaypress-utils.php:239
-msgid "Reunion"
-msgstr "Reunión"
-
-#: includes/class-relaypress-utils.php:240
-msgid "Romania"
-msgstr "Rumanía"
-
-#: includes/class-relaypress-utils.php:241
-msgid "Russian Federation"
-msgstr "Federación de Rusia"
-
-#: includes/class-relaypress-utils.php:242
-msgid "Rwanda"
-msgstr "Ruanda"
-
-#: includes/class-relaypress-utils.php:243
-msgid "Saint Barthelemy"
-msgstr "San Bartolomé"
-
-#: includes/class-relaypress-utils.php:244
-msgid "Saint Helena, Ascension and Tristan da Cunha"
-msgstr "Santa Elena, Ascensión y Tristán de Acuña"
-
-#: includes/class-relaypress-utils.php:245
-msgid "Saint Kitts and Nevis"
-msgstr "San Cristóbal y Nieves"
-
-#: includes/class-relaypress-utils.php:246
-msgid "Saint Lucia"
-msgstr "Santa Lucía"
-
-#: includes/class-relaypress-utils.php:247
-msgid "Saint Martin (French part)"
-msgstr "San Martín (parte francesa)"
-
-#: includes/class-relaypress-utils.php:248
-msgid "Saint Pierre and Miquelon"
-msgstr "San Pedro y Miquelón"
-
-#: includes/class-relaypress-utils.php:249
-msgid "Saint Vincent and the Grenadines"
-msgstr "San Vicente y las Granadinas"
-
-#: includes/class-relaypress-utils.php:250
-msgid "Samoa"
-msgstr "Samoa"
-
-#: includes/class-relaypress-utils.php:251
-msgid "San Marino"
-msgstr "San Marino"
-
-#: includes/class-relaypress-utils.php:252
-msgid "Sao Tome and Principe"
-msgstr "Santo Tomé y Príncipe"
-
-#: includes/class-relaypress-utils.php:253
-msgid "Saudi Arabia"
-msgstr "Arabia Saudita"
-
-#: includes/class-relaypress-utils.php:254
-msgid "Senegal"
-msgstr "Senegal"
-
-#: includes/class-relaypress-utils.php:255
-msgid "Serbia"
-msgstr "Serbia"
-
-#: includes/class-relaypress-utils.php:256
-msgid "Seychelles"
-msgstr "Seychelles"
-
-#: includes/class-relaypress-utils.php:257
-msgid "Sierra Leone"
-msgstr "Sierra Leona"
-
-#: includes/class-relaypress-utils.php:258
-msgid "Singapore"
-msgstr "Singapur"
-
-#: includes/class-relaypress-utils.php:259
-msgid "Sint Maarten (Dutch part)"
-msgstr "San Martín (parte neerlandesa)"
-
-#: includes/class-relaypress-utils.php:260
-msgid "Slovakia"
-msgstr "Eslovaquia"
-
-#: includes/class-relaypress-utils.php:261
-msgid "Slovenia"
-msgstr "Eslovenia"
-
-#: includes/class-relaypress-utils.php:262
-msgid "Solomon Islands"
-msgstr "Islas Salomón"
-
-#: includes/class-relaypress-utils.php:263
-msgid "Somalia"
-msgstr "Somalia"
-
-#: includes/class-relaypress-utils.php:264
-msgid "South Africa"
-msgstr "Sudáfrica"
-
-#: includes/class-relaypress-utils.php:265
-msgid "South Georgia and the South Sandwich Islands"
-msgstr "Islas Georgia del Sur y Sandwich del Sur"
-
-#: includes/class-relaypress-utils.php:266
-msgid "South Sudan"
-msgstr "Sudán del Sur"
-
-#: includes/class-relaypress-utils.php:267
-msgid "Spain"
-msgstr "España"
-
-#: includes/class-relaypress-utils.php:268
-msgid "Sri Lanka"
-msgstr "Sri Lanka"
-
-#: includes/class-relaypress-utils.php:269
-msgid "Sudan"
-msgstr "Sudán"
-
-#: includes/class-relaypress-utils.php:270
-msgid "Suriname"
-msgstr "Surinam"
-
-#: includes/class-relaypress-utils.php:271
-msgid "Svalbard and Jan Mayen"
-msgstr "Svalbard y Jan Mayen"
-
-#: includes/class-relaypress-utils.php:272
-msgid "Sweden"
-msgstr "Suecia"
-
-#: includes/class-relaypress-utils.php:273
-msgid "Switzerland"
-msgstr "Suiza"
-
-#: includes/class-relaypress-utils.php:274
-msgid "Syrian Arab Republic"
-msgstr "República Árabe Siria"
-
-#: includes/class-relaypress-utils.php:275
-msgid "Taiwan, Province of China"
-msgstr "Taiwán, Provincia de China"
-
-#: includes/class-relaypress-utils.php:276
-msgid "Tajikistan"
-msgstr "Tayikistán"
-
-#: includes/class-relaypress-utils.php:277
-msgid "Tanzania, United Republic of"
-msgstr "Tanzania, República Unida de"
-
-#: includes/class-relaypress-utils.php:278
-msgid "Thailand"
-msgstr "Tailandia"
-
-#: includes/class-relaypress-utils.php:279
-msgid "Timor-Leste"
-msgstr "Timor-Leste"
-
-#: includes/class-relaypress-utils.php:280
-msgid "Togo"
-msgstr "Togo"
-
-#: includes/class-relaypress-utils.php:281
-msgid "Tokelau"
-msgstr "Tokelau"
-
-#: includes/class-relaypress-utils.php:282
-msgid "Tonga"
-msgstr "Tonga"
-
-#: includes/class-relaypress-utils.php:283
-msgid "Trinidad and Tobago"
-msgstr "Trinidad y Tobago"
-
-#: includes/class-relaypress-utils.php:284
-msgid "Tunisia"
-msgstr "Túnez"
-
-#: includes/class-relaypress-utils.php:285
-msgid "Turkey"
-msgstr "Turquía"
-
-#: includes/class-relaypress-utils.php:286
-msgid "Turkmenistan"
-msgstr "Turkmenistán"
-
-#: includes/class-relaypress-utils.php:287
-msgid "Turks and Caicos Islands"
-msgstr "Islas Turcas y Caicos"
-
-#: includes/class-relaypress-utils.php:288
-msgid "Tuvalu"
-msgstr "Tuvalu"
-
-#: includes/class-relaypress-utils.php:289
-msgid "Uganda"
-msgstr "Uganda"
-
-#: includes/class-relaypress-utils.php:290
-msgid "Ukraine"
-msgstr "Ucrania"
-
-#: includes/class-relaypress-utils.php:291
-msgid "United Arab Emirates"
-msgstr "Emiratos Árabes Unidos"
-
-#: includes/class-relaypress-utils.php:292
-msgid "United Kingdom"
-msgstr "Reino Unido"
-
-#: includes/class-relaypress-utils.php:293
-msgid "United States"
-msgstr "Estados Unidos"
-
-#: includes/class-relaypress-utils.php:294
-msgid "United States Minor Outlying Islands"
-msgstr "Islas menores alejadas de los Estados Unidos"
-
-#: includes/class-relaypress-utils.php:295
-msgid "Uruguay"
-msgstr "Uruguay"
-
-#: includes/class-relaypress-utils.php:296
-msgid "Uzbekistan"
-msgstr "Uzbekistán"
-
-#: includes/class-relaypress-utils.php:297
-msgid "Vanuatu"
-msgstr "Vanuatu"
-
-#: includes/class-relaypress-utils.php:298
-msgid "Venezuela, Bolivarian Republic of"
-msgstr "Venezuela, República Bolivariana de"
-
-#: includes/class-relaypress-utils.php:299
-msgid "Viet Nam"
-msgstr "Vietnam"
-
-#: includes/class-relaypress-utils.php:300
-msgid "Virgin Islands, British"
-msgstr "Islas Vírgenes Británicas"
-
-#: includes/class-relaypress-utils.php:301
-msgid "Virgin Islands, U.S."
-msgstr "Islas Vírgenes de los Estados Unidos"
-
-#: includes/class-relaypress-utils.php:302
-msgid "Wallis and Futuna"
-msgstr "Wallis y Futuna"
-
-#: includes/class-relaypress-utils.php:303
-msgid "Western Sahara"
-msgstr "Sáhara Occidental"
-
-#: includes/class-relaypress-utils.php:304
-msgid "Yemen"
-msgstr "Yemen"
-
-#: includes/class-relaypress-utils.php:305
-msgid "Zambia"
-msgstr "Zambia"
-
-#: includes/class-relaypress-utils.php:306
-msgid "Zimbabwe"
-msgstr "Zimbabue"
-
-msgid "No forms yet. Create your first form."
-msgstr "Aun no hay formularios. Crea tu primer formulario."
-
-msgid "Create a form"
-msgstr "Crear un formulario"
-
-#. translators: %s: link to create form.
-msgid "No forms yet. <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Create your first form</a>."
-msgstr "Aun no hay formularios. <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Crea tu primer formulario</a>."
-
-msgid "No forms yet."
-msgstr "Aun no hay formularios."
-
-msgid "Create your first form"
-msgstr "Crea tu primer formulario"
-
-msgid "RelayPress is active, but no forms are published yet."
-msgstr "RelayPress esta activo, pero no hay formularios publicados."
+#: includes/domain/forms/class-relaypress-form-config.php:84
+msgid "Birthday"
+msgstr ""
+
+#: includes/domain/forms/class-relaypress-form-config.php:91
+msgid "Website"
+msgstr ""
+
+#: includes/domain/forms/class-relaypress-form-config.php:98
+msgid "Phone"
+msgstr ""
+
+#: includes/domain/forms/class-relaypress-form-config.php:112
+msgid ""
+"Thanks. If the email is valid, you will receive a confirmation email (or you "
+"were already subscribed)."
+msgstr ""
+"Gracias. Si el email es válido, recibirás un correo para confirmar (o ya "
+"estabas suscrito)."
+
+#: includes/domain/forms/class-relaypress-form-config.php:113
+msgid "Please verify you are human."
+msgstr "Por favor, verifica que eres humano."
+
+#: includes/domain/forms/class-relaypress-form-config.php:114
+msgid "You must accept the privacy policy."
+msgstr "Debes aceptar la política de privacidad."
+
+#: includes/domain/forms/class-relaypress-form-config.php:115
+msgid "Please enter a valid phone number."
+msgstr "Introduce un número de teléfono válido."
+
+#: includes/domain/forms/class-relaypress-forms.php:28
+#, fuzzy
+msgid "RelayPress Forms"
+msgstr "RelayPress"
+
+#: includes/domain/forms/class-relaypress-forms.php:29
+#, fuzzy
+msgid "RelayPress Form"
+msgstr "RelayPress"
+
+#: includes/domain/forms/class-relaypress-forms.php:70
+msgid "Default Form"
+msgstr ""

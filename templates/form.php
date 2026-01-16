@@ -51,8 +51,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 				?>
 				<p class="mdes"><?php echo esc_html( $desc ); ?></p><?php endif; ?>
 
+			<?php $phone_prefix_entries = null; ?>
 			<?php if ( is_array( $fields ) ) : ?>
-				<?php $country_options = null; ?>
+				<?php
+				$opts                 = RelayPress_Newsletter::get_options();
+				$country_options      = null;
+				$phone_prefix_entries = null;
+				$hide_phone_prefix    = ( '1' === (string) ( $opts['hide_phone_prefix_selector'] ?? '0' ) );
+				$default_phone_prefix = '';
+				?>
 				<?php foreach ( $fields as $key => $field ) : ?>
 					<?php
 					if ( ! is_array( $field ) || empty( $field['enabled'] ) ) {
@@ -70,6 +77,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					$label_text       = '' === $label ? ucfirst( (string) $key ) : $label;
 					$placeholder_text = '' === $placeholder ? $label : $placeholder;
 					$is_country       = ( 'country' === $field_type );
+					$is_phone         = ( 'phone' === $key );
 					if ( $is_country && null === $country_options ) {
 						$country_options = (array) RelayPress_Utils::country_options();
 						uasort(
@@ -78,6 +86,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 								return strcasecmp( $left, $right );
 							}
 						);
+					}
+					if ( $is_phone && null === $phone_prefix_entries && ! $hide_phone_prefix ) {
+						$phone_prefix_entries  = RelayPress_Phone_Normalizer::phone_prefix_entries();
+						$default_phone_country = RelayPress_Utils::normalize_country_code( (string) ( $opts['default_phone_country'] ?? '' ) );
+						if ( '' !== $default_phone_country ) {
+							foreach ( $phone_prefix_entries as $entry ) {
+								if ( (string) ( $entry['iso'] ?? '' ) === $default_phone_country ) {
+									$default_phone_prefix = '+' . (string) ( $entry['prefix'] ?? '' );
+									break;
+								}
+							}
+						}
 					}
 					if ( $is_country && '' === $placeholder_text ) {
 						$placeholder_text = __( 'Select a country', 'relaypress-newsletter' );
@@ -97,11 +117,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<option value="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $country_label ); ?></option>
 								<?php endforeach; ?>
 							</select>
+						<?php elseif ( $is_phone && is_array( $phone_prefix_entries ) ) : ?>
+							<div class="relaypress-phone-input">
+								<input type="text" class="relaypress-phone-prefix" name="subscriber[phone_prefix]" list="relaypress-phone-prefixes-<?php echo esc_attr( (string) $form_id ); ?>" placeholder="<?php echo esc_attr__( 'Prefix', 'relaypress-newsletter' ); ?>" value="<?php echo esc_attr( $default_phone_prefix ); ?>" autocomplete="tel-country-code">
+								<input type="<?php echo esc_attr( $field_type ); ?>" id="relaypress-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name_attr ); ?>" placeholder="<?php echo esc_attr( $placeholder_text ); ?>" <?php echo $required ? 'required' : ''; ?>>
+							</div>
 						<?php else : ?>
 							<input type="<?php echo esc_attr( $field_type ); ?>" id="relaypress-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name_attr ); ?>" placeholder="<?php echo esc_attr( $placeholder_text ); ?>" <?php echo $required ? 'required' : ''; ?>>
 						<?php endif; ?>
 					</p>
 				<?php endforeach; ?>
+			<?php endif; ?>
+
+			<?php if ( is_array( $phone_prefix_entries ) ) : ?>
+				<datalist id="relaypress-phone-prefixes-<?php echo esc_attr( (string) $form_id ); ?>">
+					<?php foreach ( $phone_prefix_entries as $entry ) : ?>
+						<?php $prefix_value = '+' . (string) ( $entry['prefix'] ?? '' ); ?>
+						<option value="<?php echo esc_attr( $prefix_value ); ?>"><?php echo esc_html( (string) ( $entry['label'] ?? $prefix_value ) ); ?></option>
+					<?php endforeach; ?>
+				</datalist>
 			<?php endif; ?>
 
 			<div style="position:absolute;left:-9999px;height:0;overflow:hidden;" aria-hidden="true">
@@ -192,6 +226,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 			border-color: #111;
 			box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.2);
 			outline: none;
+		}
+
+		.relaypress-phone-input {
+			display: grid;
+			grid-template-columns: minmax(110px, 160px) minmax(0, 1fr);
+			gap: 10px;
+			align-items: center;
 		}
 
 		.relaypress-consent-label {

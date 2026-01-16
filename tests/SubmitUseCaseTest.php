@@ -195,6 +195,289 @@ final class SubmitUseCaseTest extends TestCase {
 		$this->assertSame( 'error', $result['status'] );
 	}
 
+	public function test_submit_use_case_normalizes_phone_with_default_country(): void {
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'                  => 'https://api.test/api/v1',
+				'api_token'                     => 'token',
+				'group_ids'                     => '1',
+				'subscriber_status'             => 'active',
+				'confirm_resend_max'            => 0,
+				'confirm_resend_window_seconds' => 3600,
+				'store_consent_log'             => '0',
+				'rate_limit_max'                => 5,
+				'rate_limit_window_seconds'     => 3600,
+				'turnstile_secret_key'          => 'secret_key',
+				'default_phone_country'         => 'ES',
+			),
+		);
+
+		$form = new RelayPress_Form();
+		$form->id     = 21;
+		$form->name   = 'Form 21';
+		$form->status = 'publish';
+		$form->config = array(
+			'destination' => array(
+				'group_ids'         => '1',
+				'subscriber_status' => 'active',
+			),
+			'fields'      => array(
+				'phone' => array(
+					'enabled'  => true,
+					'required' => false,
+				),
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$turnstile       = new Test_Turnstile_Verifier();
+		$rate_limiter    = new Test_Rate_Limiter();
+		$request_context = new Test_Request_Context();
+		$sanitizer       = new Test_Input_Sanitizer();
+		$forms           = new SubmitUseCase_Test_Form_Repository( $form );
+
+		$use_case = new RelayPress_Submit_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$turnstile,
+			$rate_limiter,
+			$request_context,
+			$sanitizer,
+			$forms
+		);
+
+		$result = $use_case->process_submission(
+			array(
+				'relaypress_form_id'   => 21,
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
+				'subscriber'       => array(
+					'email'                     => 'test@example.com',
+					'subscribed_with_acceptance' => '1',
+					'phone'                     => '600 111 222',
+				),
+			)
+		);
+
+		$this->assertSame( 'ok', $result['status'] );
+		$this->assertSame( '+34600111222', $mailrelay->last_args['fields']['sms_phone'] ?? '' );
+	}
+
+	public function test_submit_use_case_combines_phone_prefix_with_number(): void {
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'                  => 'https://api.test/api/v1',
+				'api_token'                     => 'token',
+				'group_ids'                     => '1',
+				'subscriber_status'             => 'active',
+				'confirm_resend_max'            => 0,
+				'confirm_resend_window_seconds' => 3600,
+				'store_consent_log'             => '0',
+				'rate_limit_max'                => 5,
+				'rate_limit_window_seconds'     => 3600,
+				'turnstile_secret_key'          => 'secret_key',
+			),
+		);
+
+		$form = new RelayPress_Form();
+		$form->id     = 23;
+		$form->name   = 'Form 23';
+		$form->status = 'publish';
+		$form->config = array(
+			'destination' => array(
+				'group_ids'         => '1',
+				'subscriber_status' => 'active',
+			),
+			'fields'      => array(
+				'phone' => array(
+					'enabled'  => true,
+					'required' => false,
+				),
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$turnstile       = new Test_Turnstile_Verifier();
+		$rate_limiter    = new Test_Rate_Limiter();
+		$request_context = new Test_Request_Context();
+		$sanitizer       = new Test_Input_Sanitizer();
+		$forms           = new SubmitUseCase_Test_Form_Repository( $form );
+
+		$use_case = new RelayPress_Submit_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$turnstile,
+			$rate_limiter,
+			$request_context,
+			$sanitizer,
+			$forms
+		);
+
+		$result = $use_case->process_submission(
+			array(
+				'relaypress_form_id'   => 23,
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
+				'subscriber'       => array(
+					'email'                     => 'test@example.com',
+					'subscribed_with_acceptance' => '1',
+					'phone_prefix'              => '+34',
+					'phone'                     => '34600111222',
+				),
+			)
+		);
+
+		$this->assertSame( 'ok', $result['status'] );
+		$this->assertSame( '+34600111222', $mailrelay->last_args['fields']['sms_phone'] ?? '' );
+	}
+
+	public function test_submit_use_case_uses_default_prefix_when_selector_hidden(): void {
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'                  => 'https://api.test/api/v1',
+				'api_token'                     => 'token',
+				'group_ids'                     => '1',
+				'subscriber_status'             => 'active',
+				'confirm_resend_max'            => 0,
+				'confirm_resend_window_seconds' => 3600,
+				'store_consent_log'             => '0',
+				'rate_limit_max'                => 5,
+				'rate_limit_window_seconds'     => 3600,
+				'turnstile_secret_key'          => 'secret_key',
+				'hide_phone_prefix_selector'    => '1',
+				'default_phone_country'         => 'ES',
+			),
+		);
+
+		$form = new RelayPress_Form();
+		$form->id     = 24;
+		$form->name   = 'Form 24';
+		$form->status = 'publish';
+		$form->config = array(
+			'destination' => array(
+				'group_ids'         => '1',
+				'subscriber_status' => 'active',
+			),
+			'fields'      => array(
+				'phone' => array(
+					'enabled'  => true,
+					'required' => false,
+				),
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$turnstile       = new Test_Turnstile_Verifier();
+		$rate_limiter    = new Test_Rate_Limiter();
+		$request_context = new Test_Request_Context();
+		$sanitizer       = new Test_Input_Sanitizer();
+		$forms           = new SubmitUseCase_Test_Form_Repository( $form );
+
+		$use_case = new RelayPress_Submit_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$turnstile,
+			$rate_limiter,
+			$request_context,
+			$sanitizer,
+			$forms
+		);
+
+		$result = $use_case->process_submission(
+			array(
+				'relaypress_form_id'   => 24,
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
+				'subscriber'       => array(
+					'email'                     => 'test@example.com',
+					'subscribed_with_acceptance' => '1',
+					'phone'                     => '600111222',
+				),
+			)
+		);
+
+		$this->assertSame( 'ok', $result['status'] );
+		$this->assertSame( '+34600111222', $mailrelay->last_args['fields']['sms_phone'] ?? '' );
+	}
+
+	public function test_submit_use_case_returns_phone_error_on_invalid_phone(): void {
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'                  => 'https://api.test/api/v1',
+				'api_token'                     => 'token',
+				'group_ids'                     => '1',
+				'subscriber_status'             => 'active',
+				'confirm_resend_max'            => 0,
+				'confirm_resend_window_seconds' => 3600,
+				'store_consent_log'             => '0',
+				'rate_limit_max'                => 5,
+				'rate_limit_window_seconds'     => 3600,
+				'turnstile_secret_key'          => 'secret_key',
+			),
+		);
+
+		$form = new RelayPress_Form();
+		$form->id     = 22;
+		$form->name   = 'Form 22';
+		$form->status = 'publish';
+		$form->config = array(
+			'destination' => array(
+				'group_ids'         => '1',
+				'subscriber_status' => 'active',
+			),
+			'fields'      => array(
+				'phone' => array(
+					'enabled'  => true,
+					'required' => false,
+				),
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$turnstile       = new Test_Turnstile_Verifier();
+		$rate_limiter    = new Test_Rate_Limiter();
+		$request_context = new Test_Request_Context();
+		$sanitizer       = new Test_Input_Sanitizer();
+		$forms           = new SubmitUseCase_Test_Form_Repository( $form );
+
+		$use_case = new RelayPress_Submit_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$turnstile,
+			$rate_limiter,
+			$request_context,
+			$sanitizer,
+			$forms
+		);
+
+		$result = $use_case->process_submission(
+			array(
+				'relaypress_form_id'   => 22,
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
+				'subscriber'       => array(
+					'email'                     => 'test@example.com',
+					'subscribed_with_acceptance' => '1',
+					'phone'                     => 'abcdef',
+				),
+			)
+		);
+
+		$this->assertSame( 'phone', $result['status'] );
+	}
+
 	public function test_submit_use_case_uses_forced_locale(): void {
 		$GLOBALS['relaypress_test_options'] = array(
 			RelayPress_Newsletter::OPT_KEY => array(

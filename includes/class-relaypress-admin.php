@@ -176,10 +176,20 @@ final class RelayPress_Admin {
 		}
 		$out['locale_force'] = $locale_force;
 
+		$default_phone_country_raw         = sanitize_text_field( (string) ( $raw['default_phone_country'] ?? $def['default_phone_country'] ) );
+		$default_phone_country_norm        = RelayPress_Utils::normalize_country_code( $default_phone_country_raw );
+		$out['default_phone_country']      = $default_phone_country_norm;
+		$out['send_raw_phone_on_fail']     = ! empty( $raw['send_raw_phone_on_fail'] ) ? '1' : '0';
+		$out['hide_phone_prefix_selector'] = ! empty( $raw['hide_phone_prefix_selector'] ) ? '1' : '0';
+		if ( '' === $default_phone_country_norm ) {
+			$out['hide_phone_prefix_selector'] = '0';
+		}
+
 		$out['privacy_url']   = esc_url_raw( trim( (string) ( $raw['privacy_url'] ?? $def['privacy_url'] ) ) );
 		$out['consent_label'] = RelayPress_Utils::normalize_text( sanitize_text_field( (string) ( $raw['consent_label'] ?? $def['consent_label'] ) ) );
 
 		$out['store_consent_log'] = ! empty( $raw['store_consent_log'] ) ? '1' : '0';
+		$out['log_phone_raw']     = ! empty( $raw['log_phone_raw'] ) ? '1' : '0';
 		$out['hash_ip']           = ! empty( $raw['hash_ip'] ) ? '1' : '0';
 		$out['retention_days']    = isset( $raw['retention_days'] ) ? max( 1, (int) $raw['retention_days'] ) : (int) $def['retention_days'];
 
@@ -383,6 +393,62 @@ final class RelayPress_Admin {
 						</div>
 
 						<div class="relaypress-panel">
+							<h3><?php echo esc_html__( 'Phone normalization', 'relaypress-newsletter' ); ?></h3>
+							<div class="relaypress-form-grid">
+								<div class="relaypress-field-row">
+									<label class="relaypress-field-label" for="relaypress-default-phone-country"><?php echo esc_html__( 'Default phone country', 'relaypress-newsletter' ); ?></label>
+									<div class="relaypress-field-control">
+										<?php
+										$country_options       = RelayPress_Utils::country_options();
+										$default_phone_country = RelayPress_Utils::normalize_country_code( (string) ( $opts['default_phone_country'] ?? '' ) );
+										$phone_country_labels  = array();
+										foreach ( $country_options as $code => $label ) {
+											$prefix = RelayPress_Phone_Normalizer::calling_code_for_country( (string) $code );
+											if ( '' !== $prefix ) {
+												$label .= ' (+' . $prefix . ')';
+											}
+											$phone_country_labels[ $code ] = $label;
+										}
+										uasort(
+											$phone_country_labels,
+											static function ( string $left, string $right ): int {
+												return strcasecmp( $left, $right );
+											}
+										);
+										?>
+										<select id="relaypress-default-phone-country" name="<?php echo esc_attr( RelayPress_Newsletter::OPT_KEY ); ?>[default_phone_country]">
+											<option value=""><?php echo esc_html__( 'No default', 'relaypress-newsletter' ); ?></option>
+											<?php foreach ( $phone_country_labels as $value => $label ) : ?>
+												<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $default_phone_country, $value ); ?>>
+													<?php echo esc_html( $label ); ?>
+												</option>
+											<?php endforeach; ?>
+										</select>
+										<p class="description"><?php echo esc_html__( 'Used to normalize local phone numbers when no country is provided in the form.', 'relaypress-newsletter' ); ?></p>
+									</div>
+								</div>
+								<div class="relaypress-field-row">
+									<span class="relaypress-field-label"><?php echo esc_html__( 'Phone prefix selector', 'relaypress-newsletter' ); ?></span>
+									<div class="relaypress-field-control">
+										<?php $can_hide_prefix = '' !== $default_phone_country; ?>
+										<label><input id="relaypress-hide-phone-prefix" type="checkbox" name="<?php echo esc_attr( RelayPress_Newsletter::OPT_KEY ); ?>[hide_phone_prefix_selector]" value="1" <?php checked( $opts['hide_phone_prefix_selector'] ?? '0', '1' ); ?> <?php disabled( ! $can_hide_prefix ); ?>>
+											<?php echo esc_html__( 'Hide the phone prefix selector and use the default country prefix', 'relaypress-newsletter' ); ?></label>
+										<p id="relaypress-hide-phone-prefix-note" class="description" <?php echo $can_hide_prefix ? 'style="display:none;"' : ''; ?>><?php echo esc_html__( 'Select a default phone country to enable this option.', 'relaypress-newsletter' ); ?></p>
+										<p id="relaypress-hide-phone-prefix-override" class="description" <?php echo $can_hide_prefix ? '' : 'style="display:none;"'; ?>><?php echo esc_html__( 'If the user enters a phone prefix, it will be used instead of the default.', 'relaypress-newsletter' ); ?></p>
+									</div>
+								</div>
+								<div class="relaypress-field-row">
+									<span class="relaypress-field-label"><?php echo esc_html__( 'Raw phone fallback', 'relaypress-newsletter' ); ?></span>
+									<div class="relaypress-field-control">
+										<label><input type="checkbox" name="<?php echo esc_attr( RelayPress_Newsletter::OPT_KEY ); ?>[send_raw_phone_on_fail]" value="1" <?php checked( $opts['send_raw_phone_on_fail'] ?? '0', '1' ); ?>>
+											<?php echo esc_html__( 'Send raw phone to Mailrelay when normalization fails', 'relaypress-newsletter' ); ?></label>
+										<p class="description"><?php echo esc_html__( 'Unprocessed phone numbers may be rejected by Mailrelay and are not recommended.', 'relaypress-newsletter' ); ?></p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="relaypress-panel">
 							<h3><?php echo esc_html__( 'Spam protection', 'relaypress-newsletter' ); ?></h3>
 							<div class="relaypress-form-grid">
 								<div class="relaypress-field-row">
@@ -461,6 +527,8 @@ final class RelayPress_Admin {
 									<div class="relaypress-field-control">
 										<label><input type="checkbox" name="<?php echo esc_attr( RelayPress_Newsletter::OPT_KEY ); ?>[store_consent_log]" value="1" <?php checked( $opts['store_consent_log'], '1' ); ?>>
 											<?php echo esc_html__( 'Store log in database', 'relaypress-newsletter' ); ?></label><br>
+										<label><input type="checkbox" name="<?php echo esc_attr( RelayPress_Newsletter::OPT_KEY ); ?>[log_phone_raw]" value="1" <?php checked( $opts['log_phone_raw'] ?? '0', '1' ); ?>>
+											<?php echo esc_html__( 'Store raw phone input in logs', 'relaypress-newsletter' ); ?></label><br>
 										<label><input type="checkbox" name="<?php echo esc_attr( RelayPress_Newsletter::OPT_KEY ); ?>[hash_ip]" value="1" <?php checked( $opts['hash_ip'], '1' ); ?>>
 											<?php echo esc_html__( 'Store IP as hash', 'relaypress-newsletter' ); ?></label>
 									</div>
@@ -667,6 +735,9 @@ final class RelayPress_Admin {
 				var hiddenInput = document.getElementById('relaypress-settings-group-ids');
 				var addBtn = document.getElementById('relaypress-settings-group-add');
 				var removeBtn = document.getElementById('relaypress-settings-group-remove');
+				var phoneCountry = document.getElementById('relaypress-default-phone-country');
+				var hidePhonePrefix = document.getElementById('relaypress-hide-phone-prefix');
+				var hidePhonePrefixNote = document.getElementById('relaypress-hide-phone-prefix-note');
 
 				function moveSelected(from, to) {
 					var opts = Array.from(from.options).filter(function(opt) { return opt.selected; });
@@ -689,6 +760,27 @@ final class RelayPress_Admin {
 					available.addEventListener('dblclick', function() { moveSelected(available, selected); });
 					selected.addEventListener('dblclick', function() { moveSelected(selected, available); });
 					updateHidden();
+				}
+
+				function syncPhonePrefixToggle() {
+					if (!phoneCountry || !hidePhonePrefix) return;
+					var hasDefault = !!phoneCountry.value;
+					hidePhonePrefix.disabled = !hasDefault;
+					if (!hasDefault) {
+						hidePhonePrefix.checked = false;
+					}
+					if (hidePhonePrefixNote) {
+						hidePhonePrefixNote.style.display = hasDefault ? 'none' : 'block';
+					}
+					var overrideNote = document.getElementById('relaypress-hide-phone-prefix-override');
+					if (overrideNote) {
+						overrideNote.style.display = hasDefault ? 'block' : 'none';
+					}
+				}
+
+				if (phoneCountry && hidePhonePrefix) {
+					phoneCountry.addEventListener('change', syncPhonePrefixToggle);
+					syncPhonePrefixToggle();
 				}
 			})();
 		</script>

@@ -112,6 +112,7 @@ final class RelayPress_Form_Config {
 				'success' => __( 'Thanks. If the email is valid, you will receive a confirmation email (or you were already subscribed).', 'relaypress-newsletter' ),
 				'captcha' => __( 'Please verify you are human.', 'relaypress-newsletter' ),
 				'consent' => __( 'You must accept the privacy policy.', 'relaypress-newsletter' ),
+				'phone'   => __( 'Please enter a valid phone number.', 'relaypress-newsletter' ),
 				'error'   => __( 'We could not complete the request. Please try again.', 'relaypress-newsletter' ),
 			),
 			'rate_limit'  => array(
@@ -223,6 +224,7 @@ final class RelayPress_Form_Config {
 		$out['messages']['success'] = RelayPress_Utils::normalize_text( sanitize_text_field( (string) ( $raw['messages']['success'] ?? $defaults['messages']['success'] ) ) );
 		$out['messages']['captcha'] = RelayPress_Utils::normalize_text( sanitize_text_field( (string) ( $raw['messages']['captcha'] ?? $defaults['messages']['captcha'] ) ) );
 		$out['messages']['consent'] = RelayPress_Utils::normalize_text( sanitize_text_field( (string) ( $raw['messages']['consent'] ?? $defaults['messages']['consent'] ) ) );
+		$out['messages']['phone']   = RelayPress_Utils::normalize_text( sanitize_text_field( (string) ( $raw['messages']['phone'] ?? $defaults['messages']['phone'] ) ) );
 		$out['messages']['error']   = RelayPress_Utils::normalize_text( sanitize_text_field( (string) ( $raw['messages']['error'] ?? $defaults['messages']['error'] ) ) );
 
 		$out['rate_limit']['inherit']        = ! empty( $raw['rate_limit']['inherit'] );

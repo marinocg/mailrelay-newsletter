@@ -338,6 +338,11 @@ final class RelayPress_Frontend {
 					'<p class="relaypress-msg relaypress-err">%s</p>',
 					esc_html( (string) ( $messages['consent'] ?? '' ) )
 				);
+			} elseif ( 'phone' === $st ) {
+				$msg_html = sprintf(
+					'<p class="relaypress-msg relaypress-err">%s</p>',
+					esc_html( (string) ( $messages['phone'] ?? '' ) )
+				);
 			} else {
 				$msg_html = sprintf(
 					'<p class="relaypress-msg relaypress-err">%s</p>',
