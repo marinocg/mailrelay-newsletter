@@ -4,7 +4,10 @@
 - Pending
 
 ## 1.9.0
--
+- Add a country selector field with ISO code validation and localized options.
+- Sort country options by translated label and align select styling with text inputs.
+- Extend submission handling and tests for the country field.
+- Phone normalization
 
 
 ## 1.8.0
