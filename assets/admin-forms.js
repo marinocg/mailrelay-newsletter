@@ -1,6 +1,6 @@
 (function() {
-	var tabs = document.querySelectorAll('.uve-mr-tabs a');
-	var panels = document.querySelectorAll('.uve-mr-tab-panel');
+	var tabs = document.querySelectorAll('.relaypress-tabs a');
+	var panels = document.querySelectorAll('.relaypress-tab-panel');
 	if (tabs.length && panels.length) {
 		function activateTab(targetId) {
 			tabs.forEach(function(tab) {
@@ -22,7 +22,7 @@
 			});
 		});
 
-		activateTab('#uve-mr-tab-fields');
+		activateTab('#relaypress-tab-fields');
 	}
 
 	function toggleGroup(checkboxSelector, rowSelector) {
@@ -53,15 +53,15 @@
 		update();
 	}
 
-	toggleGroup('input[name="form_config[consent][inherit]"]', '.uve-mr-consent-fields');
-	toggleGroup('input[name="form_config[rate_limit][inherit]"]', '.uve-mr-rate-limit-fields');
-	toggleSelectValue('#uve-mr-locale-mode', '.uve-mr-locale-force-row', 'force');
+	toggleGroup('input[name="form_config[consent][inherit]"]', '.relaypress-consent-fields');
+	toggleGroup('input[name="form_config[rate_limit][inherit]"]', '.relaypress-rate-limit-fields');
+	toggleSelectValue('#relaypress-locale-mode', '.relaypress-locale-force-row', 'force');
 
-	var available = document.getElementById('uve-mr-groups-available');
-	var selected = document.getElementById('uve-mr-groups-selected');
-	var hiddenInput = document.getElementById('uve-mr-group-ids');
-	var addBtn = document.getElementById('uve-mr-group-add');
-	var removeBtn = document.getElementById('uve-mr-group-remove');
+	var available = document.getElementById('relaypress-groups-available');
+	var selected = document.getElementById('relaypress-groups-selected');
+	var hiddenInput = document.getElementById('relaypress-group-ids');
+	var addBtn = document.getElementById('relaypress-group-add');
+	var removeBtn = document.getElementById('relaypress-group-remove');
 
 	function moveSelected(from, to) {
 		var opts = Array.from(from.options).filter(function(opt) { return opt.selected; });

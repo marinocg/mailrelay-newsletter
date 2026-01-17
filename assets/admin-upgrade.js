@@ -1,5 +1,5 @@
 (function() {
-	var overlay = document.getElementById('uve-mr-upgrade-overlay');
+	var overlay = document.getElementById('relaypress-upgrade-overlay');
 	if (!overlay) return;
 
 	function closeModal() {
@@ -18,12 +18,12 @@
 		}
 	});
 
-	var closeBtn = overlay.querySelector('.uve-mr-upgrade-close');
+	var closeBtn = overlay.querySelector('.relaypress-upgrade-close');
 	if (closeBtn) {
 		closeBtn.addEventListener('click', closeModal);
 	}
 
-	var dismissBtn = overlay.querySelector('.uve-mr-upgrade-dismiss');
+	var dismissBtn = overlay.querySelector('.relaypress-upgrade-dismiss');
 	if (dismissBtn) {
 		dismissBtn.addEventListener('click', closeModal);
 	}

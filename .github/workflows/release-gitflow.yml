@@ -65,11 +65,10 @@ jobs:
       - name: Bump versions (plugin header + constants + readme.txt)
         env:
           VERSION: ${{ inputs.version }}
-          RELEASE_NOTES: ${{ inputs.release_notes }}
         run: |
           # Plugin main file: update "Version: x.y.z" and const VERSION.
-          sed -i -E "s/^([[:space:]]*\\*?[[:space:]]*)Version:[[:space:]]*.*/\\1Version: ${VERSION}/" class-uve-mailrelay-newsletter.php
-          sed -i -E "s/^([[:space:]]*)const VERSION([[:space:]]*)=[[:space:]]*'[^']*';/\\1const VERSION\\2= '${VERSION}';/" class-uve-mailrelay-newsletter.php
+          sed -i -E "s/^([[:space:]]*\\*?[[:space:]]*)Version:[[:space:]]*.*/\\1Version: ${VERSION}/" class-relaypress-newsletter.php
+          sed -i -E "s/^([[:space:]]*)const VERSION([[:space:]]*)=[[:space:]]*'[^']*';/\\1const VERSION\\2= '${VERSION}';/" class-relaypress-newsletter.php
 
           # WP readme stable tag
           if [ -f readme.txt ]; then
@@ -96,18 +95,24 @@ jobs:
             fi
           done
 
-          # Changelog: insert release notes under version and keep Unreleased at top
+          # Changelog: reuse Unreleased notes for version and keep Unreleased at top
           if [ -f CHANGELOG.md ]; then
-            NOTES="${RELEASE_NOTES}"
-            if [ -n "$NOTES" ]; then
-              NOTES_FORMATTED=$(printf "%s" "$NOTES" | sed 's/\r//g' | awk 'NF{print "- " $0}')
-            else
-              NOTES_FORMATTED="-"
-            fi
-
             HEADER=$(head -n1 CHANGELOG.md)
             if [ "$HEADER" != "# Changelog" ]; then
               HEADER="# Changelog"
+            fi
+
+            NOTES_FORMATTED=$(awk '
+              BEGIN{in=0}
+              $0=="## Unreleased"{in=1; next}
+              in==1 && /^## /{exit}
+              in==1{print}
+            ' CHANGELOG.md | sed "s/\r//g")
+            NOTES_STRIPPED=$(printf "%s\n" "$NOTES_FORMATTED" | sed '/^[[:space:]]*$/d')
+            if [ -z "$NOTES_STRIPPED" ] || [ "$NOTES_STRIPPED" = "- Pending" ]; then
+              NOTES_FORMATTED="-"
+            else
+              NOTES_FORMATTED="$NOTES_STRIPPED"
             fi
 
             awk -v ver="${VERSION}" '
@@ -140,7 +145,7 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          git add class-uve-mailrelay-newsletter.php readme.txt CHANGELOG.md languages/*.po languages/*.pot languages/*.mo || true
+          git add class-relaypress-newsletter.php readme.txt CHANGELOG.md languages/*.po languages/*.pot languages/*.mo || true
           git commit -m "chore(release): v${VERSION}" || echo "No changes to commit"
 
       - name: Push release branch
@@ -229,7 +234,7 @@ jobs:
         run: |
           mkdir -p dist
           # Build a plugin folder inside zip with correct slug name
-          git archive --format=zip --prefix=uve-mailrelay-newsletter/ "v${VERSION}" -o "dist/uve-mailrelay-newsletter-v${VERSION}.zip"
+          git archive --format=zip --prefix=relaypress-newsletter/ "v${VERSION}" -o "dist/relaypress-newsletter-v${VERSION}.zip"
 
       - name: Create GitHub Release + upload ZIP
         uses: softprops/action-gh-release@v2
@@ -237,4 +242,4 @@ jobs:
           tag_name: v${{ inputs.version }}
           name: v${{ inputs.version }}
           body: ${{ inputs.release_notes }}
-          files: dist/uve-mailrelay-newsletter-v${{ inputs.version }}.zip
+          files: dist/relaypress-newsletter-v${{ inputs.version }}.zip

@@ -60,27 +60,37 @@ class WPDB_Mock {
 
 	public function get_var( string $query ) {
 		if ( false !== stripos( $query, 'SHOW TABLES LIKE' ) ) {
-			return $GLOBALS['uve_mr_test_wpdb_tables_like'] ?? null;
+			$map = $GLOBALS['relaypress_test_wpdb_tables_like_map'] ?? null;
+			if ( is_array( $map ) ) {
+				if ( preg_match( '/SHOW TABLES LIKE\\s+[`\'"]?([^`\'"\\s]+)[`\'"]?/i', $query, $matches ) ) {
+					$table = $matches[1];
+					if ( array_key_exists( $table, $map ) ) {
+						return $map[ $table ];
+					}
+				}
+			}
+			return $GLOBALS['relaypress_test_wpdb_tables_like'] ?? null;
 		}
 		if ( false !== stripos( $query, 'COUNT(' ) ) {
-			return $GLOBALS['uve_mr_test_wpdb_count'] ?? 0;
+			return $GLOBALS['relaypress_test_wpdb_count'] ?? 0;
 		}
-		return $GLOBALS['uve_mr_test_wpdb_get_var'] ?? null;
+		return $GLOBALS['relaypress_test_wpdb_get_var'] ?? null;
 	}
 
 	public function get_results( string $query, $output = null ) {
 		if ( false !== stripos( $query, 'SHOW COLUMNS FROM' ) ) {
-			return $GLOBALS['uve_mr_test_wpdb_columns'] ?? array();
+			return $GLOBALS['relaypress_test_wpdb_columns'] ?? array();
 		}
-		return $GLOBALS['uve_mr_test_wpdb_get_results'] ?? array();
+		return $GLOBALS['relaypress_test_wpdb_get_results'] ?? array();
 	}
 
 	public function query( string $query ) {
-		return $GLOBALS['uve_mr_test_wpdb_query'] ?? 0;
+		$GLOBALS['relaypress_test_wpdb_last_query'] = $query;
+		return $GLOBALS['relaypress_test_wpdb_query'] ?? 0;
 	}
 
 	public function insert( string $table, array $data ) {
-		$GLOBALS['uve_mr_test_wpdb_insert'][] = array(
+		$GLOBALS['relaypress_test_wpdb_insert'][] = array(
 			'table' => $table,
 			'data'  => $data,
 		);
@@ -163,10 +173,10 @@ function is_email( string $email ): bool {
 }
 
 function add_action( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {
-	$GLOBALS['uve_mr_test_actions'][ $hook ][] = $callback;
+	$GLOBALS['relaypress_test_actions'][ $hook ][] = $callback;
 }
 function do_action( string $hook, ...$args ): void {
-	$actions = $GLOBALS['uve_mr_test_actions'][ $hook ] ?? array();
+	$actions = $GLOBALS['relaypress_test_actions'][ $hook ] ?? array();
 	foreach ( $actions as $callback ) {
 		if ( is_callable( $callback ) ) {
 			call_user_func( $callback, ...$args );
@@ -174,10 +184,10 @@ function do_action( string $hook, ...$args ): void {
 	}
 }
 function add_filter( string $hook, $callback, int $priority = 10, int $accepted_args = 1 ): void {
-	$GLOBALS['uve_mr_test_filters'][ $hook ][] = $callback;
+	$GLOBALS['relaypress_test_filters'][ $hook ][] = $callback;
 }
 function apply_filters( string $hook, $value, ...$args ) {
-	$filters = $GLOBALS['uve_mr_test_filters'][ $hook ] ?? array();
+	$filters = $GLOBALS['relaypress_test_filters'][ $hook ] ?? array();
 	foreach ( $filters as $callback ) {
 		if ( is_callable( $callback ) ) {
 			$value = $callback( $value, ...$args );
@@ -195,7 +205,7 @@ function shortcode_atts( array $pairs, $atts ): array {
 function register_widget( string $class ): void {}
 function add_options_page( string $page_title, string $menu_title, string $capability, string $menu_slug, $callback ): void {}
 function add_menu_page( string $page_title, string $menu_title, string $capability, string $menu_slug, $callback, string $icon_url = '', $position = null ): void {
-	$GLOBALS['uve_mr_test_menu_pages'][] = array(
+	$GLOBALS['relaypress_test_menu_pages'][] = array(
 		'page_title' => $page_title,
 		'menu_title' => $menu_title,
 		'capability' => $capability,
@@ -206,7 +216,7 @@ function add_menu_page( string $page_title, string $menu_title, string $capabili
 	);
 }
 function add_submenu_page( string $parent_slug, string $page_title, string $menu_title, string $capability, string $menu_slug, $callback ): void {
-	$GLOBALS['uve_mr_test_submenu_pages'][] = array(
+	$GLOBALS['relaypress_test_submenu_pages'][] = array(
 		'parent_slug' => $parent_slug,
 		'page_title'  => $page_title,
 		'menu_title'  => $menu_title,
@@ -220,12 +230,23 @@ function register_activation_hook( string $file, $callback ): void {}
 function register_deactivation_hook( string $file, $callback ): void {}
 function wp_script_is( string $handle, string $status = '' ): bool { return false; }
 function wp_enqueue_script( string $handle, string $src = '', array $deps = array(), $ver = false, $in_footer = false ): void {}
+function wp_register_script( string $handle, string $src = '', array $deps = array(), $ver = false, $in_footer = false ): void {
+	$GLOBALS['relaypress_test_scripts'][ $handle ] = array(
+		'src'       => $src,
+		'deps'      => $deps,
+		'ver'       => $ver,
+		'in_footer' => $in_footer,
+	);
+}
+function wp_localize_script( string $handle, string $object_name, array $l10n ): void {
+	$GLOBALS['relaypress_test_script_data'][ $handle ][ $object_name ] = $l10n;
+}
 function load_textdomain( string $domain, string $mofile ): bool { return true; }
 function load_plugin_textdomain( string $domain, bool $deprecated = false, string $plugin_rel_path = '' ): bool { return true; }
 function determine_locale(): string { return 'en_US'; }
 function get_locale(): string { return 'en_US'; }
 function wp_verify_nonce( string $nonce, string $action ): bool {
-	return $GLOBALS['uve_mr_test_nonce_ok'] ?? true;
+	return $GLOBALS['relaypress_test_nonce_ok'] ?? true;
 }
 function wp_create_nonce( string $action ): string {
 	return 'testnonce';
@@ -240,7 +261,7 @@ function check_admin_referer( string $action ): bool {
 	return true; }
 
 function wp_get_referer(): string {
-	return $GLOBALS['uve_mr_test_referer'] ?? '';
+	return $GLOBALS['relaypress_test_referer'] ?? '';
 }
 
 function home_url( string $path = '/' ): string {
@@ -294,7 +315,7 @@ function wp_parse_args( $args, $defaults ): array {
 }
 
 function is_ssl(): bool {
-	return (bool) ( $GLOBALS['uve_mr_test_is_ssl'] ?? false );
+	return (bool) ( $GLOBALS['relaypress_test_is_ssl'] ?? false );
 }
 
 function admin_url( string $path = '' ): string {
@@ -306,32 +327,32 @@ function wp_unslash( $value ) {
 }
 
 function get_option( string $key, $default = false ) {
-	return $GLOBALS['uve_mr_test_options'][ $key ] ?? $default;
+	return $GLOBALS['relaypress_test_options'][ $key ] ?? $default;
 }
 
 function add_option( string $key, $value ): void {
-	$GLOBALS['uve_mr_test_options'][ $key ] = $value;
+	$GLOBALS['relaypress_test_options'][ $key ] = $value;
 }
 
 function wp_remote_post( string $url, array $args = array() ) {
-	$GLOBALS['uve_mr_test_last_http'] = array(
+	$GLOBALS['relaypress_test_last_http'] = array(
 		'method' => 'POST',
 		'url'    => $url,
 		'args'   => $args,
 	);
-	return $GLOBALS['uve_mr_test_http']['POST'][ $url ] ?? array(
+	return $GLOBALS['relaypress_test_http']['POST'][ $url ] ?? array(
 		'response' => array( 'code' => 500 ),
 		'body'     => '',
 	);
 }
 
 function wp_remote_get( string $url, array $args = array() ) {
-	$GLOBALS['uve_mr_test_last_http'] = array(
+	$GLOBALS['relaypress_test_last_http'] = array(
 		'method' => 'GET',
 		'url'    => $url,
 		'args'   => $args,
 	);
-	return $GLOBALS['uve_mr_test_http']['GET'][ $url ] ?? array(
+	return $GLOBALS['relaypress_test_http']['GET'][ $url ] ?? array(
 		'response' => array( 'code' => 500 ),
 		'body'     => '',
 	);
@@ -355,24 +376,24 @@ function wp_json_encode( $value ): string {
 
 function wp_send_json_success( array $data ): void {
 	echo wp_json_encode( array( 'success' => true, 'data' => $data ) );
-	if ( empty( $GLOBALS['uve_mr_test_no_exit'] ) ) {
+	if ( empty( $GLOBALS['relaypress_test_no_exit'] ) ) {
 		exit;
 	}
 }
 
 function wp_send_json_error( array $data ): void {
 	echo wp_json_encode( array( 'success' => false, 'data' => $data ) );
-	if ( empty( $GLOBALS['uve_mr_test_no_exit'] ) ) {
+	if ( empty( $GLOBALS['relaypress_test_no_exit'] ) ) {
 		exit;
 	}
 }
 
 function get_transient( string $key ) {
-	return $GLOBALS['uve_mr_test_transients'][ $key ] ?? 0;
+	return $GLOBALS['relaypress_test_transients'][ $key ] ?? 0;
 }
 
 function set_transient( string $key, $value, int $expiration ): bool {
-	$GLOBALS['uve_mr_test_transients'][ $key ] = $value;
+	$GLOBALS['relaypress_test_transients'][ $key ] = $value;
 	return true;
 }
 
@@ -395,6 +416,14 @@ function locate_template( array $templates ) {
 function plugin_basename( string $file ): string {
 	return basename( $file );
 }
+function plugins_url( string $path = '', string $plugin = '' ): string {
+	$base = 'https://example.test/wp-content/plugins/relaypress-newsletter/';
+	return $base . ltrim( $path, '/' );
+}
+
+function register_block_type( string $name, array $args = array() ): void {
+	$GLOBALS['relaypress_test_blocks'][ $name ] = $args;
+}
 
 function current_time( string $type ): string {
 	return '2025-01-01 00:00:00';
@@ -413,4 +442,8 @@ function sanitize_key( string $key ): string {
 	return preg_replace( '/[^a-z0-9_]/', '', strtolower( $key ) );
 }
 
-require_once __DIR__ . '/../class-uve-mailrelay-newsletter.php';
+function absint( $value ): int {
+	return abs( (int) $value );
+}
+
+require_once __DIR__ . '/../class-relaypress-newsletter.php';
