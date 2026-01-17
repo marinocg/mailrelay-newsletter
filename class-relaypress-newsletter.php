@@ -37,6 +37,7 @@ require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-turnst
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-rate-limiter.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-request-context.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-input-sanitizer.php';
+require_once __DIR__ . '/includes/use-cases/newsletter/class-relaypress-subscribe-use-case.php';
 require_once __DIR__ . '/includes/use-cases/newsletter/class-relaypress-submit-use-case.php';
 require_once __DIR__ . '/includes/class-relaypress-container.php';
 require_once __DIR__ . '/includes/class-relaypress-frontend.php';

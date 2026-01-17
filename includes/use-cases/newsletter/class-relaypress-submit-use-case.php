@@ -14,25 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class RelayPress_Submit_Use_Case {
 	/**
-	 * Mailrelay client.
-	 *
-	 * @var RelayPress_Mailrelay_Client
-	 */
-	private $mailrelay;
-
-	/**
 	 * Options repository.
 	 *
 	 * @var RelayPress_Options_Repository
 	 */
 	private $options;
-
-	/**
-	 * Logs repository.
-	 *
-	 * @var RelayPress_Logs_Repository
-	 */
-	private $logs;
 
 	/**
 	 * Turnstile verifier.
@@ -70,6 +56,13 @@ final class RelayPress_Submit_Use_Case {
 	private $forms;
 
 	/**
+	 * Subscribe use case.
+	 *
+	 * @var RelayPress_Subscribe_Use_Case
+	 */
+	private $subscribe_use_case;
+
+	/**
 	 * Create the use case with adapters.
 	 *
 	 * @param RelayPress_Mailrelay_Client          $mailrelay Mailrelay client.
@@ -80,6 +73,7 @@ final class RelayPress_Submit_Use_Case {
 	 * @param RelayPress_Request_Context           $request_context Request context.
 	 * @param RelayPress_Input_Sanitizer           $sanitizer Input sanitizer.
 	 * @param RelayPress_Form_Repository_Interface $forms Form repository.
+	 * @param RelayPress_Subscribe_Use_Case|null   $subscribe_use_case Subscribe use case.
 	 */
 	public function __construct(
 		RelayPress_Mailrelay_Client $mailrelay,
@@ -89,16 +83,25 @@ final class RelayPress_Submit_Use_Case {
 		RelayPress_Rate_Limiter $rate_limiter,
 		RelayPress_Request_Context $request_context,
 		RelayPress_Input_Sanitizer $sanitizer,
-		RelayPress_Form_Repository_Interface $forms
+		RelayPress_Form_Repository_Interface $forms,
+		?RelayPress_Subscribe_Use_Case $subscribe_use_case = null
 	) {
-		$this->mailrelay       = $mailrelay;
 		$this->options         = $options;
-		$this->logs            = $logs;
 		$this->turnstile       = $turnstile;
 		$this->rate_limiter    = $rate_limiter;
 		$this->request_context = $request_context;
 		$this->sanitizer       = $sanitizer;
 		$this->forms           = $forms;
+		if ( $subscribe_use_case ) {
+			$this->subscribe_use_case = $subscribe_use_case;
+		} else {
+			$this->subscribe_use_case = new RelayPress_Subscribe_Use_Case(
+				$mailrelay,
+				$options,
+				$logs,
+				$request_context
+			);
+		}
 	}
 
 	/**
@@ -255,44 +258,21 @@ final class RelayPress_Submit_Use_Case {
 			$fields_payload[ $field_key ] = $value;
 		}
 
-		$result = $this->mailrelay->subscribe_with_confirmation(
-			$email,
-			$group_ids,
-			true,
-			$ip,
+		$this->subscribe_use_case->execute(
 			array(
-				'subscriber_status' => (string) ( $config['destination']['subscriber_status'] ?? 'inactive' ),
+				'email'             => $email,
+				'group_ids'         => $group_ids,
+				'accepted'          => true,
+				'ip'                => $ip,
 				'fields'            => $fields_payload,
 				'locale'            => $this->resolve_locale( $config ),
+				'subscriber_status' => (string) ( $config['destination']['subscriber_status'] ?? 'inactive' ),
+				'page_url'          => $page_url,
+				'consent_label'     => (string) ( $config['consent']['label'] ?? $global_opts['consent_label'] ?? '' ),
+				'consent_context'   => 'form',
+				'phone_meta'        => $phone_meta,
 			)
 		);
-
-		if ( '1' === (string) ( $global_opts['store_consent_log'] ?? '0' ) ) {
-			$user_agent = $this->request_context->get_user_agent();
-			$this->logs->ensure_table();
-			$log_row = array(
-				'email'                     => $email,
-				'accepted'                  => 1,
-				'accepted_at'               => $this->request_context->current_time_mysql(),
-				'page_url'                  => $page_url,
-				'ip'                        => $ip,
-				'user_agent'                => $user_agent,
-				'mailrelay_http_code'       => $result['http_code'] ?? null,
-				'mailrelay_response'        => $result['body'] ?? null,
-				'confirmation_requested_at' => $result['confirmation_requested_at'] ?? null,
-				'confirmation_http_code'    => $result['confirmation_http_code'] ?? null,
-				'confirmation_response'     => $result['confirmation_response'] ?? null,
-			);
-			if ( is_array( $phone_meta ) ) {
-				$log_row['phone_raw']        = ( '1' === (string) ( $global_opts['log_phone_raw'] ?? '0' ) ) ? (string) ( $phone_meta['raw_sanitized'] ?? '' ) : null;
-				$log_row['phone_normalized'] = $phone_meta['normalized'] ?? null;
-				$log_row['phone_valid']      = ! empty( $phone_meta['is_valid'] ) ? 1 : 0;
-				$log_row['phone_reason']     = $phone_meta['reason'] ?? null;
-				$log_row['phone_country']    = $phone_meta['country_used'] ?? null;
-				$log_row['phone_confidence'] = $phone_meta['confidence'] ?? null;
-			}
-			$this->logs->store_consent_log( $log_row );
-		}
 
 		return $this->build_result( 'ok', $messages );
 	}
