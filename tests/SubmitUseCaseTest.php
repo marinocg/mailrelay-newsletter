@@ -4,6 +4,49 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 final class SubmitUseCaseTest extends TestCase {
+	public function test_subscribe_use_case_executes_and_logs(): void {
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'                  => 'https://api.test/api/v1',
+				'api_token'                     => 'token',
+				'group_ids'                     => '3',
+				'subscriber_status'             => 'active',
+				'confirm_resend_max'            => 0,
+				'confirm_resend_window_seconds' => 3600,
+				'store_consent_log'             => '1',
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$request_context = new Test_Request_Context();
+
+		$use_case = new RelayPress_Subscribe_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$request_context
+		);
+
+		$result = $use_case->execute(
+			array(
+				'email'           => 'demo@example.com',
+				'group_ids'       => array( 3 ),
+				'accepted'        => true,
+				'fields'          => array( 'name' => 'Demo User' ),
+				'consent_label'   => 'Consent',
+				'consent_context' => 'form',
+				'page_url'        => 'https://example.test/',
+			)
+		);
+
+		$this->assertTrue( (bool) ( $result['ok'] ?? false ) );
+		$this->assertSame( array( 3 ), $mailrelay->last_group_ids );
+		$this->assertSame( 'Consent', $logs->last_log['consent_label'] ?? '' );
+		$this->assertSame( 'form', $logs->last_log['consent_context'] ?? '' );
+	}
+
 	public function test_submit_use_case_calls_mailrelay_with_configured_groups(): void {
 		$GLOBALS['relaypress_test_options'] = array(
 			RelayPress_Newsletter::OPT_KEY => array(
@@ -796,9 +839,13 @@ final class Test_Options_Repository implements RelayPress_Options_Repository {
 }
 
 final class Test_Logs_Repository implements RelayPress_Logs_Repository {
+	public array $last_log = array();
+
 	public function ensure_table(): void {}
 
-	public function store_consent_log( array $data ): void {}
+	public function store_consent_log( array $data ): void {
+		$this->last_log = $data;
+	}
 }
 
 final class Test_Turnstile_Verifier implements RelayPress_Turnstile_Verifier {
