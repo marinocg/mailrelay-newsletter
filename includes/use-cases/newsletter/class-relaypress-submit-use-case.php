@@ -165,7 +165,8 @@ final class RelayPress_Submit_Use_Case {
 		$fields_config  = $config['fields'] ?? array();
 		$allowed_fields = array( 'name', 'address', 'city', 'state', 'country', 'birthday', 'website', 'phone' );
 		$country_hint   = '';
-		$phone_meta     = null;
+		$phone_payload  = null;
+		$phone_strict   = false;
 		foreach ( $allowed_fields as $field_key ) {
 			$field_cfg = $fields_config[ $field_key ] ?? array();
 			if ( ! is_array( $field_cfg ) || empty( $field_cfg['enabled'] ) ) {
@@ -219,60 +220,45 @@ final class RelayPress_Submit_Use_Case {
 			}
 
 			if ( 'phone' === $field_key ) {
-				$prefix_raw = $data['subscriber']['phone_prefix'] ?? '';
-				$prefix_raw = $this->sanitizer->unslash( $prefix_raw );
-				$prefix     = $this->sanitizer->sanitize_text( $prefix_raw );
-				if ( '' === $prefix && '1' === (string) ( $global_opts['hide_phone_prefix_selector'] ?? '0' ) ) {
-					$default_country = (string) ( $global_opts['default_phone_country'] ?? '' );
-					$default_prefix  = RelayPress_Phone_Normalizer::calling_code_for_country( $default_country );
-					if ( '' !== $default_prefix ) {
-						$prefix = '+' . $default_prefix;
-					}
-				}
-				$combined   = RelayPress_Phone_Normalizer::combine_phone_with_prefix( $value, $prefix );
-				$phone_meta = RelayPress_Phone_Normalizer::normalize(
-					$combined,
-					array(
-						'country'           => $country_hint,
-						'default_country'   => (string) ( $global_opts['default_phone_country'] ?? '' ),
-						'accept_extensions' => false,
-						'require_e164'      => false,
-					)
+				$prefix_raw    = $data['subscriber']['phone_prefix'] ?? '';
+				$prefix_raw    = $this->sanitizer->unslash( $prefix_raw );
+				$prefix        = $this->sanitizer->sanitize_text( $prefix_raw );
+				$phone_payload = array(
+					'raw'                  => $value,
+					'prefix'               => $prefix,
+					'country'              => $country_hint,
+					'default_country'      => (string) ( $global_opts['default_phone_country'] ?? '' ),
+					'apply_default_prefix' => ( '1' === (string) ( $global_opts['hide_phone_prefix_selector'] ?? '0' ) ),
 				);
-				if ( empty( $phone_meta['is_valid'] ) ) {
-					if ( '1' === (string) ( $global_opts['send_raw_phone_on_fail'] ?? '0' ) ) {
-						$fallback = RelayPress_Phone_Normalizer::compact_raw( $phone_meta['raw_sanitized'] ?? '' );
-						if ( '' !== $fallback && ! in_array( $phone_meta['reason'] ?? '', array( RelayPress_Phone_Normalizer::REASON_EXTENSION_NOT_SUPPORTED, RelayPress_Phone_Normalizer::REASON_INVALID_CHARS ), true ) ) {
-							$fields_payload['sms_phone']      = $fallback;
-							$fields_payload['whatsapp_phone'] = $fallback;
-							continue;
-						}
-					}
-					return $this->build_result( 'phone', $messages );
-				}
-				$fields_payload['sms_phone']      = $phone_meta['normalized'];
-				$fields_payload['whatsapp_phone'] = $phone_meta['normalized'];
+				$phone_strict  = true;
 				continue;
 			}
 
 			$fields_payload[ $field_key ] = $value;
 		}
 
-		$this->subscribe_use_case->execute(
-			array(
-				'email'             => $email,
-				'group_ids'         => $group_ids,
-				'accepted'          => true,
-				'ip'                => $ip,
-				'fields'            => $fields_payload,
-				'locale'            => $this->resolve_locale( $config ),
-				'subscriber_status' => (string) ( $config['destination']['subscriber_status'] ?? 'inactive' ),
-				'page_url'          => $page_url,
-				'consent_label'     => (string) ( $config['consent']['label'] ?? $global_opts['consent_label'] ?? '' ),
-				'consent_context'   => 'form',
-				'phone_meta'        => $phone_meta,
-			)
+		$subscribe_payload = array(
+			'email'             => $email,
+			'group_ids'         => $group_ids,
+			'accepted'          => true,
+			'ip'                => $ip,
+			'fields'            => $fields_payload,
+			'locale'            => $this->resolve_locale( $config ),
+			'subscriber_status' => (string) ( $config['destination']['subscriber_status'] ?? 'inactive' ),
+			'page_url'          => $page_url,
+			'consent_label'     => (string) ( $config['consent']['label'] ?? $global_opts['consent_label'] ?? '' ),
+			'consent_context'   => 'form',
 		);
+		if ( is_array( $phone_payload ) ) {
+			$subscribe_payload['phone']        = $phone_payload;
+			$subscribe_payload['phone_strict'] = $phone_strict;
+			$subscribe_payload['phone_log']    = true;
+		}
+
+		$result = $this->subscribe_use_case->execute( $subscribe_payload );
+		if ( 'phone' === (string) ( $result['error'] ?? '' ) ) {
+			return $this->build_result( 'phone', $messages );
+		}
 
 		return $this->build_result( 'ok', $messages );
 	}
