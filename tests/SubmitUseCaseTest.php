@@ -47,6 +47,52 @@ final class SubmitUseCaseTest extends TestCase {
 		$this->assertSame( 'form', $logs->last_log['consent_context'] ?? '' );
 	}
 
+	public function test_subscribe_use_case_normalizes_phone_payload(): void {
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'          => 'https://api.test/api/v1',
+				'api_token'             => 'token',
+				'group_ids'             => '3',
+				'subscriber_status'     => 'active',
+				'default_phone_country' => 'ES',
+				'send_raw_phone_on_fail' => '0',
+				'store_consent_log'     => '0',
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$request_context = new Test_Request_Context();
+
+		$use_case = new RelayPress_Subscribe_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$request_context
+		);
+
+		$result = $use_case->execute(
+			array(
+				'email'       => 'demo@example.com',
+				'group_ids'   => array( 3 ),
+				'accepted'    => true,
+				'fields'      => array(),
+				'phone'       => array(
+					'raw'                  => '600 111 222',
+					'prefix'               => '',
+					'country'              => '',
+					'default_country'      => 'ES',
+					'apply_default_prefix' => true,
+				),
+				'phone_strict' => true,
+			)
+		);
+
+		$this->assertTrue( (bool) ( $result['ok'] ?? false ) );
+		$this->assertSame( '+34600111222', $mailrelay->last_args['fields']['sms_phone'] ?? '' );
+	}
+
 	public function test_submit_use_case_calls_mailrelay_with_configured_groups(): void {
 		$GLOBALS['relaypress_test_options'] = array(
 			RelayPress_Newsletter::OPT_KEY => array(
