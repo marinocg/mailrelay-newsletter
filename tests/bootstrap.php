@@ -202,7 +202,12 @@ function shortcode_atts( array $pairs, $atts ): array {
 	}
 	return array_merge( $pairs, $atts );
 }
-function register_widget( string $class ): void {}
+function register_widget( string $class ): void {
+	$GLOBALS['relaypress_test_registered_widgets'][] = $class;
+}
+function wp_use_widgets_block_editor(): bool {
+	return ! empty( $GLOBALS['relaypress_test_use_block_widgets'] );
+}
 function add_options_page( string $page_title, string $menu_title, string $capability, string $menu_slug, $callback ): void {}
 function add_menu_page( string $page_title, string $menu_title, string $capability, string $menu_slug, $callback, string $icon_url = '', $position = null ): void {
 	$GLOBALS['relaypress_test_menu_pages'][] = array(
