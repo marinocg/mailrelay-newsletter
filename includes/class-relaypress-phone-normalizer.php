@@ -141,6 +141,98 @@ final class RelayPress_Phone_Normalizer {
 	}
 
 	/**
+	 * Apply phone payload to subscriber fields.
+	 *
+	 * @param array $payload Phone payload wrapper.
+	 * @param array $fields Existing fields.
+	 * @param array $opts Global options.
+	 * @return array{fields:array,phone_meta:?array,error:string}
+	 */
+	public static function apply_payload_to_fields( array $payload, array $fields, array $opts ): array {
+		$phone_payload = $payload['phone'] ?? null;
+		if ( ! is_array( $phone_payload ) ) {
+			$phone_meta = isset( $payload['phone_meta'] ) && is_array( $payload['phone_meta'] ) ? $payload['phone_meta'] : null;
+			return array(
+				'fields'     => $fields,
+				'phone_meta' => $phone_meta,
+				'error'      => '',
+			);
+		}
+
+		$raw = trim( (string) ( $phone_payload['raw'] ?? '' ) );
+		if ( '' === $raw ) {
+			return array(
+				'fields'     => $fields,
+				'phone_meta' => null,
+				'error'      => '',
+			);
+		}
+
+		$prefix          = (string) ( $phone_payload['prefix'] ?? '' );
+		$country_hint    = (string) ( $phone_payload['country'] ?? '' );
+		$default_country = (string) ( $phone_payload['default_country'] ?? $opts['default_phone_country'] ?? '' );
+		$apply_default   = ! empty( $phone_payload['apply_default_prefix'] );
+
+		if ( '' === $prefix && $apply_default && '' !== $default_country ) {
+			$default_prefix = self::calling_code_for_country( $default_country );
+			if ( '' !== $default_prefix ) {
+				$prefix = '+' . $default_prefix;
+				if ( '' === $country_hint ) {
+					$country_hint = $default_country;
+				}
+			}
+		}
+
+		$combined   = self::combine_phone_with_prefix( $raw, $prefix );
+		$phone_meta = self::normalize(
+			$combined,
+			array(
+				'country'           => $country_hint,
+				'default_country'   => $default_country,
+				'accept_extensions' => false,
+				'require_e164'      => false,
+			)
+		);
+
+		if ( ! empty( $phone_meta['is_valid'] ) && ! empty( $phone_meta['normalized'] ) ) {
+			$fields['sms_phone']      = $phone_meta['normalized'];
+			$fields['whatsapp_phone'] = $phone_meta['normalized'];
+			return array(
+				'fields'     => $fields,
+				'phone_meta' => $phone_meta,
+				'error'      => '',
+			);
+		}
+
+		if ( '1' === (string) ( $opts['send_raw_phone_on_fail'] ?? '0' ) ) {
+			$fallback = self::compact_raw( $phone_meta['raw_sanitized'] ?? '' );
+			if ( '' !== $fallback && ! in_array( $phone_meta['reason'] ?? '', array( self::REASON_EXTENSION_NOT_SUPPORTED, self::REASON_INVALID_CHARS ), true ) ) {
+				$fields['sms_phone']      = $fallback;
+				$fields['whatsapp_phone'] = $fallback;
+				return array(
+					'fields'     => $fields,
+					'phone_meta' => $phone_meta,
+					'error'      => '',
+				);
+			}
+		}
+
+		if ( ! empty( $payload['phone_strict'] ) ) {
+			return array(
+				'fields'     => $fields,
+				'phone_meta' => $phone_meta,
+				'error'      => 'phone',
+			);
+		}
+
+		return array(
+			'fields'     => $fields,
+			'phone_meta' => $phone_meta,
+			'error'      => '',
+		);
+	}
+
+	/**
 	 * Get phone prefix entries for UI.
 	 *
 	 * @return array<int,array{prefix:string,label:string,iso:string}>

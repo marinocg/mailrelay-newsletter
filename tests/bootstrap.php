@@ -351,6 +351,20 @@ function wp_remote_post( string $url, array $args = array() ) {
 	);
 }
 
+function wp_remote_request( string $url, array $args = array() ) {
+	$method = strtoupper( (string) ( $args['method'] ?? 'GET' ) );
+	$GLOBALS['relaypress_test_last_http'] = array(
+		'method' => $method,
+		'url'    => $url,
+		'args'   => $args,
+	);
+	$bucket = $GLOBALS['relaypress_test_http'][ $method ] ?? array();
+	return $bucket[ $url ] ?? array(
+		'response' => array( 'code' => 500 ),
+		'body'     => '',
+	);
+}
+
 function wp_remote_get( string $url, array $args = array() ) {
 	$GLOBALS['relaypress_test_last_http'] = array(
 		'method' => 'GET',
