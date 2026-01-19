@@ -873,6 +873,15 @@ final class Test_Mailrelay_Client implements RelayPress_Mailrelay_Client {
 		);
 	}
 
+	public function update_subscriber_fields_by_email( string $email, array $args = array() ): array {
+		unset( $email, $args );
+		return array(
+			'ok'        => true,
+			'http_code' => 200,
+			'body'      => '',
+		);
+	}
+
 	public function get_groups( bool $force_refresh = false ): array {
 		return array();
 	}

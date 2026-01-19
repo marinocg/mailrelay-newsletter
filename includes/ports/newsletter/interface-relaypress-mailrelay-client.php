@@ -23,6 +23,15 @@ interface RelayPress_Mailrelay_Client {
 	public function subscribe_with_confirmation( string $email, array $group_ids, bool $accepted, string $ip, array $args = array() ): array;
 
 	/**
+	 * Update subscriber fields by email.
+	 *
+	 * @param string $email Subscriber email.
+	 * @param array  $args Update payload.
+	 * @return array
+	 */
+	public function update_subscriber_fields_by_email( string $email, array $args = array() ): array;
+
+	/**
 	 * Fetch Mailrelay groups.
 	 *
 	 * @param bool $force_refresh Force refresh cache.
