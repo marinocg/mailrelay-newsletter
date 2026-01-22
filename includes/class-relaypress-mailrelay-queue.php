@@ -32,13 +32,9 @@ final class RelayPress_Mailrelay_Queue {
 	 * @param int   $attempt Attempt number.
 	 * @return void
 	 */
-	public static function handle( $payload, $attempt = 1 ): void {
-		if ( ! is_array( $payload ) ) {
-			return;
-		}
-
+	public static function handle( array $payload, int $attempt = 1 ): void {
 		$payload['force_sync'] = true;
-		$payload['attempt']    = is_numeric( $attempt ) ? (int) $attempt : 1;
+		$payload['attempt']    = $attempt;
 
 		RelayPress_Container::subscribe_use_case()->execute( $payload );
 	}

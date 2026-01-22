@@ -56,7 +56,7 @@ final class RelayPress_WP_Task_Scheduler implements RelayPress_Task_Scheduler {
 			as_schedule_single_action( $timestamp, $hook, $args, $group );
 			return true;
 		}
-		if ( function_exists( 'as_enqueue_async_action' ) && $timestamp <= time() ) {
+		if ( function_exists( 'as_enqueue_async_action' ) ) {
 			as_enqueue_async_action( $hook, $args, $group );
 			return true;
 		}

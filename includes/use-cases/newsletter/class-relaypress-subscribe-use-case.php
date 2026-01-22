@@ -177,11 +177,29 @@ final class RelayPress_Subscribe_Use_Case {
 			/**
 			 * Fires when a Mailrelay subscribe attempt succeeds.
 			 *
+			 * This hook is triggered for both newly created subscriptions and
+			 * cases where the subscriber already exists in Mailrelay.
+			 *
 			 * @param array $payload Subscription payload.
 			 * @param array $result Mailrelay result.
 			 * @param int   $attempt Attempt number.
 			 */
 			do_action( 'relaypress_mailrelay_subscribe_success', $payload, $result, $attempt );
+		}
+
+		if ( ! empty( $result['already_exists'] ) ) {
+			/**
+			 * Fires when a Mailrelay subscribe attempt finds an existing subscriber.
+			 *
+			 * This hook is only triggered when the target email address is already
+			 * present in Mailrelay, allowing consumers to distinguish this case
+			 * from a newly created subscription.
+			 *
+			 * @param array $payload Subscription payload.
+			 * @param array $result Mailrelay result.
+			 * @param int   $attempt Attempt number.
+			 */
+			do_action( 'relaypress_mailrelay_subscribe_already_exists', $payload, $result, $attempt );
 		}
 
 		return $result;
@@ -413,7 +431,7 @@ final class RelayPress_Subscribe_Use_Case {
 	/**
 	 * Resolve retry delay.
 	 *
-	 * @param int $attempt Current attempt.
+	 * @param int $attempt Current attempt (retry attempt >= 2).
 	 * @return int
 	 */
 	private function retry_delay_seconds( int $attempt ): int {
