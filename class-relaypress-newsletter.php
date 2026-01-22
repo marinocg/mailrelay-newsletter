@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RelayPress
  * Description: Widget + shortcode newsletter with Cloudflare Turnstile and Mailrelay official API. Uses inactive + resend_confirmation_email for double opt-in. Neutral success message to prevent email enumeration. GDPR consent log with retention and confirmation-send logging.
- * Version: 1.9.0
+ * Version: 1.10.0
  * Requires at least: 6.0
  * Tested up to: 6.9
  * Requires PHP: 8.0
@@ -30,6 +30,7 @@ require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-turnstil
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-rate-limiter.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-request-context.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-input-sanitizer.php';
+require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-task-scheduler.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-mailrelay-client.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-options-repository.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-logs-repository.php';
@@ -37,8 +38,11 @@ require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-turnst
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-rate-limiter.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-request-context.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-input-sanitizer.php';
+require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-task-scheduler.php';
+require_once __DIR__ . '/includes/use-cases/newsletter/class-relaypress-subscribe-use-case.php';
 require_once __DIR__ . '/includes/use-cases/newsletter/class-relaypress-submit-use-case.php';
 require_once __DIR__ . '/includes/class-relaypress-container.php';
+require_once __DIR__ . '/includes/class-relaypress-mailrelay-queue.php';
 require_once __DIR__ . '/includes/class-relaypress-frontend.php';
 require_once __DIR__ . '/includes/class-relaypress-admin.php';
 require_once __DIR__ . '/includes/admin/class-relaypress-upgrade-admin.php';
@@ -64,7 +68,7 @@ final class RelayPress_Newsletter {
 	const TABLE       = 'relaypress_newsletter_consent';
 	const NONCE       = 'relaypress_subscribe_nonce';
 	const CRON_PURGE  = 'relaypress_newsletter_purge_logs';
-	const VERSION     = '1.9.0';
+	const VERSION     = '1.10.0';
 	const TEXT_DOMAIN = 'relaypress-newsletter';
 
 	/**
@@ -87,6 +91,7 @@ final class RelayPress_Newsletter {
 		add_action( 'admin_menu', array( 'RelayPress_Admin', 'reorder_submenu' ), 999 );
 		add_action( 'admin_init', array( 'RelayPress_Admin', 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( 'RelayPress_Admin', 'admin_enqueue' ) );
+		add_action( 'admin_notices', array( 'RelayPress_Admin', 'admin_notices' ) );
 		add_action( 'admin_menu', array( 'RelayPress_Upgrade_Admin', 'admin_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( 'RelayPress_Upgrade_Admin', 'admin_enqueue' ) );
 		if ( function_exists( 'is_admin' ) && is_admin() ) {
@@ -104,6 +109,8 @@ final class RelayPress_Newsletter {
 		add_action( 'admin_post_relaypress_subscribe', array( 'RelayPress_Submit', 'handle_submit' ) );
 		add_action( 'wp_ajax_nopriv_relaypress_subscribe_ajax', array( 'RelayPress_Submit', 'handle_submit_ajax' ) );
 		add_action( 'wp_ajax_relaypress_subscribe_ajax', array( 'RelayPress_Submit', 'handle_submit_ajax' ) );
+
+		RelayPress_Mailrelay_Queue::register();
 
 		add_action( self::CRON_PURGE, array( 'RelayPress_Logs', 'purge_old_logs_cron' ) );
 
@@ -123,6 +130,7 @@ final class RelayPress_Newsletter {
 			'api_token'                     => '',
 			'group_ids'                     => '1', // comma-separated.
 			'subscriber_status'             => 'inactive', // inactive (double opt-in) / active (single opt-in).
+			'mailrelay_queue_first'         => '0', // Queue first attempt via Action Scheduler.
 
 			// Turnstile (optional if you define CF_TURNSTILE_* constants).
 			'turnstile_site_key'            => '',

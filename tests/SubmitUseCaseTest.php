@@ -4,6 +4,239 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 final class SubmitUseCaseTest extends TestCase {
+	public function test_subscribe_use_case_executes_and_logs(): void {
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'                  => 'https://api.test/api/v1',
+				'api_token'                     => 'token',
+				'group_ids'                     => '3',
+				'subscriber_status'             => 'active',
+				'confirm_resend_max'            => 0,
+				'confirm_resend_window_seconds' => 3600,
+				'store_consent_log'             => '1',
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$request_context = new Test_Request_Context();
+
+		$use_case = new RelayPress_Subscribe_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$request_context
+		);
+
+		$result = $use_case->execute(
+			array(
+				'email'           => 'demo@example.com',
+				'group_ids'       => array( 3 ),
+				'accepted'        => true,
+				'fields'          => array( 'name' => 'Demo User' ),
+				'consent_label'   => 'Consent',
+				'consent_context' => 'form',
+				'page_url'        => 'https://example.test/',
+			)
+		);
+
+		$this->assertTrue( (bool) ( $result['ok'] ?? false ) );
+		$this->assertSame( array( 3 ), $mailrelay->last_group_ids );
+		$this->assertSame( 'Consent', $logs->last_log['consent_label'] ?? '' );
+		$this->assertSame( 'form', $logs->last_log['consent_context'] ?? '' );
+	}
+
+	public function test_subscribe_use_case_queues_first_when_enabled(): void {
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'          => 'https://api.test/api/v1',
+				'api_token'             => 'token',
+				'group_ids'             => '3',
+				'subscriber_status'     => 'active',
+				'store_consent_log'     => '1',
+				'mailrelay_queue_first' => '1',
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client_Tracker();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$request_context = new Test_Request_Context();
+		$scheduler       = new Test_Task_Scheduler();
+
+		$use_case = new RelayPress_Subscribe_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$request_context,
+			$scheduler
+		);
+
+		$result = $use_case->execute(
+			array(
+				'email'           => 'demo@example.com',
+				'group_ids'       => array( 3 ),
+				'accepted'        => true,
+				'fields'          => array( 'name' => 'Demo User' ),
+				'consent_label'   => 'Consent',
+				'consent_context' => 'form',
+				'page_url'        => 'https://example.test/',
+			)
+		);
+
+		$this->assertTrue( (bool) ( $result['queued'] ?? false ) );
+		$this->assertSame( 1, $scheduler->enqueued );
+		$this->assertSame( '203.0.113.10', $scheduler->last_args[0]['ip'] ?? '' );
+		$this->assertSame( 0, $mailrelay->calls );
+		$this->assertSame( array(), $logs->last_log );
+	}
+
+	public function test_subscribe_use_case_schedules_retry_on_retryable_failure(): void {
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'          => 'https://api.test/api/v1',
+				'api_token'             => 'token',
+				'group_ids'             => '3',
+				'subscriber_status'     => 'active',
+				'store_consent_log'     => '1',
+				'mailrelay_queue_first' => '0',
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client_Retryable();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$request_context = new Test_Request_Context();
+		$scheduler       = new Test_Task_Scheduler();
+
+		$use_case = new RelayPress_Subscribe_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$request_context,
+			$scheduler
+		);
+
+		$result = $use_case->execute(
+			array(
+				'email'           => 'demo@example.com',
+				'group_ids'       => array( 3 ),
+				'accepted'        => true,
+				'fields'          => array( 'name' => 'Demo User' ),
+				'consent_label'   => 'Consent',
+				'consent_context' => 'form',
+				'page_url'        => 'https://example.test/',
+			)
+		);
+
+		$this->assertTrue( (bool) ( $result['retry_scheduled'] ?? false ) );
+		$this->assertSame( 1, $scheduler->scheduled );
+		$this->assertSame( array(), $logs->last_log );
+	}
+
+	public function test_subscribe_use_case_fires_success_hook(): void {
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'              => 'https://api.test/api/v1',
+				'api_token'                 => 'token',
+				'group_ids'                 => '3',
+				'subscriber_status'         => 'active',
+				'store_consent_log'         => '0',
+				'mailrelay_queue_first'     => '0',
+			),
+		);
+
+		$payload_capture = array();
+		add_action(
+			'relaypress_mailrelay_subscribe_success',
+			function ( $payload, $result, $attempt ) use ( &$payload_capture ): void {
+				$payload_capture = array(
+					'payload' => $payload,
+					'result'  => $result,
+					'attempt' => $attempt,
+				);
+			},
+			10,
+			3
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$request_context = new Test_Request_Context();
+		$scheduler       = new Test_Task_Scheduler();
+
+		$use_case = new RelayPress_Subscribe_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$request_context,
+			$scheduler
+		);
+
+		$result = $use_case->execute(
+			array(
+				'email'       => 'demo@example.com',
+				'group_ids'   => array( 3 ),
+				'accepted'    => true,
+				'fields'      => array(),
+				'page_url'    => 'https://example.test/',
+				'consent_context' => 'form',
+			)
+		);
+
+		$this->assertTrue( (bool) ( $result['ok'] ?? false ) );
+		$this->assertSame( 1, $payload_capture['attempt'] ?? 0 );
+		$this->assertSame( 'demo@example.com', $payload_capture['payload']['email'] ?? '' );
+	}
+
+	public function test_subscribe_use_case_normalizes_phone_payload(): void {
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'          => 'https://api.test/api/v1',
+				'api_token'             => 'token',
+				'group_ids'             => '3',
+				'subscriber_status'     => 'active',
+				'default_phone_country' => 'ES',
+				'send_raw_phone_on_fail' => '0',
+				'store_consent_log'     => '0',
+			),
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$request_context = new Test_Request_Context();
+
+		$use_case = new RelayPress_Subscribe_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$request_context
+		);
+
+		$result = $use_case->execute(
+			array(
+				'email'       => 'demo@example.com',
+				'group_ids'   => array( 3 ),
+				'accepted'    => true,
+				'fields'      => array(),
+				'phone'       => array(
+					'raw'                  => '600 111 222',
+					'prefix'               => '',
+					'country'              => '',
+					'default_country'      => 'ES',
+					'apply_default_prefix' => true,
+				),
+				'phone_strict' => true,
+			)
+		);
+
+		$this->assertTrue( (bool) ( $result['ok'] ?? false ) );
+		$this->assertSame( '+34600111222', $mailrelay->last_args['fields']['sms_phone'] ?? '' );
+	}
+
 	public function test_submit_use_case_calls_mailrelay_with_configured_groups(): void {
 		$GLOBALS['relaypress_test_options'] = array(
 			RelayPress_Newsletter::OPT_KEY => array(
@@ -784,6 +1017,67 @@ final class Test_Mailrelay_Client implements RelayPress_Mailrelay_Client {
 		);
 	}
 
+	public function update_subscriber_fields_by_email( string $email, array $args = array() ): array {
+		unset( $email, $args );
+		return array(
+			'ok'        => true,
+			'http_code' => 200,
+			'body'      => '',
+		);
+	}
+
+	public function get_groups( bool $force_refresh = false ): array {
+		return array();
+	}
+}
+
+final class Test_Mailrelay_Client_Tracker implements RelayPress_Mailrelay_Client {
+	public int $calls = 0;
+
+	public function subscribe_with_confirmation( string $email, array $group_ids, bool $accepted, string $ip, array $args = array() ): array {
+		$this->calls++;
+		return array(
+			'ok'        => true,
+			'http_code' => 201,
+			'body'      => '',
+		);
+	}
+
+	public function update_subscriber_fields_by_email( string $email, array $args = array() ): array {
+		unset( $email, $args );
+		return array(
+			'ok'        => true,
+			'http_code' => 200,
+			'body'      => '',
+		);
+	}
+
+	public function get_groups( bool $force_refresh = false ): array {
+		return array();
+	}
+}
+
+final class Test_Mailrelay_Client_Retryable implements RelayPress_Mailrelay_Client {
+	public function subscribe_with_confirmation( string $email, array $group_ids, bool $accepted, string $ip, array $args = array() ): array {
+		unset( $email, $group_ids, $accepted, $ip, $args );
+		return array(
+			'ok'        => false,
+			'http_code' => 503,
+			'body'      => 'Service Unavailable',
+			'retryable' => true,
+		);
+	}
+
+	public function update_subscriber_fields_by_email( string $email, array $args = array() ): array {
+		unset( $email, $args );
+		return array(
+			'ok'        => false,
+			'http_code' => 503,
+			'body'      => 'Service Unavailable',
+			'retryable' => true,
+		);
+	}
+
 	public function get_groups( bool $force_refresh = false ): array {
 		return array();
 	}
@@ -795,10 +1089,38 @@ final class Test_Options_Repository implements RelayPress_Options_Repository {
 	}
 }
 
+final class Test_Task_Scheduler implements RelayPress_Task_Scheduler {
+	public int $enqueued = 0;
+	public int $scheduled = 0;
+	public array $last_args = array();
+
+	public function is_available(): bool {
+		return true;
+	}
+
+	public function enqueue( string $hook, array $args = array(), string $group = '' ): bool {
+		unset( $hook, $group );
+		$this->last_args = $args;
+		$this->enqueued++;
+		return true;
+	}
+
+	public function schedule( int $timestamp, string $hook, array $args = array(), string $group = '' ): bool {
+		unset( $timestamp, $hook, $group );
+		$this->last_args = $args;
+		$this->scheduled++;
+		return true;
+	}
+}
+
 final class Test_Logs_Repository implements RelayPress_Logs_Repository {
+	public array $last_log = array();
+
 	public function ensure_table(): void {}
 
-	public function store_consent_log( array $data ): void {}
+	public function store_consent_log( array $data ): void {
+		$this->last_log = $data;
+	}
 }
 
 final class Test_Turnstile_Verifier implements RelayPress_Turnstile_Verifier {

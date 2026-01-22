@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: RelayPress 1.9.0"
+"Project-Id-Version: RelayPress 1.10.0"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-16 20:24+0100\n"
 "PO-Revision-Date: 2025-01-01 00:00+0000\n"
@@ -1474,6 +1474,30 @@ msgid "You can unsubscribe at any time using the link in each email."
 msgstr ""
 "Puedes darte de baja en cualquier momento desde el enlace de cada email."
 
+#: includes/class-relaypress-admin.php:129
+msgid "Your theme is overriding the RelayPress form template. Please update the template to version %s to ensure compatibility."
+msgstr "Tu tema está sobrescribiendo la plantilla del formulario de RelayPress. Actualiza la plantilla a la versión %s para asegurar la compatibilidad."
+
+#: includes/class-relaypress-admin.php:134
+msgid "Override locations: relaypress-newsletter/form.php or mr4wp/form.php."
+msgstr "Ubicaciones de la sobrescritura: relaypress-newsletter/form.php o mr4wp/form.php."
+
+#: includes/class-relaypress-admin.php:156
+msgid "Enjoying RelayPress? Please consider leaving a review on WordPress.org."
+msgstr "¿Te gusta RelayPress? Considera dejar una reseña en WordPress.org."
+
+#: includes/class-relaypress-admin.php:160
+msgid "Leave a review"
+msgstr "Dejar una reseña"
+
+#: includes/class-relaypress-admin.php:179
+msgid "Review later"
+msgstr "Recordar más tarde"
+
+#: includes/class-relaypress-admin.php:163
+msgid "Dismiss"
+msgstr "Descartar"
+
 #: templates/form.php:163
 msgid "Enable JavaScript to subscribe."
 msgstr "Activa JavaScript para poder suscribirte."
@@ -2156,3 +2180,15 @@ msgstr "RelayPress"
 #: includes/domain/forms/class-relaypress-forms.php:70
 msgid "Default Form"
 msgstr ""
+
+#: includes/class-relaypress-admin.php:262
+msgid "Queue first attempt"
+msgstr "Poner en cola el primer intento"
+
+#: includes/class-relaypress-admin.php:266
+msgid "Send the first Mailrelay request to Action Scheduler instead of running it immediately."
+msgstr "Envía la primera solicitud a Mailrelay a Action Scheduler en lugar de ejecutarla inmediatamente."
+
+#: includes/class-relaypress-admin.php:268
+msgid "Improves performance but may delay the opt-in email."
+msgstr "Mejora el rendimiento, pero puede retrasar el correo de confirmación."

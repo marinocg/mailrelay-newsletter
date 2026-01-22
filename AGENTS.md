@@ -195,4 +195,9 @@ Notes:
 * [ ] Inputs sanitized, outputs escaped
 * [ ] Documented any behavior/config changes (and added manual steps if needed)
 
+## PR review note
+
+- For PR review context, you can run `gh pr view <pr-url> --json reviews`.
+- To inspect review threads and comments, prefer `gh pr-review threads list --pr <num> --repo <owner/repo>` and `gh api repos/<owner>/<repo>/pulls/<num>/comments` (since `gh-pr-review` doesn’t show bodies).
+
 End.

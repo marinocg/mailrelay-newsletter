@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: RelayPress 1.9.0"
+"Project-Id-Version: RelayPress 1.10.0"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-16 20:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -1462,6 +1462,30 @@ msgstr ""
 msgid "You can unsubscribe at any time using the link in each email."
 msgstr ""
 
+#: includes/class-relaypress-admin.php:129
+msgid "Your theme is overriding the RelayPress form template. Please update the template to version %s to ensure compatibility."
+msgstr ""
+
+#: includes/class-relaypress-admin.php:134
+msgid "Override locations: relaypress-newsletter/form.php or mr4wp/form.php."
+msgstr ""
+
+#: includes/class-relaypress-admin.php:156
+msgid "Enjoying RelayPress? Please consider leaving a review on WordPress.org."
+msgstr ""
+
+#: includes/class-relaypress-admin.php:160
+msgid "Leave a review"
+msgstr ""
+
+#: includes/class-relaypress-admin.php:179
+msgid "Review later"
+msgstr ""
+
+#: includes/class-relaypress-admin.php:163
+msgid "Dismiss"
+msgstr ""
+
 #: templates/form.php:163
 msgid "Enable JavaScript to subscribe."
 msgstr ""
@@ -2118,4 +2142,16 @@ msgstr ""
 
 #: includes/domain/forms/class-relaypress-forms.php:70
 msgid "Default Form"
+msgstr ""
+
+#: includes/class-relaypress-admin.php:262
+msgid "Queue first attempt"
+msgstr ""
+
+#: includes/class-relaypress-admin.php:266
+msgid "Send the first Mailrelay request to Action Scheduler instead of running it immediately."
+msgstr ""
+
+#: includes/class-relaypress-admin.php:268
+msgid "Improves performance but may delay the opt-in email."
 msgstr ""

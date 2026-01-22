@@ -14,25 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class RelayPress_Submit_Use_Case {
 	/**
-	 * Mailrelay client.
-	 *
-	 * @var RelayPress_Mailrelay_Client
-	 */
-	private $mailrelay;
-
-	/**
 	 * Options repository.
 	 *
 	 * @var RelayPress_Options_Repository
 	 */
 	private $options;
-
-	/**
-	 * Logs repository.
-	 *
-	 * @var RelayPress_Logs_Repository
-	 */
-	private $logs;
 
 	/**
 	 * Turnstile verifier.
@@ -70,6 +56,13 @@ final class RelayPress_Submit_Use_Case {
 	private $forms;
 
 	/**
+	 * Subscribe use case.
+	 *
+	 * @var RelayPress_Subscribe_Use_Case
+	 */
+	private $subscribe_use_case;
+
+	/**
 	 * Create the use case with adapters.
 	 *
 	 * @param RelayPress_Mailrelay_Client          $mailrelay Mailrelay client.
@@ -80,6 +73,7 @@ final class RelayPress_Submit_Use_Case {
 	 * @param RelayPress_Request_Context           $request_context Request context.
 	 * @param RelayPress_Input_Sanitizer           $sanitizer Input sanitizer.
 	 * @param RelayPress_Form_Repository_Interface $forms Form repository.
+	 * @param RelayPress_Subscribe_Use_Case|null   $subscribe_use_case Subscribe use case.
 	 */
 	public function __construct(
 		RelayPress_Mailrelay_Client $mailrelay,
@@ -89,16 +83,25 @@ final class RelayPress_Submit_Use_Case {
 		RelayPress_Rate_Limiter $rate_limiter,
 		RelayPress_Request_Context $request_context,
 		RelayPress_Input_Sanitizer $sanitizer,
-		RelayPress_Form_Repository_Interface $forms
+		RelayPress_Form_Repository_Interface $forms,
+		?RelayPress_Subscribe_Use_Case $subscribe_use_case = null
 	) {
-		$this->mailrelay       = $mailrelay;
 		$this->options         = $options;
-		$this->logs            = $logs;
 		$this->turnstile       = $turnstile;
 		$this->rate_limiter    = $rate_limiter;
 		$this->request_context = $request_context;
 		$this->sanitizer       = $sanitizer;
 		$this->forms           = $forms;
+		if ( $subscribe_use_case ) {
+			$this->subscribe_use_case = $subscribe_use_case;
+		} else {
+			$this->subscribe_use_case = new RelayPress_Subscribe_Use_Case(
+				$mailrelay,
+				$options,
+				$logs,
+				$request_context
+			);
+		}
 	}
 
 	/**
@@ -162,7 +165,8 @@ final class RelayPress_Submit_Use_Case {
 		$fields_config  = $config['fields'] ?? array();
 		$allowed_fields = array( 'name', 'address', 'city', 'state', 'country', 'birthday', 'website', 'phone' );
 		$country_hint   = '';
-		$phone_meta     = null;
+		$phone_payload  = null;
+		$phone_strict   = false;
 		foreach ( $allowed_fields as $field_key ) {
 			$field_cfg = $fields_config[ $field_key ] ?? array();
 			if ( ! is_array( $field_cfg ) || empty( $field_cfg['enabled'] ) ) {
@@ -216,82 +220,44 @@ final class RelayPress_Submit_Use_Case {
 			}
 
 			if ( 'phone' === $field_key ) {
-				$prefix_raw = $data['subscriber']['phone_prefix'] ?? '';
-				$prefix_raw = $this->sanitizer->unslash( $prefix_raw );
-				$prefix     = $this->sanitizer->sanitize_text( $prefix_raw );
-				if ( '' === $prefix && '1' === (string) ( $global_opts['hide_phone_prefix_selector'] ?? '0' ) ) {
-					$default_country = (string) ( $global_opts['default_phone_country'] ?? '' );
-					$default_prefix  = RelayPress_Phone_Normalizer::calling_code_for_country( $default_country );
-					if ( '' !== $default_prefix ) {
-						$prefix = '+' . $default_prefix;
-					}
-				}
-				$combined   = RelayPress_Phone_Normalizer::combine_phone_with_prefix( $value, $prefix );
-				$phone_meta = RelayPress_Phone_Normalizer::normalize(
-					$combined,
-					array(
-						'country'           => $country_hint,
-						'default_country'   => (string) ( $global_opts['default_phone_country'] ?? '' ),
-						'accept_extensions' => false,
-						'require_e164'      => false,
-					)
+				$prefix_raw    = $data['subscriber']['phone_prefix'] ?? '';
+				$prefix_raw    = $this->sanitizer->unslash( $prefix_raw );
+				$prefix        = $this->sanitizer->sanitize_text( $prefix_raw );
+				$phone_payload = array(
+					'raw'                  => $value,
+					'prefix'               => $prefix,
+					'country'              => $country_hint,
+					'default_country'      => (string) ( $global_opts['default_phone_country'] ?? '' ),
+					'apply_default_prefix' => ( '1' === (string) ( $global_opts['hide_phone_prefix_selector'] ?? '0' ) ),
 				);
-				if ( empty( $phone_meta['is_valid'] ) ) {
-					if ( '1' === (string) ( $global_opts['send_raw_phone_on_fail'] ?? '0' ) ) {
-						$fallback = RelayPress_Phone_Normalizer::compact_raw( $phone_meta['raw_sanitized'] ?? '' );
-						if ( '' !== $fallback && ! in_array( $phone_meta['reason'] ?? '', array( RelayPress_Phone_Normalizer::REASON_EXTENSION_NOT_SUPPORTED, RelayPress_Phone_Normalizer::REASON_INVALID_CHARS ), true ) ) {
-							$fields_payload['sms_phone']      = $fallback;
-							$fields_payload['whatsapp_phone'] = $fallback;
-							continue;
-						}
-					}
-					return $this->build_result( 'phone', $messages );
-				}
-				$fields_payload['sms_phone']      = $phone_meta['normalized'];
-				$fields_payload['whatsapp_phone'] = $phone_meta['normalized'];
+				$phone_strict  = true;
 				continue;
 			}
 
 			$fields_payload[ $field_key ] = $value;
 		}
 
-		$result = $this->mailrelay->subscribe_with_confirmation(
-			$email,
-			$group_ids,
-			true,
-			$ip,
-			array(
-				'subscriber_status' => (string) ( $config['destination']['subscriber_status'] ?? 'inactive' ),
-				'fields'            => $fields_payload,
-				'locale'            => $this->resolve_locale( $config ),
-			)
+		$subscribe_payload = array(
+			'email'             => $email,
+			'group_ids'         => $group_ids,
+			'accepted'          => true,
+			'ip'                => $ip,
+			'fields'            => $fields_payload,
+			'locale'            => $this->resolve_locale( $config ),
+			'subscriber_status' => (string) ( $config['destination']['subscriber_status'] ?? 'inactive' ),
+			'page_url'          => $page_url,
+			'consent_label'     => (string) ( $config['consent']['label'] ?? $global_opts['consent_label'] ?? '' ),
+			'consent_context'   => 'form',
 		);
+		if ( is_array( $phone_payload ) ) {
+			$subscribe_payload['phone']        = $phone_payload;
+			$subscribe_payload['phone_strict'] = $phone_strict;
+			$subscribe_payload['phone_log']    = true;
+		}
 
-		if ( '1' === (string) ( $global_opts['store_consent_log'] ?? '0' ) ) {
-			$user_agent = $this->request_context->get_user_agent();
-			$this->logs->ensure_table();
-			$log_row = array(
-				'email'                     => $email,
-				'accepted'                  => 1,
-				'accepted_at'               => $this->request_context->current_time_mysql(),
-				'page_url'                  => $page_url,
-				'ip'                        => $ip,
-				'user_agent'                => $user_agent,
-				'mailrelay_http_code'       => $result['http_code'] ?? null,
-				'mailrelay_response'        => $result['body'] ?? null,
-				'confirmation_requested_at' => $result['confirmation_requested_at'] ?? null,
-				'confirmation_http_code'    => $result['confirmation_http_code'] ?? null,
-				'confirmation_response'     => $result['confirmation_response'] ?? null,
-			);
-			if ( is_array( $phone_meta ) ) {
-				$log_row['phone_raw']        = ( '1' === (string) ( $global_opts['log_phone_raw'] ?? '0' ) ) ? (string) ( $phone_meta['raw_sanitized'] ?? '' ) : null;
-				$log_row['phone_normalized'] = $phone_meta['normalized'] ?? null;
-				$log_row['phone_valid']      = ! empty( $phone_meta['is_valid'] ) ? 1 : 0;
-				$log_row['phone_reason']     = $phone_meta['reason'] ?? null;
-				$log_row['phone_country']    = $phone_meta['country_used'] ?? null;
-				$log_row['phone_confidence'] = $phone_meta['confidence'] ?? null;
-			}
-			$this->logs->store_consent_log( $log_row );
+		$result = $this->subscribe_use_case->execute( $subscribe_payload );
+		if ( 'phone' === (string) ( $result['error'] ?? '' ) ) {
+			return $this->build_result( 'phone', $messages );
 		}
 
 		return $this->build_result( 'ok', $messages );

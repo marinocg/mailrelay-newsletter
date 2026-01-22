@@ -65,7 +65,53 @@ jobs:
       - name: Bump versions (plugin header + constants + readme.txt)
         env:
           VERSION: ${{ inputs.version }}
+          RELEASE_NOTES_INPUT: ${{ inputs.release_notes }}
         run: |
+          normalize_notes() {
+            printf "%s\n" "$1" | sed "s/\r//g" | sed '/^[[:space:]]*$/d'
+          }
+
+          format_input_notes() {
+            printf "%s\n" "$1" | sed "s/\r//g" | awk 'NF{ if ($0 ~ /^[-*]/) print $0; else print "- " $0 }'
+          }
+
+          NOTES_FROM_UNRELEASED=""
+          NOTES_FROM_VERSION=""
+          if [ -f CHANGELOG.md ]; then
+            NOTES_FROM_UNRELEASED=$(awk '
+              BEGIN{in_block=0}
+              $0=="## Unreleased"{in_block=1; next}
+              in_block==1 && /^## /{exit}
+              in_block==1{print}
+            ' CHANGELOG.md)
+
+            NOTES_FROM_VERSION=$(awk -v ver="${VERSION}" '
+              BEGIN{in_block=0}
+              $0=="## " ver {in_block=1; next}
+              in_block==1 && /^## /{exit}
+              in_block==1{print}
+            ' CHANGELOG.md)
+          fi
+
+          NOTES_FROM_UNRELEASED_CLEAN=$(normalize_notes "$NOTES_FROM_UNRELEASED")
+          NOTES_FROM_VERSION_CLEAN=$(normalize_notes "$NOTES_FROM_VERSION")
+
+          if [ -n "${RELEASE_NOTES_INPUT}" ]; then
+            NOTES_FORMATTED=$(format_input_notes "$RELEASE_NOTES_INPUT")
+          elif [ -n "$NOTES_FROM_UNRELEASED_CLEAN" ] && [ "$NOTES_FROM_UNRELEASED_CLEAN" != "- Pending" ]; then
+            NOTES_FORMATTED="$NOTES_FROM_UNRELEASED_CLEAN"
+          elif [ -n "$NOTES_FROM_VERSION_CLEAN" ] && [ "$NOTES_FROM_VERSION_CLEAN" != "-" ]; then
+            NOTES_FORMATTED="$NOTES_FROM_VERSION_CLEAN"
+          else
+            NOTES_FORMATTED="-"
+          fi
+
+          {
+            echo "RESOLVED_RELEASE_NOTES<<EOF"
+            echo "$NOTES_FORMATTED"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
           # Plugin main file: update "Version: x.y.z" and const VERSION.
           sed -i -E "s/^([[:space:]]*\\*?[[:space:]]*)Version:[[:space:]]*.*/\\1Version: ${VERSION}/" class-relaypress-newsletter.php
           sed -i -E "s/^([[:space:]]*)const VERSION([[:space:]]*)=[[:space:]]*'[^']*';/\\1const VERSION\\2= '${VERSION}';/" class-relaypress-newsletter.php
@@ -102,19 +148,6 @@ jobs:
               HEADER="# Changelog"
             fi
 
-            NOTES_FORMATTED=$(awk '
-              BEGIN{in=0}
-              $0=="## Unreleased"{in=1; next}
-              in==1 && /^## /{exit}
-              in==1{print}
-            ' CHANGELOG.md | sed "s/\r//g")
-            NOTES_STRIPPED=$(printf "%s\n" "$NOTES_FORMATTED" | sed '/^[[:space:]]*$/d')
-            if [ -z "$NOTES_STRIPPED" ] || [ "$NOTES_STRIPPED" = "- Pending" ]; then
-              NOTES_FORMATTED="-"
-            else
-              NOTES_FORMATTED="$NOTES_STRIPPED"
-            fi
-
             awk -v ver="${VERSION}" '
               BEGIN{skip=0}
               NR==1 {next}
@@ -141,6 +174,42 @@ jobs:
             rm -f CHANGELOG.body
           fi
 
+          # Mirror CHANGELOG.md into readme.txt (WP format)
+          if [ -f CHANGELOG.md ] && [ -f readme.txt ]; then
+            CHANGELOG_BLOCK=$(awk '
+              /^## / {
+                title=substr($0, 4)
+                print "= " title " ="
+                next
+              }
+              {
+                print
+              }
+            ' CHANGELOG.md | awk '
+              BEGIN{seen=0}
+              /^= /{seen=1}
+              seen==1{print}
+            ')
+
+            awk -v block="$CHANGELOG_BLOCK" '
+              BEGIN{in_block=0}
+              /^== Changelog ==/{
+                print
+                print block
+                in_block=1
+                next
+              }
+              in_block==1{
+                if (/^== /) {
+                  in_block=0
+                  print
+                }
+                next
+              }
+              {print}
+            ' readme.txt > readme.tmp && mv readme.tmp readme.txt
+          fi
+
       - name: Commit bump
         env:
           VERSION: ${{ inputs.version }}
@@ -165,7 +234,7 @@ jobs:
           # PR to main
           PR_MAIN_URL=$(gh pr create \
             --title "Release v${VERSION}" \
-            --body "${{ inputs.release_notes }}" \
+            --body "${{ env.RESOLVED_RELEASE_NOTES }}" \
             --base main \
             --head "$BRANCH" \
             || true)
@@ -241,5 +310,5 @@ jobs:
         with:
           tag_name: v${{ inputs.version }}
           name: v${{ inputs.version }}
-          body: ${{ inputs.release_notes }}
+          body: ${{ env.RESOLVED_RELEASE_NOTES }}
           files: dist/relaypress-newsletter-v${{ inputs.version }}.zip

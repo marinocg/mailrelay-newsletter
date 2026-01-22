@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Admin settings and UI.
  */
 final class RelayPress_Admin {
+	const REVIEW_NOTICE_META        = 'relaypress_dismiss_review_notice';
+	const REVIEW_NOTICE_SNOOZE_META = 'relaypress_review_notice_snooze_until';
 
 	/**
 	 * Register admin menu.
@@ -60,6 +62,19 @@ final class RelayPress_Admin {
 				delete_transient( 'relaypress_groups_cache' );
 			}
 		}
+		if ( current_user_can( 'manage_options' ) && isset( $_GET['relaypress_dismiss_review_notice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$nonce = sanitize_text_field( (string) wp_unslash( $_GET['_wpnonce'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( $nonce && wp_verify_nonce( $nonce, 'relaypress_dismiss_review_notice' ) ) {
+				update_user_meta( get_current_user_id(), self::REVIEW_NOTICE_META, '1' );
+				delete_user_meta( get_current_user_id(), self::REVIEW_NOTICE_SNOOZE_META );
+			}
+		}
+		if ( current_user_can( 'manage_options' ) && isset( $_GET['relaypress_review_notice_later'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$nonce = sanitize_text_field( (string) wp_unslash( $_GET['_wpnonce'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( $nonce && wp_verify_nonce( $nonce, 'relaypress_review_notice_later' ) ) {
+				update_user_meta( get_current_user_id(), self::REVIEW_NOTICE_SNOOZE_META, (string) ( time() + 14 * DAY_IN_SECONDS ) );
+			}
+		}
 
 		register_setting(
 			'relaypress_newsletter',
@@ -91,10 +106,97 @@ final class RelayPress_Admin {
 		}
 
 		$show_upgrade = (bool) apply_filters( 'relaypress_show_upgrade_ui', true );
-		if ( $show_upgrade ) {
+		if ( $show_upgrade && false !== strpos( $hook_suffix, 'relaypress-newsletter' ) ) {
 			$src = plugins_url( 'assets/admin-upgrade.css', RelayPress_Utils::plugin_file() );
 			wp_enqueue_style( 'relaypress-admin-upgrade', $src, array(), RelayPress_Newsletter::VERSION );
 		}
+	}
+
+	/**
+	 * Render admin notices.
+	 *
+	 * @return void
+	 */
+	public static function admin_notices(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		if ( ! function_exists( 'get_current_screen' ) ) {
+			return;
+		}
+		$screen = get_current_screen();
+		if ( ! $screen ) {
+			return;
+		}
+		$screen_id = (string) $screen->id;
+		if ( 'dashboard' !== $screen_id && false === strpos( $screen_id, 'relaypress-newsletter' ) ) {
+			return;
+		}
+
+		$info = RelayPress_Frontend::get_template_info();
+		if ( empty( $info['override'] ) ) {
+			$info = null;
+		}
+		if ( $info ) {
+			$version = (string) ( $info['version'] ?? '' );
+			if ( '' === $version || version_compare( $version, RelayPress_Frontend::TEMPLATE_VERSION, '<' ) ) {
+				$message = sprintf(
+					/* translators: %s: template version. */
+					__( 'Your theme is overriding the RelayPress form template. Please update the template to version %s to ensure compatibility.', 'relaypress-newsletter' ),
+					RelayPress_Frontend::TEMPLATE_VERSION
+				);
+				?>
+				<div class="notice notice-warning is-dismissible">
+					<p><?php echo esc_html( $message ); ?></p>
+					<p><?php echo esc_html__( 'Override locations: relaypress-newsletter/form.php or mr4wp/form.php.', 'relaypress-newsletter' ); ?></p>
+				</div>
+				<?php
+			}
+		}
+
+		if ( 'dashboard' === $screen_id || false === strpos( $screen_id, 'relaypress-newsletter' ) ) {
+			return;
+		}
+		if ( '1' === (string) get_user_meta( get_current_user_id(), self::REVIEW_NOTICE_META, true ) ) {
+			return;
+		}
+		$snooze_until = (int) get_user_meta( get_current_user_id(), self::REVIEW_NOTICE_SNOOZE_META, true );
+		if ( $snooze_until && time() < $snooze_until ) {
+			return;
+		}
+		$review_url  = 'https://wordpress.org/support/plugin/relaypress-newsletter/reviews/?rate=5#new-post';
+		$dismiss_url = add_query_arg(
+			array(
+				'relaypress_dismiss_review_notice' => '1',
+				'_wpnonce'                         => wp_create_nonce( 'relaypress_dismiss_review_notice' ),
+			),
+			admin_url( 'admin.php?page=relaypress-newsletter' )
+		);
+		$later_url   = add_query_arg(
+			array(
+				'relaypress_review_notice_later' => '1',
+				'_wpnonce'                       => wp_create_nonce( 'relaypress_review_notice_later' ),
+			),
+			admin_url( 'admin.php?page=relaypress-newsletter' )
+		);
+		?>
+		<div class="notice notice-info is-dismissible">
+			<p>
+				<?php echo esc_html__( 'Enjoying RelayPress? Please consider leaving a review on WordPress.org.', 'relaypress-newsletter' ); ?>
+			</p>
+			<p>
+				<a class="button button-primary" href="<?php echo esc_url( $review_url ); ?>" target="_blank" rel="noopener">
+					<?php echo esc_html__( 'Leave a review', 'relaypress-newsletter' ); ?>
+				</a>
+				<a class="button" href="<?php echo esc_url( $later_url ); ?>">
+					<?php echo esc_html__( 'Review later', 'relaypress-newsletter' ); ?>
+				</a>
+				<a class="button" href="<?php echo esc_url( $dismiss_url ); ?>">
+					<?php echo esc_html__( 'Dismiss', 'relaypress-newsletter' ); ?>
+				</a>
+			</p>
+		</div>
+		<?php
 	}
 
 	/**
@@ -153,8 +255,9 @@ final class RelayPress_Admin {
 		$out['api_token']    = sanitize_text_field( (string) ( $raw['api_token'] ?? $def['api_token'] ) );
 		$out['group_ids']    = sanitize_text_field( (string) ( $raw['group_ids'] ?? $def['group_ids'] ) );
 
-		$status                   = sanitize_text_field( (string) ( $raw['subscriber_status'] ?? $def['subscriber_status'] ) );
-		$out['subscriber_status'] = in_array( $status, array( 'inactive', 'active' ), true ) ? $status : 'inactive';
+		$status                       = sanitize_text_field( (string) ( $raw['subscriber_status'] ?? $def['subscriber_status'] ) );
+		$out['subscriber_status']     = in_array( $status, array( 'inactive', 'active' ), true ) ? $status : 'inactive';
+		$out['mailrelay_queue_first'] = ! empty( $raw['mailrelay_queue_first'] ) ? '1' : '0';
 
 		$out['turnstile_site_key']   = sanitize_text_field( (string) ( $raw['turnstile_site_key'] ?? $def['turnstile_site_key'] ) );
 		$out['turnstile_secret_key'] = sanitize_text_field( (string) ( $raw['turnstile_secret_key'] ?? $def['turnstile_secret_key'] ) );
@@ -255,6 +358,16 @@ final class RelayPress_Admin {
 												<span class="dashicons dashicons-external" aria-hidden="true"></span>
 											</a>
 										</p>
+									</div>
+								</div>
+								<div class="relaypress-field-row">
+									<label class="relaypress-field-label" for="relaypress-mailrelay-queue-first"><?php echo esc_html__( 'Queue first attempt', 'relaypress-newsletter' ); ?></label>
+									<div class="relaypress-field-control">
+										<label>
+											<input id="relaypress-mailrelay-queue-first" type="checkbox" name="<?php echo esc_attr( RelayPress_Newsletter::OPT_KEY ); ?>[mailrelay_queue_first]" value="1" <?php checked( $opts['mailrelay_queue_first'] ?? '0', '1' ); ?>>
+											<?php echo esc_html__( 'Send the first Mailrelay request to Action Scheduler instead of running it immediately.', 'relaypress-newsletter' ); ?>
+										</label>
+										<p class="description"><?php echo esc_html__( 'Improves performance but may delay the opt-in email.', 'relaypress-newsletter' ); ?></p>
 									</div>
 								</div>
 							</div>

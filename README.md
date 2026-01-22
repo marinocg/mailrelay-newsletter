@@ -80,7 +80,6 @@ CI compiles MO files during release. To package locally, make sure you compile t
 Compile translations (requires `msgfmt`):
 ```
 msgfmt languages/relaypress-newsletter-es_ES.po -o languages/relaypress-newsletter-es_ES.mo
-msgfmt languages/relaypress-newsletter-en_US.po -o languages/relaypress-newsletter-en_US.mo
 ```
 
 Create a ZIP from the plugin root (PowerShell example):

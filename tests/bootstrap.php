@@ -202,7 +202,12 @@ function shortcode_atts( array $pairs, $atts ): array {
 	}
 	return array_merge( $pairs, $atts );
 }
-function register_widget( string $class ): void {}
+function register_widget( string $class ): void {
+	$GLOBALS['relaypress_test_registered_widgets'][] = $class;
+}
+function wp_use_widgets_block_editor(): bool {
+	return ! empty( $GLOBALS['relaypress_test_use_block_widgets'] );
+}
 function add_options_page( string $page_title, string $menu_title, string $capability, string $menu_slug, $callback ): void {}
 function add_menu_page( string $page_title, string $menu_title, string $capability, string $menu_slug, $callback, string $icon_url = '', $position = null ): void {
 	$GLOBALS['relaypress_test_menu_pages'][] = array(
@@ -228,6 +233,50 @@ function add_submenu_page( string $parent_slug, string $page_title, string $menu
 function register_setting( string $group, string $name, array $args = array() ): void {}
 function register_activation_hook( string $file, $callback ): void {}
 function register_deactivation_hook( string $file, $callback ): void {}
+function current_user_can( string $capability ): bool {
+	return (bool) ( $GLOBALS['relaypress_test_current_user_can'] ?? true );
+}
+function get_current_user_id(): int {
+	return (int) ( $GLOBALS['relaypress_test_user_id'] ?? 1 );
+}
+function get_user_meta( int $user_id, string $key, bool $single = true ) {
+	if ( $single ) {
+		return $GLOBALS['relaypress_test_user_meta'][ $user_id ][ $key ] ?? '';
+	}
+	return array();
+}
+function update_user_meta( int $user_id, string $key, $value ): bool {
+	$GLOBALS['relaypress_test_user_meta'][ $user_id ][ $key ] = $value;
+	return true;
+}
+function delete_user_meta( int $user_id, string $key ): bool {
+	if ( isset( $GLOBALS['relaypress_test_user_meta'][ $user_id ] ) ) {
+		unset( $GLOBALS['relaypress_test_user_meta'][ $user_id ][ $key ] );
+	}
+	return true;
+}
+function get_current_screen() {
+	return $GLOBALS['relaypress_test_current_screen'] ?? null;
+}
+function get_file_data( string $file, array $headers ): array {
+	$data = array();
+	if ( ! is_readable( $file ) ) {
+		foreach ( $headers as $key => $header ) {
+			$data[ $key ] = '';
+		}
+		return $data;
+	}
+	$contents = (string) file_get_contents( $file );
+	foreach ( $headers as $key => $header ) {
+		$pattern     = '/^\\s*' . preg_quote( $header, '/' ) . '\\s*:\\s*(.+)$/mi';
+		$match_value = '';
+		if ( preg_match( $pattern, $contents, $matches ) ) {
+			$match_value = trim( (string) ( $matches[1] ?? '' ) );
+		}
+		$data[ $key ] = $match_value;
+	}
+	return $data;
+}
 function wp_script_is( string $handle, string $status = '' ): bool { return false; }
 function wp_enqueue_script( string $handle, string $src = '', array $deps = array(), $ver = false, $in_footer = false ): void {}
 function wp_register_script( string $handle, string $src = '', array $deps = array(), $ver = false, $in_footer = false ): void {
@@ -346,6 +395,20 @@ function wp_remote_post( string $url, array $args = array() ) {
 	);
 }
 
+function wp_remote_request( string $url, array $args = array() ) {
+	$method = strtoupper( (string) ( $args['method'] ?? 'GET' ) );
+	$GLOBALS['relaypress_test_last_http'] = array(
+		'method' => $method,
+		'url'    => $url,
+		'args'   => $args,
+	);
+	$bucket = $GLOBALS['relaypress_test_http'][ $method ] ?? array();
+	return $bucket[ $url ] ?? array(
+		'response' => array( 'code' => 500 ),
+		'body'     => '',
+	);
+}
+
 function wp_remote_get( string $url, array $args = array() ) {
 	$GLOBALS['relaypress_test_last_http'] = array(
 		'method' => 'GET',
@@ -410,7 +473,7 @@ function date_i18n( string $format, int $timestamp ): string {
 }
 
 function locate_template( array $templates ) {
-	return '';
+	return (string) ( $GLOBALS['relaypress_test_locate_template'] ?? '' );
 }
 
 function plugin_basename( string $file ): string {
