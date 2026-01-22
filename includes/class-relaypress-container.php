@@ -77,6 +77,15 @@ final class RelayPress_Container {
 	}
 
 	/**
+	 * Build task scheduler.
+	 *
+	 * @return RelayPress_Task_Scheduler
+	 */
+	public static function task_scheduler(): RelayPress_Task_Scheduler {
+		return new RelayPress_WP_Task_Scheduler();
+	}
+
+	/**
 	 * Build form repository.
 	 *
 	 * @return RelayPress_Form_Repository_Interface
@@ -118,7 +127,8 @@ final class RelayPress_Container {
 			self::mailrelay_client(),
 			self::options_repository(),
 			self::logs_repository(),
-			self::request_context()
+			self::request_context(),
+			self::task_scheduler()
 		);
 	}
 }

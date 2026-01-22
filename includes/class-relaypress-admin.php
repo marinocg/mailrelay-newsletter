@@ -153,8 +153,9 @@ final class RelayPress_Admin {
 		$out['api_token']    = sanitize_text_field( (string) ( $raw['api_token'] ?? $def['api_token'] ) );
 		$out['group_ids']    = sanitize_text_field( (string) ( $raw['group_ids'] ?? $def['group_ids'] ) );
 
-		$status                   = sanitize_text_field( (string) ( $raw['subscriber_status'] ?? $def['subscriber_status'] ) );
-		$out['subscriber_status'] = in_array( $status, array( 'inactive', 'active' ), true ) ? $status : 'inactive';
+		$status                       = sanitize_text_field( (string) ( $raw['subscriber_status'] ?? $def['subscriber_status'] ) );
+		$out['subscriber_status']     = in_array( $status, array( 'inactive', 'active' ), true ) ? $status : 'inactive';
+		$out['mailrelay_queue_first'] = ! empty( $raw['mailrelay_queue_first'] ) ? '1' : '0';
 
 		$out['turnstile_site_key']   = sanitize_text_field( (string) ( $raw['turnstile_site_key'] ?? $def['turnstile_site_key'] ) );
 		$out['turnstile_secret_key'] = sanitize_text_field( (string) ( $raw['turnstile_secret_key'] ?? $def['turnstile_secret_key'] ) );
@@ -255,6 +256,16 @@ final class RelayPress_Admin {
 												<span class="dashicons dashicons-external" aria-hidden="true"></span>
 											</a>
 										</p>
+									</div>
+								</div>
+								<div class="relaypress-field-row">
+									<label class="relaypress-field-label" for="relaypress-mailrelay-queue-first"><?php echo esc_html__( 'Queue first attempt', 'relaypress-newsletter' ); ?></label>
+									<div class="relaypress-field-control">
+										<label>
+											<input id="relaypress-mailrelay-queue-first" type="checkbox" name="<?php echo esc_attr( RelayPress_Newsletter::OPT_KEY ); ?>[mailrelay_queue_first]" value="1" <?php checked( $opts['mailrelay_queue_first'] ?? '0', '1' ); ?>>
+											<?php echo esc_html__( 'Send the first Mailrelay request to Action Scheduler instead of running it immediately.', 'relaypress-newsletter' ); ?>
+										</label>
+										<p class="description"><?php echo esc_html__( 'Improves performance but may delay the opt-in email.', 'relaypress-newsletter' ); ?></p>
 									</div>
 								</div>
 							</div>

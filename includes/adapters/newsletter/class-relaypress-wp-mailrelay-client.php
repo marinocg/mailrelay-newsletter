@@ -70,6 +70,7 @@ final class RelayPress_WP_Mailrelay_Client implements RelayPress_Mailrelay_Clien
 			'already_exists'            => ! empty( $create['already_exists'] ),
 			'http_code'                 => $create['http_code'] ?? null,
 			'body'                      => $create['body'] ?? null,
+			'retryable'                 => ! empty( $create['retryable'] ),
 			'confirmation_requested_at' => null,
 			'confirmation_http_code'    => null,
 			'confirmation_response'     => null,
@@ -90,6 +91,7 @@ final class RelayPress_WP_Mailrelay_Client implements RelayPress_Mailrelay_Clien
 				'already_exists'            => true,
 				'http_code'                 => $update['http_code'] ?? null,
 				'body'                      => $update['body'] ?? null,
+				'retryable'                 => ! empty( $update['retryable'] ),
 				'confirmation_requested_at' => null,
 				'confirmation_http_code'    => null,
 				'confirmation_response'     => null,
@@ -482,16 +484,19 @@ final class RelayPress_WP_Mailrelay_Client implements RelayPress_Mailrelay_Clien
 				'ok'        => false,
 				'http_code' => 0,
 				'body'      => $resp->get_error_message(),
+				'retryable' => true,
 			);
 		}
 
-		$code = (int) wp_remote_retrieve_response_code( $resp );
-		$body = (string) wp_remote_retrieve_body( $resp );
+		$code      = (int) wp_remote_retrieve_response_code( $resp );
+		$body      = (string) wp_remote_retrieve_body( $resp );
+		$retryable = ( 429 === $code || ( 500 <= $code && 600 > $code ) );
 
 		$result = array(
 			'ok'        => ( 200 <= $code && 300 > $code ),
 			'http_code' => $code,
 			'body'      => $body,
+			'retryable' => $retryable,
 		);
 
 		if ( ! $result['ok'] ) {
