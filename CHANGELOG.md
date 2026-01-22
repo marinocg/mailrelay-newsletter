@@ -1,8 +1,12 @@
 # Changelog
 
 ## Unreleased
+- Pending
+
+## 1.10.0
 - Add a neutral subscription use case for programmatic subscribers and logs.
 - Route form submissions through the new subscription use case.
+
 
 ## 1.9.0
 - Add a country selector field with ISO code validation and localized options.
