@@ -1474,6 +1474,30 @@ msgid "You can unsubscribe at any time using the link in each email."
 msgstr ""
 "Puedes darte de baja en cualquier momento desde el enlace de cada email."
 
+#: includes/class-relaypress-admin.php:129
+msgid "Your theme is overriding the RelayPress form template. Please update the template to version %s to ensure compatibility."
+msgstr "Tu tema está sobrescribiendo la plantilla del formulario de RelayPress. Actualiza la plantilla a la versión %s para asegurar la compatibilidad."
+
+#: includes/class-relaypress-admin.php:134
+msgid "Override locations: relaypress-newsletter/form.php or mr4wp/form.php."
+msgstr "Ubicaciones de la sobrescritura: relaypress-newsletter/form.php o mr4wp/form.php."
+
+#: includes/class-relaypress-admin.php:156
+msgid "Enjoying RelayPress? Please consider leaving a review on WordPress.org."
+msgstr "¿Te gusta RelayPress? Considera dejar una reseña en WordPress.org."
+
+#: includes/class-relaypress-admin.php:160
+msgid "Leave a review"
+msgstr "Dejar una reseña"
+
+#: includes/class-relaypress-admin.php:179
+msgid "Review later"
+msgstr "Recordar más tarde"
+
+#: includes/class-relaypress-admin.php:163
+msgid "Dismiss"
+msgstr "Descartar"
+
 #: templates/form.php:163
 msgid "Enable JavaScript to subscribe."
 msgstr "Activa JavaScript para poder suscribirte."

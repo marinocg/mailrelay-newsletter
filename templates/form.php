@@ -2,6 +2,8 @@
 /**
  * Newsletter form template.
  *
+ * RelayPress Template Version: 1.9.0
+ *
  * @package RelayPress_Newsletter
  *
  * @var string $email_placeholder

@@ -233,6 +233,50 @@ function add_submenu_page( string $parent_slug, string $page_title, string $menu
 function register_setting( string $group, string $name, array $args = array() ): void {}
 function register_activation_hook( string $file, $callback ): void {}
 function register_deactivation_hook( string $file, $callback ): void {}
+function current_user_can( string $capability ): bool {
+	return (bool) ( $GLOBALS['relaypress_test_current_user_can'] ?? true );
+}
+function get_current_user_id(): int {
+	return (int) ( $GLOBALS['relaypress_test_user_id'] ?? 1 );
+}
+function get_user_meta( int $user_id, string $key, bool $single = true ) {
+	if ( $single ) {
+		return $GLOBALS['relaypress_test_user_meta'][ $user_id ][ $key ] ?? '';
+	}
+	return array();
+}
+function update_user_meta( int $user_id, string $key, $value ): bool {
+	$GLOBALS['relaypress_test_user_meta'][ $user_id ][ $key ] = $value;
+	return true;
+}
+function delete_user_meta( int $user_id, string $key ): bool {
+	if ( isset( $GLOBALS['relaypress_test_user_meta'][ $user_id ] ) ) {
+		unset( $GLOBALS['relaypress_test_user_meta'][ $user_id ][ $key ] );
+	}
+	return true;
+}
+function get_current_screen() {
+	return $GLOBALS['relaypress_test_current_screen'] ?? null;
+}
+function get_file_data( string $file, array $headers ): array {
+	$data = array();
+	if ( ! is_readable( $file ) ) {
+		foreach ( $headers as $key => $header ) {
+			$data[ $key ] = '';
+		}
+		return $data;
+	}
+	$contents = (string) file_get_contents( $file );
+	foreach ( $headers as $key => $header ) {
+		$pattern     = '/^\\s*' . preg_quote( $header, '/' ) . '\\s*:\\s*(.+)$/mi';
+		$match_value = '';
+		if ( preg_match( $pattern, $contents, $matches ) ) {
+			$match_value = trim( (string) ( $matches[1] ?? '' ) );
+		}
+		$data[ $key ] = $match_value;
+	}
+	return $data;
+}
 function wp_script_is( string $handle, string $status = '' ): bool { return false; }
 function wp_enqueue_script( string $handle, string $src = '', array $deps = array(), $ver = false, $in_footer = false ): void {}
 function wp_register_script( string $handle, string $src = '', array $deps = array(), $ver = false, $in_footer = false ): void {
@@ -429,7 +473,7 @@ function date_i18n( string $format, int $timestamp ): string {
 }
 
 function locate_template( array $templates ) {
-	return '';
+	return (string) ( $GLOBALS['relaypress_test_locate_template'] ?? '' );
 }
 
 function plugin_basename( string $file ): string {
