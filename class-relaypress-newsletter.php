@@ -91,6 +91,7 @@ final class RelayPress_Newsletter {
 		add_action( 'admin_menu', array( 'RelayPress_Admin', 'reorder_submenu' ), 999 );
 		add_action( 'admin_init', array( 'RelayPress_Admin', 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( 'RelayPress_Admin', 'admin_enqueue' ) );
+		add_action( 'admin_notices', array( 'RelayPress_Admin', 'admin_notices' ) );
 		add_action( 'admin_menu', array( 'RelayPress_Upgrade_Admin', 'admin_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( 'RelayPress_Upgrade_Admin', 'admin_enqueue' ) );
 		if ( function_exists( 'is_admin' ) && is_admin() ) {

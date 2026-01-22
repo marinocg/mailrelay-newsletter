@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Frontend rendering and assets.
  */
 final class RelayPress_Frontend {
+	const TEMPLATE_VERSION = '1.9.0';
+	const TEMPLATE_HEADER  = 'RelayPress Template Version';
 
 	/**
 	 * Whether assets were requested on the current request.
@@ -463,7 +465,40 @@ final class RelayPress_Frontend {
 	 */
 	private static function resolve_template_path(): string {
 		$default = __DIR__ . '/../templates/form.php';
+		$found   = self::locate_template_override();
+		if ( '' !== $found ) {
+			return $found;
+		}
+		return $default;
+	}
 
+	/**
+	 * Get current form template info for admin warnings.
+	 *
+	 * @return array{path:string, override:bool, version:string}
+	 */
+	public static function get_template_info(): array {
+		$default = __DIR__ . '/../templates/form.php';
+		$found   = self::locate_template_override();
+		$path    = '' !== $found ? $found : $default;
+		$version = '';
+		if ( '' !== $found && function_exists( 'get_file_data' ) ) {
+			$data    = get_file_data( $path, array( 'template_version' => self::TEMPLATE_HEADER ) );
+			$version = isset( $data['template_version'] ) ? trim( (string) $data['template_version'] ) : '';
+		}
+		return array(
+			'path'     => $path,
+			'override' => '' !== $found,
+			'version'  => $version,
+		);
+	}
+
+	/**
+	 * Locate a theme override for the form template.
+	 *
+	 * @return string
+	 */
+	private static function locate_template_override(): string {
 		if ( function_exists( 'locate_template' ) ) {
 			$templates = array(
 				'relaypress-newsletter/form.php',
@@ -474,7 +509,6 @@ final class RelayPress_Frontend {
 				return $found;
 			}
 		}
-
-		return $default;
+		return '';
 	}
 }
