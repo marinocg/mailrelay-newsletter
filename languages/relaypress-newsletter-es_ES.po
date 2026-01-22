@@ -2156,3 +2156,15 @@ msgstr "RelayPress"
 #: includes/domain/forms/class-relaypress-forms.php:70
 msgid "Default Form"
 msgstr ""
+
+#: includes/class-relaypress-admin.php:262
+msgid "Queue first attempt"
+msgstr "Poner en cola el primer intento"
+
+#: includes/class-relaypress-admin.php:266
+msgid "Send the first Mailrelay request to Action Scheduler instead of running it immediately."
+msgstr "Envía la primera solicitud a Mailrelay a Action Scheduler en lugar de ejecutarla inmediatamente."
+
+#: includes/class-relaypress-admin.php:268
+msgid "Improves performance but may delay the opt-in email."
+msgstr "Mejora el rendimiento, pero puede retrasar el correo de confirmación."

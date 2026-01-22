@@ -30,6 +30,7 @@ require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-turnstil
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-rate-limiter.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-request-context.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-input-sanitizer.php';
+require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-task-scheduler.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-mailrelay-client.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-options-repository.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-logs-repository.php';
@@ -37,9 +38,11 @@ require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-turnst
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-rate-limiter.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-request-context.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-input-sanitizer.php';
+require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-task-scheduler.php';
 require_once __DIR__ . '/includes/use-cases/newsletter/class-relaypress-subscribe-use-case.php';
 require_once __DIR__ . '/includes/use-cases/newsletter/class-relaypress-submit-use-case.php';
 require_once __DIR__ . '/includes/class-relaypress-container.php';
+require_once __DIR__ . '/includes/class-relaypress-mailrelay-queue.php';
 require_once __DIR__ . '/includes/class-relaypress-frontend.php';
 require_once __DIR__ . '/includes/class-relaypress-admin.php';
 require_once __DIR__ . '/includes/admin/class-relaypress-upgrade-admin.php';
@@ -106,6 +109,8 @@ final class RelayPress_Newsletter {
 		add_action( 'wp_ajax_nopriv_relaypress_subscribe_ajax', array( 'RelayPress_Submit', 'handle_submit_ajax' ) );
 		add_action( 'wp_ajax_relaypress_subscribe_ajax', array( 'RelayPress_Submit', 'handle_submit_ajax' ) );
 
+		RelayPress_Mailrelay_Queue::register();
+
 		add_action( self::CRON_PURGE, array( 'RelayPress_Logs', 'purge_old_logs_cron' ) );
 
 		register_activation_hook( __FILE__, array( __CLASS__, 'activate' ) );
@@ -124,6 +129,7 @@ final class RelayPress_Newsletter {
 			'api_token'                     => '',
 			'group_ids'                     => '1', // comma-separated.
 			'subscriber_status'             => 'inactive', // inactive (double opt-in) / active (single opt-in).
+			'mailrelay_queue_first'         => '0', // Queue first attempt via Action Scheduler.
 
 			// Turnstile (optional if you define CF_TURNSTILE_* constants).
 			'turnstile_site_key'            => '',
