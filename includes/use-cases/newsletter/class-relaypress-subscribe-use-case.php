@@ -119,7 +119,7 @@ final class RelayPress_Subscribe_Use_Case {
 		$fields     = $phone_result['fields'] ?? $fields;
 		$phone_meta = $phone_result['phone_meta'] ?? null;
 
-		$queue_payload = $this->prepare_queue_payload( $payload, $fields, $phone_meta, $opts );
+		$queue_payload = $this->prepare_queue_payload( $payload, $fields, $phone_meta, $opts, $ip );
 		if ( $this->should_queue_first( $opts ) && ! $force_sync && $this->scheduler->is_available() ) {
 			if ( $this->enqueue_subscription( $queue_payload, 1 ) ) {
 				return array(
@@ -325,13 +325,17 @@ final class RelayPress_Subscribe_Use_Case {
 	 * @param array      $fields Mailrelay fields.
 	 * @param array|null $phone_meta Phone metadata.
 	 * @param array      $opts Global options.
+	 * @param string     $ip Client IP.
 	 * @return array
 	 */
-	private function prepare_queue_payload( array $payload, array $fields, ?array $phone_meta, array $opts ): array {
+	private function prepare_queue_payload( array $payload, array $fields, ?array $phone_meta, array $opts, string $ip ): array {
 		$queue_payload                     = $payload;
 		$queue_payload['fields']           = $fields;
 		$queue_payload['phone_meta']       = ! empty( $payload['phone_log'] ) ? $this->trim_phone_meta_for_queue( $phone_meta, $opts ) : null;
 		$queue_payload['phone_normalized'] = true;
+		if ( empty( $queue_payload['ip'] ) ) {
+			$queue_payload['ip'] = $ip;
+		}
 		if ( empty( $queue_payload['accepted_at'] ) ) {
 			$queue_payload['accepted_at'] = $this->request_context->current_time_mysql();
 		}

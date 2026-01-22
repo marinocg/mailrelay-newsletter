@@ -87,6 +87,7 @@ final class SubmitUseCaseTest extends TestCase {
 
 		$this->assertTrue( (bool) ( $result['queued'] ?? false ) );
 		$this->assertSame( 1, $scheduler->enqueued );
+		$this->assertSame( '203.0.113.10', $scheduler->last_args[0]['ip'] ?? '' );
 		$this->assertSame( 0, $mailrelay->calls );
 		$this->assertSame( array(), $logs->last_log );
 	}
@@ -1091,19 +1092,22 @@ final class Test_Options_Repository implements RelayPress_Options_Repository {
 final class Test_Task_Scheduler implements RelayPress_Task_Scheduler {
 	public int $enqueued = 0;
 	public int $scheduled = 0;
+	public array $last_args = array();
 
 	public function is_available(): bool {
 		return true;
 	}
 
 	public function enqueue( string $hook, array $args = array(), string $group = '' ): bool {
-		unset( $hook, $args, $group );
+		unset( $hook, $group );
+		$this->last_args = $args;
 		$this->enqueued++;
 		return true;
 	}
 
 	public function schedule( int $timestamp, string $hook, array $args = array(), string $group = '' ): bool {
-		unset( $timestamp, $hook, $args, $group );
+		unset( $timestamp, $hook, $group );
+		$this->last_args = $args;
 		$this->scheduled++;
 		return true;
 	}
