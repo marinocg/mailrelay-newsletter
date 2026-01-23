@@ -1,10 +1,14 @@
 # Changelog
 
 ## Unreleased
+- Pending
+
+## 1.11.0
 - Move the extensions registry, state, and admin UI into core.
 - Convert Turnstile to a core extension with generic extension hooks.
 - Add core extension tests and hook-based Turnstile verification.
 - Move Turnstile settings into a dedicated admin page.
+
 
 ## 1.10.0
 - Add a neutral subscription use case for programmatic subscribers and logs.
