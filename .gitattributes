@@ -11,6 +11,7 @@
 /vendor export-ignore
 /stubs export-ignore
 /tests export-ignore
+/site export-ignore
 /phpunit.xml.dist export-ignore
 /phpcs.xml.dist export-ignore
 /phpstan.neon export-ignore
