@@ -6,7 +6,7 @@
  * Requires at least: 6.0
  * Tested up to: 6.9
  * Requires PHP: 8.0
- * Author: Uve / Custom
+ * Author: RelayPress
  * License: GPLv3 or later
  * Text Domain: relaypress-newsletter
  * Domain Path: /languages

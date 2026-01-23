@@ -39,6 +39,7 @@ rsync -a "$ROOT_DIR/" "$DEST_DIR/" \
   --exclude ".vscode" \
   --exclude ".phpunit.cache" \
   --exclude "node_modules" \
+  --exclude "site" \
   --exclude "vendor" \
   --exclude "phpunit.xml.dist" \
   --exclude "phpstan.neon" \

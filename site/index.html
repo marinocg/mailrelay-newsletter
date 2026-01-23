@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RelayPress — Roadmap & What's Next</title>
+  <meta name="description" content="RelayPress roadmap, upcoming integrations, and development status." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="glow"></div>
+  <header class="hero">
+    <nav class="nav">
+      <div class="logo">RelayPress</div>
+      <div class="nav-actions">
+        <a class="button ghost" href="#roadmap">Roadmap</a>
+        <a class="button primary" href="#premium">Get Premium</a>
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <div class="hero-left">
+        <p class="eyebrow">Mailrelay Newsletter Plugin</p>
+        <h1>Roadmap & what's coming next</h1>
+        <p class="hero-subtitle">Focus right now: WooCommerce Premium extension. Next: more integrations.</p>
+        <div class="hero-tags">
+          <span class="tag">In development</span>
+          <span class="tag">Planned integrations</span>
+          <span class="tag">RelayPress Core</span>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="status-card">
+          <div class="status-row">
+            <span>Build status</span>
+            <span class="status-pill">Active</span>
+          </div>
+          <div class="status-row">
+            <span>Latest focus</span>
+            <span>WooCommerce Premium</span>
+          </div>
+          <div class="status-row">
+            <span>Next up</span>
+            <span>More integrations</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="roadmap" class="section">
+      <div class="section-header">
+        <h2>WooCommerce (Premium) — in development</h2>
+        <div class="badges">
+          <span class="badge amber">In development</span>
+          <span class="badge red">Premium</span>
+        </div>
+      </div>
+      <p class="lead">Add compliant opt-in at checkout and sync customers to Mailrelay without slowing down checkout.</p>
+
+      <div class="grid">
+        <div class="card">
+          <h3>What it includes (v1)</h3>
+          <p class="subtle">Launch essentials (Pro v1)</p>
+          <ul class="checklist">
+            <li>Enable/disable Woo integration + health status</li>
+            <li>Checkout opt-in checkbox (Classic + Blocks)</li>
+            <li>Subscribe triggers (processing/paid/completed) + guest support</li>
+            <li>Field mapping (email, name, phone, country)</li>
+            <li>Group routing rules (base group + product/category rules)</li>
+            <li>Order-level observability (per-order sync status + logs)</li>
+            <li>Compliance defaults (explicit opt-in + store consent evidence)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Next wave (v1.1+)</h3>
+          <ul class="checklist">
+            <li>Thank-you page fallback modal (for express/one-click flows if consent missing)</li>
+            <li>Customer preference page ("My Account" marketing opt-in)</li>
+            <li>Lifecycle enrichment fields (order_count, total_spent, last_order_date)</li>
+            <li>Bulk backfill tool (sync past customers)</li>
+            <li>Abandoned cart signals (automation triggers)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout">
+        Pro feature that drives ROI: better targeting + automations + deliverability at scale.
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Planned next integrations (Premium)</h2>
+        <div class="badges">
+          <span class="badge blue">Planned</span>
+          <span class="badge red">Premium</span>
+        </div>
+      </div>
+      <p class="lead">After WooCommerce reaches stable v1, we'll expand RelayPress with additional ESP/form integrations.</p>
+
+      <div class="split">
+        <div class="card">
+          <h3>Form builders</h3>
+          <ul class="list">
+            <li>Elementor Forms (deep integration)</li>
+            <li>Contact Form 7 / WPForms (based on demand)</li>
+            <li>Ninja Forms / WPForms</li>
+            <li>Better field mapping + conditional routing</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Other plugins</h3>
+          <ul class="list">
+            <li>Events plugins (The Events Calendar / Amelia / Bookly)</li>
+            <li>LMS plugins (LearnDash / TutorLMS / LifterLMS)</li>
+            <li>Membership plugins (MemberPress / Paid Memberships Pro / Restrict Content Pro)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Automation signals</h3>
+          <ul class="list">
+            <li>Abandoned cart events (requires Woo signals)</li>
+            <li>Product catalog sync (enables richer segmentation/automations)</li>
+          </ul>
+        </div>
+      </div>
+      <p class="footnote">Priorities are driven by demand, maintainability, and support burden.</p>
+    </section>
+
+    <section class="section" id="premium">
+      <div class="cta">
+        <div>
+          <h2>Unlock WooCommerce (Premium)</h2>
+          <p>Checkout opt-in, async sync + routing rules, and consent evidence + observability.</p>
+        </div>
+        <a class="button primary" href="#">Get Premium</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Mailrelay, Cloudflare, and Turnstile are registered trademarks of their respective owners. RelayPress is not affiliated with them.</p>
+  </footer>
+</body>
+</html>
