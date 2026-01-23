@@ -3,6 +3,10 @@
 ## Unreleased
 - Pending
 
+## 1.11.1
+- Add a11y improvements to the logs table (caption + ARIA toggle state).
+
+
 ## 1.11.0
 - Move the extensions registry, state, and admin UI into core.
 - Convert Turnstile to a core extension with generic extension hooks.
