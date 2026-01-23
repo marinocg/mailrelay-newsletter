@@ -22,6 +22,13 @@ final class RelayPress_Turnstile_Extension {
 	private static bool $assets_requested = false;
 
 	/**
+	 * Extension state repository instance.
+	 *
+	 * @var RelayPress_Extension_State_Repository|null
+	 */
+	private static ?RelayPress_Extension_State_Repository $state = null;
+
+	/**
 	 * Register hooks.
 	 *
 	 * @return void
@@ -187,12 +194,25 @@ final class RelayPress_Turnstile_Extension {
 	 */
 	private static function is_enabled_for_config( array $config ): bool {
 		unset( $config );
-		$state = new RelayPress_WP_Extension_State_Repository();
+		$state = self::extension_state();
 		if ( ! $state->is_enabled( RelayPress_Turnstile_Extension_Provider::SLUG, true ) ) {
 			return false;
 		}
 
 		return RelayPress_Container::turnstile_config()->is_enabled();
+	}
+
+	/**
+	 * Get extension state repository instance.
+	 *
+	 * @return RelayPress_Extension_State_Repository
+	 */
+	private static function extension_state(): RelayPress_Extension_State_Repository {
+		if ( null === self::$state ) {
+			self::$state = new RelayPress_WP_Extension_State_Repository();
+		}
+
+		return self::$state;
 	}
 
 	/**
