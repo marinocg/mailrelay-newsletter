@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RelayPress
  * Description: Widget + shortcode newsletter with Cloudflare Turnstile and Mailrelay official API. Uses inactive + resend_confirmation_email for double opt-in. Neutral success message to prevent email enumeration. GDPR consent log with retention and confirmation-send logging.
- * Version: 1.11.0
+ * Version: 1.11.1
  * Requires at least: 6.0
  * Tested up to: 6.9
  * Requires PHP: 8.0
@@ -82,7 +82,7 @@ final class RelayPress_Newsletter {
 	const TABLE       = 'relaypress_newsletter_consent';
 	const NONCE       = 'relaypress_subscribe_nonce';
 	const CRON_PURGE  = 'relaypress_newsletter_purge_logs';
-	const VERSION     = '1.11.0';
+	const VERSION     = '1.11.1';
 	const TEXT_DOMAIN = 'relaypress-newsletter';
 
 	/**

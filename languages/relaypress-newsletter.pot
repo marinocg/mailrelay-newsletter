@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: RelayPress 1.11.0"
+"Project-Id-Version: RelayPress 1.11.1"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-16 20:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"

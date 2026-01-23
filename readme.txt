@@ -4,7 +4,7 @@ Tags: newsletter, mailrelay, turnstile, gdpr
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 1.11.0
+Stable tag: 1.11.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -38,6 +38,10 @@ Cloudflare privacy policy: https://www.cloudflare.com/privacypolicy/
 == Changelog ==
 = Unreleased =
 - Pending
+
+= 1.11.1 =
+- Add a11y improvements to the logs table (caption + ARIA toggle state).
+
 
 = 1.11.0 =
 - Move the extensions registry, state, and admin UI into core.
