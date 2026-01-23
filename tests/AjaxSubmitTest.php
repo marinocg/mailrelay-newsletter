@@ -11,6 +11,7 @@ final class AjaxSubmitTest extends TestCase {
 		$GLOBALS['relaypress_test_transients'] = array();
 		$GLOBALS['relaypress_test_http']       = array( 'POST' => array(), 'GET' => array() );
 		$GLOBALS['relaypress_test_last_http']  = array();
+		$GLOBALS['relaypress_test_filters']    = array();
 		$_SERVER['REMOTE_ADDR']            = '203.0.113.10';
 
 		$GLOBALS['relaypress_test_options'] = array(
@@ -37,6 +38,8 @@ final class AjaxSubmitTest extends TestCase {
 			'response' => array( 'code' => 201 ),
 			'body'     => wp_json_encode( array( 'id' => 123 ) ),
 		);
+
+		RelayPress_Turnstile_Extension::register();
 	}
 
 	protected function tearDown(): void {

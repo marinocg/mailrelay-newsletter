@@ -2,11 +2,11 @@
 /**
  * Plugin Name: RelayPress
  * Description: Widget + shortcode newsletter with Cloudflare Turnstile and Mailrelay official API. Uses inactive + resend_confirmation_email for double opt-in. Neutral success message to prevent email enumeration. GDPR consent log with retention and confirmation-send logging.
- * Version: 1.10.0
+ * Version: 1.11.0
  * Requires at least: 6.0
  * Tested up to: 6.9
  * Requires PHP: 8.0
- * Author: Uve / Custom
+ * Author: RelayPress
  * License: GPLv3 or later
  * Text Domain: relaypress-newsletter
  * Domain Path: /languages
@@ -21,30 +21,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once __DIR__ . '/includes/class-relaypress-utils.php';
 require_once __DIR__ . '/includes/class-relaypress-phone-normalizer.php';
-require_once __DIR__ . '/includes/class-relaypress-turnstile.php';
 require_once __DIR__ . '/includes/class-relaypress-logs.php';
+require_once __DIR__ . '/includes/domain/extensions/class-relaypress-extension.php';
+require_once __DIR__ . '/includes/domain/extensions/class-relaypress-extension-status.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-mailrelay-client.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-options-repository.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-logs-repository.php';
+require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-turnstile-config.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-turnstile-verifier.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-rate-limiter.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-request-context.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-input-sanitizer.php';
 require_once __DIR__ . '/includes/ports/newsletter/interface-relaypress-task-scheduler.php';
+require_once __DIR__ . '/includes/ports/extensions/interface-relaypress-extension-provider.php';
+require_once __DIR__ . '/includes/ports/extensions/interface-relaypress-extension-registry.php';
+require_once __DIR__ . '/includes/ports/extensions/interface-relaypress-extension-state-repository.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-mailrelay-client.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-options-repository.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-logs-repository.php';
+require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-turnstile-config.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-turnstile-verifier.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-rate-limiter.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-request-context.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-input-sanitizer.php';
 require_once __DIR__ . '/includes/adapters/newsletter/class-relaypress-wp-task-scheduler.php';
+require_once __DIR__ . '/includes/adapters/extensions/class-relaypress-wp-extension-registry.php';
+require_once __DIR__ . '/includes/adapters/extensions/class-relaypress-wp-extension-state-repository.php';
 require_once __DIR__ . '/includes/use-cases/newsletter/class-relaypress-subscribe-use-case.php';
 require_once __DIR__ . '/includes/use-cases/newsletter/class-relaypress-submit-use-case.php';
+require_once __DIR__ . '/includes/use-cases/extensions/class-relaypress-list-extensions.php';
+require_once __DIR__ . '/includes/use-cases/extensions/class-relaypress-save-extensions.php';
 require_once __DIR__ . '/includes/class-relaypress-container.php';
 require_once __DIR__ . '/includes/class-relaypress-mailrelay-queue.php';
 require_once __DIR__ . '/includes/class-relaypress-frontend.php';
 require_once __DIR__ . '/includes/class-relaypress-admin.php';
+require_once __DIR__ . '/includes/admin/class-relaypress-extensions-admin.php';
+require_once __DIR__ . '/includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php';
 require_once __DIR__ . '/includes/admin/class-relaypress-upgrade-admin.php';
 require_once __DIR__ . '/includes/domain/forms/class-relaypress-form.php';
 require_once __DIR__ . '/includes/domain/forms/class-relaypress-form-config.php';
@@ -58,6 +70,8 @@ require_once __DIR__ . '/includes/class-relaypress-widgets.php';
 require_once __DIR__ . '/includes/class-relaypress-elementor.php';
 require_once __DIR__ . '/includes/class-relaypress-gutenberg.php';
 require_once __DIR__ . '/includes/class-relaypress-newsletter-widget.php';
+require_once __DIR__ . '/includes/extensions/turnstile/class-relaypress-turnstile-extension-provider.php';
+require_once __DIR__ . '/includes/extensions/turnstile/class-relaypress-turnstile-extension.php';
 
 /**
  * Main plugin class.
@@ -68,7 +82,7 @@ final class RelayPress_Newsletter {
 	const TABLE       = 'relaypress_newsletter_consent';
 	const NONCE       = 'relaypress_subscribe_nonce';
 	const CRON_PURGE  = 'relaypress_newsletter_purge_logs';
-	const VERSION     = '1.10.0';
+	const VERSION     = '1.11.0';
 	const TEXT_DOMAIN = 'relaypress-newsletter';
 
 	/**
@@ -89,11 +103,21 @@ final class RelayPress_Newsletter {
 		add_action( 'relaypress_elementor_register_controls', array( 'RelayPress_Elementor', 'register_form_controls' ), 10, 2 );
 		add_action( 'admin_menu', array( 'RelayPress_Admin', 'admin_menu' ) );
 		add_action( 'admin_menu', array( 'RelayPress_Admin', 'reorder_submenu' ), 999 );
+		add_action( 'admin_menu', array( 'RelayPress_Turnstile_Admin', 'admin_menu' ) );
+		add_action( 'admin_head', array( 'RelayPress_Turnstile_Admin', 'hide_menu_css' ) );
 		add_action( 'admin_init', array( 'RelayPress_Admin', 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( 'RelayPress_Admin', 'admin_enqueue' ) );
 		add_action( 'admin_notices', array( 'RelayPress_Admin', 'admin_notices' ) );
 		add_action( 'admin_menu', array( 'RelayPress_Upgrade_Admin', 'admin_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( 'RelayPress_Upgrade_Admin', 'admin_enqueue' ) );
+		add_action( 'admin_post_relaypress_save_turnstile', array( 'RelayPress_Turnstile_Admin', 'handle_save' ) );
+		add_action( 'admin_post_relaypress_test_turnstile', array( 'RelayPress_Turnstile_Admin', 'handle_test' ) );
+		$extensions_registry = new RelayPress_WP_Extension_Registry();
+		$extensions_state    = new RelayPress_WP_Extension_State_Repository();
+		$extensions_list     = new RelayPress_List_Extensions( $extensions_registry, $extensions_state );
+		$extensions_save     = new RelayPress_Save_Extensions( $extensions_registry, $extensions_state );
+		RelayPress_Extensions_Admin::init( $extensions_list, $extensions_save );
+		RelayPress_Turnstile_Extension::register();
 		if ( function_exists( 'is_admin' ) && is_admin() ) {
 			require_once __DIR__ . '/includes/admin/forms/class-relaypress-forms-table.php';
 			require_once __DIR__ . '/includes/admin/forms/class-relaypress-forms-list-page.php';
@@ -135,6 +159,7 @@ final class RelayPress_Newsletter {
 			// Turnstile (optional if you define CF_TURNSTILE_* constants).
 			'turnstile_site_key'            => '',
 			'turnstile_secret_key'          => '',
+			'turnstile_load_js'             => '1',
 
 			// UI texts.
 			'title'                         => __( 'Newsletter', 'relaypress-newsletter' ),

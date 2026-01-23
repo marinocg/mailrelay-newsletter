@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: RelayPress 1.10.0"
+"Project-Id-Version: RelayPress 1.11.0"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-16 20:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -342,6 +342,15 @@ msgstr ""
 
 #: includes/class-relaypress-admin.php:588
 msgid "Rate limit values reduce abuse but can block repeated tests."
+msgstr ""
+
+#: includes/class-relaypress-admin.php:705
+msgid "Anti-spam settings"
+msgstr ""
+
+#: includes/class-relaypress-admin.php:708
+#, php-format
+msgid "Configure anti-spam protections from the <a href=\"%s\">Extensions</a> screen."
 msgstr ""
 
 #: includes/class-relaypress-admin.php:593
@@ -1420,11 +1429,7 @@ msgstr ""
 msgid "I agree to receive the newsletter and have read the privacy policy"
 msgstr ""
 
-#: class-relaypress-newsletter.php:230
-#: includes/admin/class-relaypress-upgrade-admin.php:29
-#: includes/admin/class-relaypress-upgrade-admin.php:30
-#: includes/admin/class-relaypress-upgrade-admin.php:70
-#: includes/admin/class-relaypress-upgrade-admin.php:73
+#: class-relaypress-newsletter.php:263
 msgid "Upgrade to Premium"
 msgstr ""
 
@@ -1492,26 +1497,6 @@ msgstr ""
 
 #: templates/form.php:166
 msgid "Turnstile is not configured (Site Key)."
-msgstr ""
-
-#: includes/admin/class-relaypress-upgrade-admin.php:68
-msgid "Unlock premium tools and integrations"
-msgstr ""
-
-#: includes/admin/class-relaypress-upgrade-admin.php:69
-msgid "Get advanced segmentation, integrations, and priority support."
-msgstr ""
-
-#: includes/admin/class-relaypress-upgrade-admin.php:78
-msgid "Premium integrations"
-msgstr ""
-
-#: includes/admin/class-relaypress-upgrade-admin.php:79
-msgid "Advanced segmentation and testing"
-msgstr ""
-
-#: includes/admin/class-relaypress-upgrade-admin.php:80
-msgid "Priority support"
 msgstr ""
 
 #: includes/admin/forms/class-relaypress-forms-admin.php:124
@@ -2154,4 +2139,482 @@ msgstr ""
 
 #: includes/class-relaypress-admin.php:268
 msgid "Improves performance but may delay the opt-in email."
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:56
+#: includes/admin/class-relaypress-extensions-admin.php:57
+#: includes/admin/class-relaypress-extensions-admin.php:116
+msgid "Extensions"
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:119
+msgid "Extensions updated."
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:130
+msgid "Extension"
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:132
+msgid "Activation"
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:139
+msgid "No extensions installed."
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:150
+msgid "Unavailable"
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:194
+msgid "Toggle an extension, then click \"Save Changes\" to apply."
+msgstr ""
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:46
+msgid "Cloudflare Turnstile spam protection."
+msgstr ""
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:49
+msgid "Configure Turnstile site and secret keys."
+msgstr ""
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:71
+msgid "Configured"
+msgstr ""
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:72
+msgid "Not configured"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:79
+msgid "Turnstile settings updated."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:144
+msgid "Turnstile test successful."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:148
+msgid "Turnstile test failed. Please check your keys and try again."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:88
+msgid "Cloudflare Turnstile"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:111
+msgid "Load Turnstile script"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:114
+msgid "Load the Turnstile JavaScript on the frontend"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:116
+msgid "Disable this if another plugin or theme already loads the Turnstile script."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:127
+msgid "Get your API keys"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:131
+msgid "Create a Turnstile site in your Cloudflare dashboard to get the site and secret keys."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:136
+msgid "Open Turnstile dashboard"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:145
+msgid "Script loading"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:147
+msgid "RelayPress can enqueue the Turnstile JavaScript automatically."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:148
+msgid "Disable it when your theme or another plugin already includes Turnstile."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:148
+msgid "Use the same Turnstile site key and secret pair as the other plugin to prevent validation errors."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:225
+msgid "Test configuration"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:227
+msgid "Add your Turnstile keys above to run the test."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:233
+msgid "Run Turnstile test"
+msgstr ""
+
+#: includes/class-relaypress-admin.php:143
+msgid "Turnstile is enabled but not configured. <a href="%s">Add your site and secret keys</a> to avoid validation errors."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:71
+msgid "Roadmap & what's coming next"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:74
+msgid "RelayPress (Mailrelay Newsletter) — development status, planned integrations, and next steps"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:76
+msgid "Get Premium (WooCommerce)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:83
+msgid "Action Scheduler"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:84
+msgid "WP-Cron"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:92
+msgid "Needs configuration"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:99
+msgid "Installed: RelayPress v%s"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:103
+msgid "Mailrelay: Connected"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:104
+msgid "Mailrelay: Not connected"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:106
+msgid "WooCommerce: Active"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:107
+msgid "WooCommerce: Not active"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:113
+msgid "Open WooCommerce Integration"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:116
+msgid "Install/Activate WooCommerce"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:138
+msgid "Focus right now: WooCommerce Premium extension. Next: more integrations."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:162
+msgid "Learn what's included"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:172
+msgid "This roadmap reflects current priorities. Items may shift based on stability and user feedback."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:179
+msgid "WooCommerce (Premium) — in development"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:181
+msgid "In development"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:182 #: includes/admin/class-relaypress-upgrade-admin.php:220
+msgid "Premium"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:185
+msgid "Add compliant opt-in at checkout and sync customers to Mailrelay without slowing down checkout."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:187
+msgid "What it includes (v1)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:188
+msgid "Launch essentials (Pro v1)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:190
+msgid "Enable/disable Woo integration + health status"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:191
+msgid "Checkout opt-in checkbox (Classic + Blocks)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:192
+msgid "Subscribe triggers (processing/paid/completed) + guest support"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:193
+msgid "Field mapping (email, name, phone, country)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:194
+msgid "Group routing rules (base group + product/category rules)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:195
+msgid "Order-level observability (per-order sync status + logs)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:196
+msgid "Compliance defaults (explicit opt-in + store consent evidence)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:200
+msgid "Next wave (v1.1+)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:202
+msgid "Thank-you page fallback modal (for express/one-click flows if consent missing)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:203
+msgid "Customer preference page (\"My Account\" marketing opt-in)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:204
+msgid "Lifecycle enrichment fields (order_count, total_spent, last_order_date)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:205
+msgid "Bulk backfill tool (sync past customers)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:206
+msgid "Abandoned cart signals (automation triggers)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:211
+msgid "Pro feature that drives ROI: better targeting + automations + deliverability at scale."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:217
+msgid "Planned next integrations (Premium)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:219 #: includes/admin/class-relaypress-upgrade-admin.php:229 #: includes/admin/class-relaypress-upgrade-admin.php:230 #: includes/admin/class-relaypress-upgrade-admin.php:231 #: includes/admin/class-relaypress-upgrade-admin.php:232 #: includes/admin/class-relaypress-upgrade-admin.php:238 #: includes/admin/class-relaypress-upgrade-admin.php:239 #: includes/admin/class-relaypress-upgrade-admin.php:240 #: includes/admin/class-relaypress-upgrade-admin.php:248 #: includes/admin/class-relaypress-upgrade-admin.php:249
+msgid "Planned"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:223
+msgid "After WooCommerce reaches stable v1, we'll expand RelayPress with additional ESP/form integrations."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:227
+msgid "Form builders"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:229
+msgid "Elementor Forms (deep integration)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:230
+msgid "Contact Form 7 / WPForms (based on demand)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:231
+msgid "Ninja Forms / WPForms"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:232
+msgid "Better field mapping + conditional routing"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:236
+msgid "Other plugins"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:238
+msgid "Events plugins (The Events Calendar / Amelia / Bookly)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:239
+msgid "LMS plugins (LearnDash / TutorLMS / LifterLMS)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:240
+msgid "Membership plugins (MemberPress / Paid Memberships Pro / Restrict Content Pro)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:246
+msgid "Automation signals"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:248
+msgid "Abandoned cart events (requires Woo signals)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:249
+msgid "Product catalog sync (enables richer segmentation/automations)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:253
+msgid "These items will be prioritized by: demand, maintainability, and support burden."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:258
+msgid "Core (Free) — foundation improvements"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:259
+msgid "Core"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:262
+msgid "Reliable subscription pipeline (queue + retries where applicable)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:263
+msgid "Multiple forms (CPT-based forms + per-form config)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:264
+msgid "Diagnostics snapshot (system status + copy debug report)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:271
+msgid "Quick links"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:276
+msgid "Diagnostics"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:279 #: includes/admin/class-relaypress-upgrade-admin.php:281
+msgid "WooCommerce integration (Premium)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:288
+msgid "System status"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:291
+msgid "WordPress version"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:295
+msgid "PHP version"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:299
+msgid "WooCommerce"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:300
+msgid "Active"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:300
+msgid "Not active"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:303
+msgid "Mailrelay connection"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:304
+msgid "OK"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:304
+msgid "Not connected"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:307
+msgid "Queue engine"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:320
+msgid "Debug report copied."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:321
+msgid "Copy failed. Please try again."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:322
+msgid "Copy debug report"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:329
+msgid "Compliance notes"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:331
+msgid "Mailrelay is an external service used to store and manage subscribers."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:332
+msgid "Cloudflare Turnstile may be used for anti-spam protection."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:334
+msgid "Mailrelay Terms"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:336
+msgid "Mailrelay Privacy"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:338
+msgid "Turnstile Privacy"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:345
+msgid "Unlock WooCommerce (Premium)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:347
+msgid "Checkout opt-in (Classic + Blocks)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:348
+msgid "Async sync + routing rules"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:349
+msgid "Consent evidence + observability"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:359
+msgid "WooCommerce status"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:364
+msgid "WooCommerce detected and ready for RelayPress settings."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:365
+msgid "WooCommerce is not active yet. Enable it to finish setup."
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:261
+msgid "Click to expand"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:203
+msgid "Customer preference page (\"My Account\" marketing opt-in)"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:260
+msgid "Click to expand"
+msgstr ""
+
+#: includes/admin/class-relaypress-upgrade-admin.php:373
+msgid "Mailrelay, Cloudflare, and Turnstile are registered trademarks of their respective owners. RelayPress is not affiliated with them."
 msgstr ""

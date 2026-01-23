@@ -106,7 +106,7 @@ final class RelayPress_Admin {
 		}
 
 		$show_upgrade = (bool) apply_filters( 'relaypress_show_upgrade_ui', true );
-		if ( $show_upgrade && false !== strpos( $hook_suffix, 'relaypress-newsletter' ) ) {
+		if ( $show_upgrade ) {
 			$src = plugins_url( 'assets/admin-upgrade.css', RelayPress_Utils::plugin_file() );
 			wp_enqueue_style( 'relaypress-admin-upgrade', $src, array(), RelayPress_Newsletter::VERSION );
 		}
@@ -131,6 +131,23 @@ final class RelayPress_Admin {
 		$screen_id = (string) $screen->id;
 		if ( 'dashboard' !== $screen_id && false === strpos( $screen_id, 'relaypress-newsletter' ) ) {
 			return;
+		}
+
+		$turnstile_state = new RelayPress_WP_Extension_State_Repository();
+		if ( $turnstile_state->is_enabled( RelayPress_Turnstile_Extension_Provider::SLUG, true )
+			&& ! RelayPress_Container::turnstile_config()->is_enabled()
+		) {
+			$turnstile_url = admin_url( 'admin.php?page=relaypress-newsletter-turnstile' );
+			$message       = sprintf(
+				/* translators: %s: Turnstile settings URL. */
+				__( 'Turnstile is enabled but not configured. <a href="%s">Add your site and secret keys</a> to avoid validation errors.', 'relaypress-newsletter' ),
+				esc_url( $turnstile_url )
+			);
+			?>
+			<div class="notice notice-warning">
+				<p><?php echo wp_kses_post( $message ); ?></p>
+			</div>
+			<?php
 		}
 
 		$info = RelayPress_Frontend::get_template_info();
@@ -215,6 +232,7 @@ final class RelayPress_Admin {
 			'relaypress-newsletter',
 			'relaypress-newsletter-forms',
 			'relaypress-newsletter-logs',
+			'relaypress-newsletter-extensions',
 			'relaypress-newsletter-upgrade',
 		);
 
@@ -562,26 +580,6 @@ final class RelayPress_Admin {
 						</div>
 
 						<div class="relaypress-panel">
-							<h3><?php echo esc_html__( 'Spam protection', 'relaypress-newsletter' ); ?></h3>
-							<div class="relaypress-form-grid">
-								<div class="relaypress-field-row">
-									<label class="relaypress-field-label" for="relaypress-turnstile-site"><?php echo esc_html__( 'Turnstile Site Key', 'relaypress-newsletter' ); ?></label>
-									<div class="relaypress-field-control">
-										<input id="relaypress-turnstile-site" type="text" class="regular-text" name="<?php echo esc_attr( RelayPress_Newsletter::OPT_KEY ); ?>[turnstile_site_key]"
-											value="<?php echo esc_attr( $opts['turnstile_site_key'] ); ?>" />
-									</div>
-								</div>
-								<div class="relaypress-field-row">
-									<label class="relaypress-field-label" for="relaypress-turnstile-secret"><?php echo esc_html__( 'Turnstile Secret Key', 'relaypress-newsletter' ); ?></label>
-									<div class="relaypress-field-control">
-										<input id="relaypress-turnstile-secret" type="password" class="regular-text" name="<?php echo esc_attr( RelayPress_Newsletter::OPT_KEY ); ?>[turnstile_secret_key]"
-											value="<?php echo esc_attr( $opts['turnstile_secret_key'] ); ?>" />
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="relaypress-panel">
 							<h3><?php echo esc_html__( 'Text defaults', 'relaypress-newsletter' ); ?></h3>
 							<div class="relaypress-form-grid">
 								<div class="relaypress-field-row">
@@ -700,6 +698,21 @@ final class RelayPress_Admin {
 								<li><?php echo esc_html__( 'Turnstile keys are shared across all forms.', 'relaypress-newsletter' ); ?></li>
 								<li><?php echo esc_html__( 'Rate limit values reduce abuse but can block repeated tests.', 'relaypress-newsletter' ); ?></li>
 							</ul>
+						</div>
+
+						<div class="relaypress-panel relaypress-help-panel">
+							<h4><?php echo esc_html__( 'Anti-spam settings', 'relaypress-newsletter' ); ?></h4>
+							<p>
+								<?php
+								printf(
+									wp_kses_post(
+										/* translators: %s: Extensions settings URL. */
+										__( 'Configure anti-spam protections from the <a href="%s">Extensions</a> screen.', 'relaypress-newsletter' )
+									),
+									esc_url( admin_url( 'admin.php?page=relaypress-newsletter-extensions' ) )
+								);
+								?>
+							</p>
 						</div>
 
 						<div class="relaypress-panel relaypress-help-panel">

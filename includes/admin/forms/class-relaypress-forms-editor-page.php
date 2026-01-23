@@ -386,29 +386,6 @@ final class RelayPress_Forms_Editor_Page {
 							</div>
 
 							<div class="relaypress-panel">
-					<h3><?php echo esc_html__( 'Spam protection', 'relaypress-newsletter' ); ?></h3>
-					<div class="relaypress-form-grid">
-						<div class="relaypress-field-row">
-							<label class="relaypress-field-label" for="relaypress-turnstile-mode"><?php echo esc_html__( 'Turnstile', 'relaypress-newsletter' ); ?></label>
-							<div class="relaypress-field-control">
-								<select id="relaypress-turnstile-mode" name="form_config[turnstile][mode]" class="relaypress-turnstile-mode">
-									<option value="inherit" <?php selected( $config['turnstile']['mode'] ?? 'inherit', 'inherit' ); ?>>
-										<?php echo esc_html__( 'Inherit global setting', 'relaypress-newsletter' ); ?>
-									</option>
-									<option value="on" <?php selected( $config['turnstile']['mode'] ?? 'inherit', 'on' ); ?>>
-										<?php echo esc_html__( 'Enabled', 'relaypress-newsletter' ); ?>
-									</option>
-									<option value="off" <?php selected( $config['turnstile']['mode'] ?? 'inherit', 'off' ); ?>>
-										<?php echo esc_html__( 'Disabled', 'relaypress-newsletter' ); ?>
-									</option>
-								</select>
-								<p class="description"><?php echo esc_html__( 'Choose how this form handles spam protection.', 'relaypress-newsletter' ); ?></p>
-							</div>
-						</div>
-					</div>
-							</div>
-
-							<div class="relaypress-panel">
 					<h3><?php echo esc_html__( 'Advanced', 'relaypress-newsletter' ); ?></h3>
 					<div class="relaypress-form-grid">
 						<div class="relaypress-field-row">
@@ -443,7 +420,6 @@ final class RelayPress_Forms_Editor_Page {
 							<ul class="relaypress-help-list">
 								<li><?php echo esc_html__( 'Inherited settings use the global defaults from the main plugin settings page.', 'relaypress-newsletter' ); ?></li>
 								<li><?php echo esc_html__( 'Override only when this form needs different behavior.', 'relaypress-newsletter' ); ?></li>
-								<li><?php echo esc_html__( 'Turning off Turnstile disables it for this form only.', 'relaypress-newsletter' ); ?></li>
 							</ul>
 						</div>
 					</div>

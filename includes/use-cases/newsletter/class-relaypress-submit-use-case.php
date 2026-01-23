@@ -21,13 +21,6 @@ final class RelayPress_Submit_Use_Case {
 	private $options;
 
 	/**
-	 * Turnstile verifier.
-	 *
-	 * @var RelayPress_Turnstile_Verifier
-	 */
-	private $turnstile;
-
-	/**
 	 * Rate limiter.
 	 *
 	 * @var RelayPress_Rate_Limiter
@@ -68,7 +61,6 @@ final class RelayPress_Submit_Use_Case {
 	 * @param RelayPress_Mailrelay_Client          $mailrelay Mailrelay client.
 	 * @param RelayPress_Options_Repository        $options Options repository.
 	 * @param RelayPress_Logs_Repository           $logs Logs repository.
-	 * @param RelayPress_Turnstile_Verifier        $turnstile Turnstile verifier.
 	 * @param RelayPress_Rate_Limiter              $rate_limiter Rate limiter.
 	 * @param RelayPress_Request_Context           $request_context Request context.
 	 * @param RelayPress_Input_Sanitizer           $sanitizer Input sanitizer.
@@ -79,7 +71,6 @@ final class RelayPress_Submit_Use_Case {
 		RelayPress_Mailrelay_Client $mailrelay,
 		RelayPress_Options_Repository $options,
 		RelayPress_Logs_Repository $logs,
-		RelayPress_Turnstile_Verifier $turnstile,
 		RelayPress_Rate_Limiter $rate_limiter,
 		RelayPress_Request_Context $request_context,
 		RelayPress_Input_Sanitizer $sanitizer,
@@ -87,7 +78,6 @@ final class RelayPress_Submit_Use_Case {
 		?RelayPress_Subscribe_Use_Case $subscribe_use_case = null
 	) {
 		$this->options         = $options;
-		$this->turnstile       = $turnstile;
 		$this->rate_limiter    = $rate_limiter;
 		$this->request_context = $request_context;
 		$this->sanitizer       = $sanitizer;
@@ -144,11 +134,9 @@ final class RelayPress_Submit_Use_Case {
 			return $this->build_result( 'ok', $messages );
 		}
 
-		if ( $this->turnstile_enabled( $config ) ) {
-			$token = $this->sanitizer->sanitize_text( $this->sanitizer->unslash( $data['cf-turnstile-response'] ?? '' ) );
-			if ( ! $this->turnstile->verify( $token, $ip ) ) {
-				return $this->build_result( 'captcha', $messages );
-			}
+		$extension_result = apply_filters( 'relaypress_extension_verify_submission', null, $data, $context, $ip );
+		if ( is_array( $extension_result ) && 'ok' !== ( $extension_result['status'] ?? 'ok' ) ) {
+			return $this->build_result( (string) $extension_result['status'], $messages );
 		}
 
 		$group_ids_cfg   = RelayPress_Utils::parse_group_ids( (string) ( $config['destination']['group_ids'] ?? '' ) );
@@ -357,23 +345,5 @@ final class RelayPress_Submit_Use_Case {
 		$opts     = $this->options->get_options();
 		$defaults = RelayPress_Form_Config::defaults( $opts );
 		return $defaults['messages'] ?? array();
-	}
-
-	/**
-	 * Determine if Turnstile should be enforced for a config.
-	 *
-	 * @param array $config Form config.
-	 * @return bool
-	 */
-	private function turnstile_enabled( array $config ): bool {
-		$turnstile = $config['turnstile'] ?? array();
-		$mode      = (string) ( $turnstile['mode'] ?? 'inherit' );
-		if ( 'off' === $mode ) {
-			return false;
-		}
-		if ( 'on' === $mode ) {
-			return true;
-		}
-		return RelayPress_Turnstile::is_enabled();
 	}
 }

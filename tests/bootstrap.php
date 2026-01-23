@@ -279,6 +279,14 @@ function get_file_data( string $file, array $headers ): array {
 }
 function wp_script_is( string $handle, string $status = '' ): bool { return false; }
 function wp_enqueue_script( string $handle, string $src = '', array $deps = array(), $ver = false, $in_footer = false ): void {}
+function wp_enqueue_style( string $handle, string $src = '', array $deps = array(), $ver = false, string $media = 'all' ): void {
+	$GLOBALS['relaypress_test_styles'][ $handle ] = array(
+		'src'   => $src,
+		'deps'  => $deps,
+		'ver'   => $ver,
+		'media' => $media,
+	);
+}
 function wp_register_script( string $handle, string $src = '', array $deps = array(), $ver = false, $in_footer = false ): void {
 	$GLOBALS['relaypress_test_scripts'][ $handle ] = array(
 		'src'       => $src,

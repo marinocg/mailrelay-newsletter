@@ -62,6 +62,8 @@ If you are an automated coding agent (Copilot/ChatGPT/Cursor/etc.), follow these
 - `includes/use-cases/` — application logic (submit flow, form use cases).
 - `includes/admin/` — admin UI (forms CRUD, tables).
 - `includes/class-relaypress-container.php` — service container wiring.
+- `includes/domain/extensions`, `includes/use-cases/extensions` — core extension registry/state and use-cases.
+- Extension hooks are generic (`relaypress_extension_*`) and power Turnstile and future integrations.
 
 Agent rule: when adding new behavior, prefer:
 **domain → port → adapter → use-case**, and wire it via `RelayPress_Container`.

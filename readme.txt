@@ -4,7 +4,7 @@ Tags: newsletter, mailrelay, turnstile, gdpr
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 1.10.0
+Stable tag: 1.11.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -25,6 +25,7 @@ Privacy policy: https://mailrelay.com/en/privacy-policy/
 
 = Cloudflare Turnstile (optional) =
 If enabled, the plugin loads Cloudflare Turnstile on the frontend and sends the Turnstile response token (and the requester IP) to Cloudflare for verification. This only happens after an admin enables Turnstile and enters site/secret keys.
+Configure Turnstile keys in Settings -> RelayPress -> Turnstile.
 
 Turnstile privacy addendum: https://www.cloudflare.com/turnstile-privacy-policy/
 Cloudflare privacy policy: https://www.cloudflare.com/privacypolicy/
@@ -37,6 +38,13 @@ Cloudflare privacy policy: https://www.cloudflare.com/privacypolicy/
 == Changelog ==
 = Unreleased =
 - Pending
+
+= 1.11.0 =
+- Move the extensions registry, state, and admin UI into core.
+- Convert Turnstile to a core extension with generic extension hooks.
+- Add core extension tests and hook-based Turnstile verification.
+- Move Turnstile settings into a dedicated admin page.
+
 
 = 1.10.0 =
 - Add a neutral subscription use case for programmatic subscribers and logs.

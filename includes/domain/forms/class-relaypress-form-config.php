@@ -105,9 +105,6 @@ final class RelayPress_Form_Config {
 				'label'       => (string) ( $opts['consent_label'] ?? '' ),
 				'privacy_url' => (string) ( $opts['privacy_url'] ?? '' ),
 			),
-			'turnstile'   => array(
-				'mode' => 'inherit',
-			),
 			'messages'    => array(
 				'success' => __( 'Thanks. If the email is valid, you will receive a confirmation email (or you were already subscribed).', 'relaypress-newsletter' ),
 				'captcha' => __( 'Please verify you are human.', 'relaypress-newsletter' ),
@@ -218,9 +215,6 @@ final class RelayPress_Form_Config {
 		$out['consent']['label']       = RelayPress_Utils::normalize_text( sanitize_text_field( (string) ( $raw['consent']['label'] ?? $defaults['consent']['label'] ) ) );
 		$out['consent']['privacy_url'] = esc_url_raw( (string) ( $raw['consent']['privacy_url'] ?? $defaults['consent']['privacy_url'] ) );
 
-		$mode                     = sanitize_text_field( (string) ( $raw['turnstile']['mode'] ?? $defaults['turnstile']['mode'] ?? 'inherit' ) );
-		$out['turnstile']['mode'] = in_array( $mode, array( 'inherit', 'on', 'off' ), true ) ? $mode : 'inherit';
-
 		$out['messages']['success'] = RelayPress_Utils::normalize_text( sanitize_text_field( (string) ( $raw['messages']['success'] ?? $defaults['messages']['success'] ) ) );
 		$out['messages']['captcha'] = RelayPress_Utils::normalize_text( sanitize_text_field( (string) ( $raw['messages']['captcha'] ?? $defaults['messages']['captcha'] ) ) );
 		$out['messages']['consent'] = RelayPress_Utils::normalize_text( sanitize_text_field( (string) ( $raw['messages']['consent'] ?? $defaults['messages']['consent'] ) ) );
@@ -234,12 +228,6 @@ final class RelayPress_Form_Config {
 		$out['ajax'] = ! empty( $raw['ajax'] ) ? '1' : '0';
 
 		$out['version'] = RelayPress_Form::CONFIG_VERSION;
-
-		if ( isset( $raw['turnstile']['inherit'] ) ) {
-			$out['turnstile']['mode'] = ! empty( $raw['turnstile']['inherit'] ) ? 'inherit' : 'off';
-		} elseif ( isset( $raw['turnstile']['enabled'] ) ) {
-			$out['turnstile']['mode'] = ! empty( $raw['turnstile']['enabled'] ) ? 'on' : 'off';
-		}
 
 		return $out;
 	}
