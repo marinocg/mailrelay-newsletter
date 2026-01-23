@@ -323,7 +323,9 @@ final class RelayPress_Logs {
 		);
 
 		echo '<div class="relaypress-logs-wrap">';
-		echo '<table class="wp-list-table widefat fixed striped table-view-list relaypress-logs"><thead><tr>';
+		echo '<table class="wp-list-table widefat fixed striped table-view-list relaypress-logs">';
+		echo '<caption class="screen-reader-text">' . esc_html__( 'RelayPress subscription logs', 'relaypress-newsletter' ) . '</caption>';
+		echo '<thead><tr>';
 		foreach ( $header_cols as $col => $label ) {
 			$col_class = $column_classes[ $col ];
 			if ( isset( $sortable_columns[ $col ] ) ) {
@@ -351,7 +353,9 @@ final class RelayPress_Logs {
 		echo '</tr></thead><tbody>';
 
 		foreach ( $rows as $r ) {
-			$ip = $r['ip_raw'] ?? '';
+			$row_id     = isset( $r['id'] ) ? (int) $r['id'] : 0;
+			$row_dom_id = $row_id ? 'relaypress-log-row-' . $row_id : '';
+			$ip         = $r['ip_raw'] ?? '';
 			if ( ! $ip ) {
 				$ip = $r['ip_hash'] ?? '';
 			}
@@ -368,8 +372,8 @@ final class RelayPress_Logs {
 			}
 
 			$email = (string) ( $r['email'] ?? '' );
-			echo '<tr>';
-			echo '<td class="column-email column-primary" data-colname="' . esc_attr( (string) $header_cols['email'] ) . '">' . esc_html( $email ) . '<button type="button" class="toggle-row"><span class="screen-reader-text">' . esc_html__( 'Show more details', 'relaypress-newsletter' ) . '</span></button></td>';
+			echo '<tr' . ( $row_dom_id ? ' id="' . esc_attr( $row_dom_id ) . '"' : '' ) . '>';
+			echo '<td class="column-email column-primary" data-colname="' . esc_attr( (string) $header_cols['email'] ) . '">' . esc_html( $email ) . '<button type="button" class="toggle-row" aria-expanded="false"' . ( $row_dom_id ? ' aria-controls="' . esc_attr( $row_dom_id ) . '"' : '' ) . '><span class="screen-reader-text">' . esc_html__( 'Show more details', 'relaypress-newsletter' ) . '</span></button></td>';
 			echo '<td class="column-date" data-colname="' . esc_attr( (string) $header_cols['created_at'] ) . '">' . esc_html( (string) ( $r['created_at'] ?? '' ) ) . '</td>';
 			echo '<td class="column-id" data-colname="' . esc_attr( (string) $header_cols['id'] ) . '">' . esc_html( (string) ( $r['id'] ?? '' ) ) . '</td>';
 			echo '<td class="column-consent" data-colname="' . esc_attr( (string) $header_cols['accepted'] ) . '">' . esc_html( ( 1 === (int) ( $r['accepted'] ?? 0 ) ) ? __( 'yes', 'relaypress-newsletter' ) : __( 'no', 'relaypress-newsletter' ) ) . '</td>';
@@ -384,6 +388,7 @@ final class RelayPress_Logs {
 
 		echo '</tbody></table>';
 		echo '</div>';
+		echo '<script>(function(){var buttons=document.querySelectorAll(".relaypress-logs .toggle-row");buttons.forEach(function(button){button.setAttribute("aria-expanded","false");button.addEventListener("click",function(){var expanded=button.getAttribute("aria-expanded")==="true";button.setAttribute("aria-expanded",expanded?"false":"true");});});})();</script>';
 
 		if ( $pagination_links ) {
 			echo '<div class="tablenav bottom"><div class="tablenav-pages">';

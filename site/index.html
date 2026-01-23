@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="glow"></div>
   <header class="hero">
     <nav class="nav">
@@ -51,7 +52,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
     <section id="roadmap" class="section">
       <div class="section-header">
         <h2>WooCommerce (Premium) — in development</h2>
@@ -138,7 +139,7 @@
           <h2>Unlock WooCommerce (Premium)</h2>
           <p>Checkout opt-in, async sync + routing rules, and consent evidence + observability.</p>
         </div>
-        <a class="button primary" href="#">Get Premium</a>
+        <a class="button primary" href="#premium">Get Premium</a>
       </div>
     </section>
   </main>
@@ -146,5 +147,151 @@
   <footer class="footer">
     <p>Mailrelay, Cloudflare, and Turnstile are registered trademarks of their respective owners. RelayPress is not affiliated with them.</p>
   </footer>
+
+  <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent">
+    <p>We use a single analytics cookie to understand site traffic. No cookies are set unless you accept.</p>
+    <div class="cookie-actions">
+      <button class="button ghost" type="button" id="cookie-decline">Decline</button>
+      <button class="button primary" type="button" id="cookie-accept">Accept</button>
+    </div>
+  </div>
+  <button class="cookie-settings" type="button" id="cookie-settings" aria-label="Cookie settings">Cookie settings</button>
+
+  <script>
+    (function() {
+      var consentKey = "relaypress_ga_consent";
+      var banner = document.getElementById("cookie-banner");
+      var settings = document.getElementById("cookie-settings");
+      var accept = document.getElementById("cookie-accept");
+      var decline = document.getElementById("cookie-decline");
+      var gaLoaded = false;
+
+      function setConsent(value) {
+        try {
+          localStorage.setItem(consentKey, value);
+        } catch (e) {
+          // Ignore storage errors and rely on current session only.
+        }
+      }
+
+      function getConsent() {
+        try {
+          return localStorage.getItem(consentKey);
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function hideBanner() {
+        if (banner) {
+          banner.classList.add("is-hidden");
+        }
+      }
+
+      function showBanner() {
+        if (banner) {
+          banner.classList.remove("is-hidden");
+        }
+      }
+
+      function showSettings() {
+        if (settings) {
+          settings.classList.add("is-visible");
+        }
+      }
+
+      function configureGA(storageMode, sendPageView) {
+        if (typeof window.gtag !== "function") {
+          return;
+        }
+        window.gtag("config", "G-KVS9D7XHSP", {
+          anonymize_ip: true,
+          allow_google_signals: false,
+          allow_ad_personalization_signals: false,
+          client_storage: storageMode,
+          send_page_view: !!sendPageView
+        });
+      }
+
+      function initGA() {
+        if (gaLoaded) {
+          return;
+        }
+        gaLoaded = true;
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag("js", new Date());
+        gtag("consent", "default", {
+          ad_storage: "denied",
+          analytics_storage: "denied",
+          ad_user_data: "denied",
+          ad_personalization: "denied"
+        });
+
+        var script = document.createElement("script");
+        script.async = true;
+        script.src = "https://www.googletagmanager.com/gtag/js?id=G-KVS9D7XHSP";
+        document.head.appendChild(script);
+      }
+
+      function updateConsent(value) {
+        if (typeof window.gtag !== "function") {
+          return;
+        }
+        var granted = value === "accepted" ? "granted" : "denied";
+        window.gtag("consent", "update", {
+          ad_storage: "denied",
+          analytics_storage: granted,
+          ad_user_data: "denied",
+          ad_personalization: "denied"
+        });
+      }
+
+      initGA();
+
+      var existingConsent = getConsent();
+      if (existingConsent === "accepted") {
+        hideBanner();
+        showSettings();
+        updateConsent("accepted");
+        configureGA("cookie", true);
+      } else if (existingConsent === "declined") {
+        hideBanner();
+        showSettings();
+        updateConsent("declined");
+        configureGA("none", true);
+      } else {
+        showBanner();
+        configureGA("none", true);
+      }
+
+      if (accept) {
+        accept.addEventListener("click", function() {
+          setConsent("accepted");
+          hideBanner();
+          showSettings();
+          updateConsent("accepted");
+          configureGA("cookie", true);
+        });
+      }
+
+      if (decline) {
+        decline.addEventListener("click", function() {
+          setConsent("declined");
+          hideBanner();
+          showSettings();
+          updateConsent("declined");
+          configureGA("none", true);
+        });
+      }
+
+      if (settings) {
+        settings.addEventListener("click", function() {
+          showBanner();
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

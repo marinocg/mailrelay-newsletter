@@ -17,3 +17,6 @@
 /phpstan.neon export-ignore
 /README.md export-ignore
 /CHANGELOG.md export-ignore
+/AGENTS.md export-ignore
+/CONTRIBUTING.md export-ignore
+/build-plugin-zip.sh export-ignore
