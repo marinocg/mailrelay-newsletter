@@ -344,6 +344,15 @@ msgstr ""
 msgid "Rate limit values reduce abuse but can block repeated tests."
 msgstr ""
 
+#: includes/class-relaypress-admin.php:705
+msgid "Anti-spam settings"
+msgstr ""
+
+#: includes/class-relaypress-admin.php:708
+#, php-format
+msgid "Configure anti-spam protections from the <a href=\"%s\">Extensions</a> screen."
+msgstr ""
+
 #: includes/class-relaypress-admin.php:593
 msgid "Shortcodes"
 msgstr ""
@@ -2154,4 +2163,122 @@ msgstr ""
 
 #: includes/class-relaypress-admin.php:268
 msgid "Improves performance but may delay the opt-in email."
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:56
+#: includes/admin/class-relaypress-extensions-admin.php:57
+#: includes/admin/class-relaypress-extensions-admin.php:116
+msgid "Extensions"
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:119
+msgid "Extensions updated."
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:130
+msgid "Extension"
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:132
+msgid "Activation"
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:139
+msgid "No extensions installed."
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:150
+msgid "Unavailable"
+msgstr ""
+
+#: includes/admin/class-relaypress-extensions-admin.php:194
+msgid "Toggle an extension, then click \"Save Changes\" to apply."
+msgstr ""
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:46
+msgid "Cloudflare Turnstile spam protection."
+msgstr ""
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:49
+msgid "Configure Turnstile site and secret keys."
+msgstr ""
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:71
+msgid "Configured"
+msgstr ""
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:72
+msgid "Not configured"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:79
+msgid "Turnstile settings updated."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:144
+msgid "Turnstile test successful."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:148
+msgid "Turnstile test failed. Please check your keys and try again."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:88
+msgid "Cloudflare Turnstile"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:111
+msgid "Load Turnstile script"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:114
+msgid "Load the Turnstile JavaScript on the frontend"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:116
+msgid "Disable this if another plugin or theme already loads the Turnstile script."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:127
+msgid "Get your API keys"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:131
+msgid "Create a Turnstile site in your Cloudflare dashboard to get the site and secret keys."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:136
+msgid "Open Turnstile dashboard"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:145
+msgid "Script loading"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:147
+msgid "RelayPress can enqueue the Turnstile JavaScript automatically."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:148
+msgid "Disable it when your theme or another plugin already includes Turnstile."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:148
+msgid "Use the same Turnstile site key and secret pair as the other plugin to prevent validation errors."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:225
+msgid "Test configuration"
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:227
+msgid "Add your Turnstile keys above to run the test."
+msgstr ""
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:233
+msgid "Run Turnstile test"
+msgstr ""
+
+#: includes/class-relaypress-admin.php:143
+msgid "Turnstile is enabled but not configured. <a href="%s">Add your site and secret keys</a> to avoid validation errors."
 msgstr ""

@@ -4,11 +4,12 @@ RelayPress is a WordPress plugin that adds a Mailrelay newsletter form with Clou
 
 ## Features
 - Mailrelay API integration (active or inactive subscribers).
-- Cloudflare Turnstile protection.
+- Cloudflare Turnstile protection (as a core extension).
 - GDPR consent checkbox and optional log retention.
 - Neutral success message to avoid email enumeration.
 - Shortcode, WordPress widget, and Elementor widget.
 - Logs table with retention and manual purge.
+- Extensions registry and admin screen for optional integrations.
 
 ## Requirements
 - PHP 8.1+
@@ -44,10 +45,15 @@ The plugin will load the first matching file and fall back to its own template a
 Open Settings -> RelayPress and set:
 - Mailrelay API base URL and token.
 - Group IDs and subscriber status (active or inactive).
-- Turnstile site and secret keys.
 - Text labels and GDPR consent text.
 - Log retention and rate limits.
 - Enable AJAX submissions (optional).
+
+Turnstile:
+- Settings -> RelayPress -> Turnstile for site + secret keys.
+
+Extensions:
+- Settings -> RelayPress -> Extensions to enable or disable optional extensions.
 
 ## Logs and GDPR
 Logs are stored in a dedicated table. You can:
