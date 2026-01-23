@@ -64,6 +64,7 @@ final class LogsTableTest extends TestCase {
 		$this->assertStringContainsString( 'pagination-links', $html );
 		$this->assertStringContainsString( 'column-id', $html );
 		$this->assertStringContainsString( 'column-source', $html );
+		$this->assertStringContainsString( 'RelayPress subscription logs', $html );
 	}
 
 	public function test_logs_table_renders_email_primary_first_with_toggle(): void {
@@ -114,6 +115,8 @@ final class LogsTableTest extends TestCase {
 		$this->assertTrue( $pos_email < $pos_date );
 		$this->assertTrue( $pos_date < $pos_id );
 		$this->assertStringContainsString( 'toggle-row', $html );
+		$this->assertStringContainsString( 'aria-expanded="false"', $html );
+		$this->assertStringContainsString( 'aria-controls="relaypress-log-row-5"', $html );
 		$this->assertStringContainsString( 'data-colname="Email"', $html );
 	}
 }
