@@ -46,7 +46,16 @@ final class RelayPress_Container {
 	 * @return RelayPress_Turnstile_Verifier
 	 */
 	public static function turnstile_verifier(): RelayPress_Turnstile_Verifier {
-		return new RelayPress_WP_Turnstile_Verifier();
+		return new RelayPress_WP_Turnstile_Verifier( self::turnstile_config() );
+	}
+
+	/**
+	 * Build Turnstile config.
+	 *
+	 * @return RelayPress_Turnstile_Config
+	 */
+	public static function turnstile_config(): RelayPress_Turnstile_Config {
+		return new RelayPress_WP_Turnstile_Config();
 	}
 
 	/**
@@ -108,7 +117,6 @@ final class RelayPress_Container {
 			self::mailrelay_client(),
 			self::options_repository(),
 			self::logs_repository(),
-			self::turnstile_verifier(),
 			self::rate_limiter(),
 			self::request_context(),
 			self::input_sanitizer(),

@@ -257,7 +257,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay   = new Test_Mailrelay_Client();
 		$options     = new Test_Options_Repository();
 		$logs        = new Test_Logs_Repository();
-		$turnstile   = new Test_Turnstile_Verifier();
 		$rate_limiter = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context();
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -267,7 +266,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -287,6 +285,63 @@ final class SubmitUseCaseTest extends TestCase {
 
 		$this->assertSame( 'ok', $result['status'] );
 		$this->assertSame( array( 1, 2 ), $mailrelay->last_group_ids );
+	}
+
+	public function test_submit_use_case_honors_extension_verification_filter(): void {
+		$GLOBALS['relaypress_test_filters'] = array();
+		$GLOBALS['relaypress_test_options'] = array(
+			RelayPress_Newsletter::OPT_KEY => array(
+				'api_base_url'                  => 'https://api.test/api/v1',
+				'api_token'                     => 'token',
+				'group_ids'                     => '1',
+				'subscriber_status'             => 'active',
+				'confirm_resend_max'            => 0,
+				'confirm_resend_window_seconds' => 3600,
+				'store_consent_log'             => '0',
+				'rate_limit_max'                => 5,
+				'rate_limit_window_seconds'     => 3600,
+			),
+		);
+
+		add_filter(
+			'relaypress_extension_verify_submission',
+			static function ( $result ): array {
+				unset( $result );
+				return array( 'status' => 'captcha' );
+			}
+		);
+
+		$mailrelay       = new Test_Mailrelay_Client();
+		$options         = new Test_Options_Repository();
+		$logs            = new Test_Logs_Repository();
+		$rate_limiter    = new Test_Rate_Limiter();
+		$request_context = new Test_Request_Context();
+		$sanitizer       = new Test_Input_Sanitizer();
+		$forms           = new Test_Form_Repository();
+
+		$use_case = new RelayPress_Submit_Use_Case(
+			$mailrelay,
+			$options,
+			$logs,
+			$rate_limiter,
+			$request_context,
+			$sanitizer,
+			$forms
+		);
+
+		$result = $use_case->process_submission(
+			array(
+				'relaypress_hp'        => '',
+				'relaypress_group_ids' => '1',
+				'subscriber'       => array(
+					'email'                     => 'test@example.com',
+					'subscribed_with_acceptance' => '1',
+				),
+			)
+		);
+
+		$this->assertSame( 'captcha', $result['status'] );
+		$GLOBALS['relaypress_test_filters'] = array();
 	}
 
 	public function test_submit_use_case_passes_country_field(): void {
@@ -325,7 +380,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay       = new Test_Mailrelay_Client();
 		$options         = new Test_Options_Repository();
 		$logs            = new Test_Logs_Repository();
-		$turnstile       = new Test_Turnstile_Verifier();
 		$rate_limiter    = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context();
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -335,7 +389,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -395,7 +448,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay       = new Test_Mailrelay_Client();
 		$options         = new Test_Options_Repository();
 		$logs            = new Test_Logs_Repository();
-		$turnstile       = new Test_Turnstile_Verifier();
 		$rate_limiter    = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context();
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -405,7 +457,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -465,7 +516,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay       = new Test_Mailrelay_Client();
 		$options         = new Test_Options_Repository();
 		$logs            = new Test_Logs_Repository();
-		$turnstile       = new Test_Turnstile_Verifier();
 		$rate_limiter    = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context();
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -475,7 +525,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -535,7 +584,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay       = new Test_Mailrelay_Client();
 		$options         = new Test_Options_Repository();
 		$logs            = new Test_Logs_Repository();
-		$turnstile       = new Test_Turnstile_Verifier();
 		$rate_limiter    = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context();
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -545,7 +593,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -608,7 +655,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay       = new Test_Mailrelay_Client();
 		$options         = new Test_Options_Repository();
 		$logs            = new Test_Logs_Repository();
-		$turnstile       = new Test_Turnstile_Verifier();
 		$rate_limiter    = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context();
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -618,7 +664,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -678,7 +723,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay       = new Test_Mailrelay_Client();
 		$options         = new Test_Options_Repository();
 		$logs            = new Test_Logs_Repository();
-		$turnstile       = new Test_Turnstile_Verifier();
 		$rate_limiter    = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context();
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -688,7 +732,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -744,7 +787,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay       = new Test_Mailrelay_Client();
 		$options         = new Test_Options_Repository();
 		$logs            = new Test_Logs_Repository();
-		$turnstile       = new Test_Turnstile_Verifier();
 		$rate_limiter    = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context();
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -754,7 +796,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -796,7 +837,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay       = new Test_Mailrelay_Client();
 		$options         = new Test_Options_Repository();
 		$logs            = new Test_Logs_Repository();
-		$turnstile       = new Test_Turnstile_Verifier();
 		$rate_limiter    = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context( 'de-DE,de;q=0.9' );
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -806,7 +846,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -847,7 +886,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay       = new Test_Mailrelay_Client();
 		$options         = new Test_Options_Repository();
 		$logs            = new Test_Logs_Repository();
-		$turnstile       = new Test_Turnstile_Verifier();
 		$rate_limiter    = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context( 'fr-FR,es;q=0.9' );
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -857,7 +895,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -912,7 +949,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay       = new Test_Mailrelay_Client();
 		$options         = new Test_Options_Repository();
 		$logs            = new Test_Logs_Repository();
-		$turnstile       = new Test_Turnstile_Verifier();
 		$rate_limiter    = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context( 'es-ES,es;q=0.9' );
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -922,7 +958,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -964,7 +999,6 @@ final class SubmitUseCaseTest extends TestCase {
 		$mailrelay       = new Test_Mailrelay_Client();
 		$options         = new Test_Options_Repository();
 		$logs            = new Test_Logs_Repository();
-		$turnstile       = new Test_Turnstile_Verifier_Tracker();
 		$rate_limiter    = new Test_Rate_Limiter();
 		$request_context = new Test_Request_Context();
 		$sanitizer       = new Test_Input_Sanitizer();
@@ -974,7 +1008,6 @@ final class SubmitUseCaseTest extends TestCase {
 			$mailrelay,
 			$options,
 			$logs,
-			$turnstile,
 			$rate_limiter,
 			$request_context,
 			$sanitizer,
@@ -993,7 +1026,6 @@ final class SubmitUseCaseTest extends TestCase {
 		);
 
 		$this->assertSame( 'ok', $result['status'] );
-		$this->assertSame( 0, $turnstile->calls );
 	}
 }
 
@@ -1123,20 +1155,6 @@ final class Test_Logs_Repository implements RelayPress_Logs_Repository {
 	}
 }
 
-final class Test_Turnstile_Verifier implements RelayPress_Turnstile_Verifier {
-	public function verify( string $token, string $ip ): bool {
-		return true;
-	}
-}
-
-final class Test_Turnstile_Verifier_Tracker implements RelayPress_Turnstile_Verifier {
-	public int $calls = 0;
-
-	public function verify( string $token, string $ip ): bool {
-		$this->calls++;
-		return false;
-	}
-}
 
 final class Test_Rate_Limiter implements RelayPress_Rate_Limiter {
 	public function hit( string $key, int $max, int $window_seconds ): bool {

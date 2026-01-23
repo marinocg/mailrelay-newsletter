@@ -25,6 +25,7 @@ Privacy policy: https://mailrelay.com/en/privacy-policy/
 
 = Cloudflare Turnstile (optional) =
 If enabled, the plugin loads Cloudflare Turnstile on the frontend and sends the Turnstile response token (and the requester IP) to Cloudflare for verification. This only happens after an admin enables Turnstile and enters site/secret keys.
+Configure Turnstile keys in Settings -> RelayPress -> Turnstile.
 
 Turnstile privacy addendum: https://www.cloudflare.com/turnstile-privacy-policy/
 Cloudflare privacy policy: https://www.cloudflare.com/privacypolicy/

@@ -31,11 +31,18 @@ final class RelayPress_Frontend {
 	private static bool $ajax_requested = false;
 
 	/**
-	 * Whether Turnstile assets were requested on the current request.
+	 * Whether extension assets were requested on the current request.
 	 *
 	 * @var bool
 	 */
-	private static bool $turnstile_requested = false;
+	private static bool $extensions_requested = false;
+
+	/**
+	 * Extension contexts used for asset requests.
+	 *
+	 * @var array<int, array{config:array,form_id:int}>
+	 */
+	private static array $extension_contexts = array();
 
 	/**
 	 * Fallback error message for AJAX responses.
@@ -122,11 +129,19 @@ final class RelayPress_Frontend {
 	/**
 	 * Enqueue frontend assets if needed.
 	 *
-	 * @param bool $needs_turnstile Whether Turnstile assets are required.
+	 * @param bool  $needs_extensions Whether extension assets are required.
+	 * @param array $config Form config.
+	 * @param int   $form_id Form ID.
 	 * @return void
 	 */
-	private static function ensure_assets( bool $needs_turnstile ): void {
-		self::$turnstile_requested = self::$turnstile_requested || $needs_turnstile;
+	private static function ensure_assets( bool $needs_extensions, array $config, int $form_id ): void {
+		self::$extensions_requested = self::$extensions_requested || $needs_extensions;
+		if ( $needs_extensions ) {
+			self::$extension_contexts[] = array(
+				'config'  => $config,
+				'form_id' => $form_id,
+			);
+		}
 		if ( self::$assets_requested ) {
 			return;
 		}
@@ -135,55 +150,12 @@ final class RelayPress_Frontend {
 		add_action(
 			'wp_footer',
 			function () {
-				if ( ! self::$turnstile_requested ) {
+				if ( ! self::$extensions_requested ) {
 					return;
 				}
-				if ( ! wp_script_is( 'cf-turnstile', 'enqueued' ) && ! wp_script_is( 'cf-turnstile', 'done' ) ) {
-					wp_enqueue_script(
-						'cf-turnstile',
-						'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
-						array(),
-						RelayPress_Newsletter::VERSION,
-						true
-					);
-				}
+				do_action( 'relaypress_extension_enqueue_assets', self::$extension_contexts );
 			},
 			5
-		);
-
-		add_action(
-			'wp_footer',
-			function () {
-				if ( ! self::$turnstile_requested ) {
-					return;
-				}
-				$site_key = RelayPress_Turnstile::get_site_key();
-				if ( ! $site_key ) {
-					return;
-				}
-				?>
-			<script>
-				(function() {
-					function renderAll() {
-						if (!window.turnstile) return;
-						document.querySelectorAll('.relaypress-turnstile[data-sitekey]').forEach(function(el) {
-							if (el.getAttribute('data-rendered') === '1') return;
-							el.setAttribute('data-rendered', '1');
-							try {
-								window.turnstile.render(el, {
-									sitekey: el.getAttribute('data-sitekey')
-								});
-							} catch (e) {}
-						});
-					}
-					if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderAll);
-					else renderAll();
-					window.__relaypressRenderTurnstile = renderAll;
-				})();
-			</script>
-				<?php
-			},
-			50
 		);
 
 		add_action(
@@ -313,8 +285,12 @@ final class RelayPress_Frontend {
 		$ajax_enabled      = '1' === (string) ( $config['ajax'] ?? '0' );
 		$messages          = $config['messages'] ?? array();
 		$ajax_error_msg    = (string) ( $messages['error'] ?? __( 'We could not complete the request. Please try again.', 'relaypress-newsletter' ) );
-		$turnstile_enabled = self::turnstile_enabled( $config );
-		$site_key          = $turnstile_enabled ? RelayPress_Turnstile::get_site_key() : '';
+		$extension_context = apply_filters( 'relaypress_extension_form_context', array(), $config, $form_id );
+		if ( ! is_array( $extension_context ) ) {
+			$extension_context = array();
+		}
+		$turnstile_enabled = ! empty( $extension_context['turnstile_enabled'] );
+		$site_key          = $turnstile_enabled ? (string) ( $extension_context['turnstile_site_key'] ?? '' ) : '';
 
 		$action   = admin_url( 'admin-post.php' );
 		$ajax_url = admin_url( 'admin-ajax.php' );
@@ -357,8 +333,9 @@ final class RelayPress_Frontend {
 		if ( $ajax_enabled ) {
 			self::$ajax_requested = true;
 		}
-		self::$ajax_error_msg = $ajax_error_msg;
-		self::ensure_assets( $turnstile_enabled );
+		self::$ajax_error_msg   = $ajax_error_msg;
+		$needs_extension_assets = (bool) apply_filters( 'relaypress_extension_needs_assets', false, $config, $form_id );
+		self::ensure_assets( $needs_extension_assets, $config, $form_id );
 
 		$context = array(
 			'form_id'           => $form_id,
@@ -378,6 +355,7 @@ final class RelayPress_Frontend {
 			'ajax_enabled'      => $ajax_enabled,
 			'ajax_url'          => $ajax_url,
 			'ajax_error_msg'    => $ajax_error_msg,
+			'extension_context' => $extension_context,
 		);
 
 		ob_start();
@@ -398,6 +376,7 @@ final class RelayPress_Frontend {
 		$ajax_url          = $context['ajax_url'];
 		$ajax_error_msg    = $context['ajax_error_msg'];
 		$form_id           = $context['form_id'];
+		$extension_context = $context['extension_context'];
 		require $template_path;
 		return (string) ob_get_clean();
 	}
@@ -438,24 +417,6 @@ final class RelayPress_Frontend {
 		}
 
 		return $config;
-	}
-
-	/**
-	 * Determine if Turnstile should be enabled for the form config.
-	 *
-	 * @param array $config Form config.
-	 * @return bool
-	 */
-	private static function turnstile_enabled( array $config ): bool {
-		$turnstile = $config['turnstile'] ?? array();
-		$mode      = (string) ( $turnstile['mode'] ?? 'inherit' );
-		if ( 'off' === $mode ) {
-			return false;
-		}
-		if ( 'on' === $mode ) {
-			return true;
-		}
-		return RelayPress_Turnstile::is_enabled();
 	}
 
 	/**

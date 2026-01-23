@@ -23,6 +23,8 @@
  * @var int    $form_id
  * @var array  $fields
  * @var bool   $turnstile_enabled
+ * @var array  $extension_context
+ * @var array  $context
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -159,14 +161,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</label>
 			</p>
 
-			<?php if ( $turnstile_enabled && $site_key ) : ?>
-				<div class="relaypress-turnstile" data-sitekey="<?php echo esc_attr( $site_key ); ?>"></div>
-				<noscript>
-					<p><?php echo esc_html__( 'Enable JavaScript to subscribe.', 'relaypress-newsletter' ); ?></p>
-				</noscript>
-			<?php elseif ( $turnstile_enabled ) : ?>
-				<p class="relaypress-msg relaypress-err"><?php echo esc_html__( 'Turnstile is not configured (Site Key).', 'relaypress-newsletter' ); ?></p>
-			<?php endif; ?>
+			<?php do_action( 'relaypress_extension_render_fields', $context ); ?>
 
 			<p class="msubmit">
 				<input type="submit" value="<?php echo esc_attr( $submit ); ?>">

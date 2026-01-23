@@ -354,6 +354,15 @@ msgid "Rate limit values reduce abuse but can block repeated tests."
 msgstr ""
 "Los límites de tasa reducen el abuso, pero pueden bloquear pruebas repetidas."
 
+#: includes/class-relaypress-admin.php:705
+msgid "Anti-spam settings"
+msgstr "Configuración antispam"
+
+#: includes/class-relaypress-admin.php:708
+#, php-format
+msgid "Configure anti-spam protections from the <a href=\"%s\">Extensions</a> screen."
+msgstr "Configura las protecciones antispam desde la pantalla de <a href=\"%s\">Extensiones</a>."
+
 #: includes/class-relaypress-admin.php:593
 msgid "Shortcodes"
 msgstr "Shortcodes"
@@ -2192,3 +2201,121 @@ msgstr "Envía la primera solicitud a Mailrelay a Action Scheduler en lugar de e
 #: includes/class-relaypress-admin.php:268
 msgid "Improves performance but may delay the opt-in email."
 msgstr "Mejora el rendimiento, pero puede retrasar el correo de confirmación."
+
+#: includes/admin/class-relaypress-extensions-admin.php:56
+#: includes/admin/class-relaypress-extensions-admin.php:57
+#: includes/admin/class-relaypress-extensions-admin.php:116
+msgid "Extensions"
+msgstr "Extensiones"
+
+#: includes/admin/class-relaypress-extensions-admin.php:119
+msgid "Extensions updated."
+msgstr "Extensiones actualizadas."
+
+#: includes/admin/class-relaypress-extensions-admin.php:130
+msgid "Extension"
+msgstr "Extensión"
+
+#: includes/admin/class-relaypress-extensions-admin.php:132
+msgid "Activation"
+msgstr "Activación"
+
+#: includes/admin/class-relaypress-extensions-admin.php:139
+msgid "No extensions installed."
+msgstr "No hay extensiones instaladas."
+
+#: includes/admin/class-relaypress-extensions-admin.php:150
+msgid "Unavailable"
+msgstr "No disponible"
+
+#: includes/admin/class-relaypress-extensions-admin.php:194
+msgid "Toggle an extension, then click \"Save Changes\" to apply."
+msgstr "Activa o desactiva una extensión y haz clic en \"Guardar cambios\" para aplicar."
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:46
+msgid "Cloudflare Turnstile spam protection."
+msgstr "Protección antispam de Cloudflare Turnstile."
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:49
+msgid "Configure Turnstile site and secret keys."
+msgstr "Configura las claves de sitio y secretas de Turnstile."
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:71
+msgid "Configured"
+msgstr "Configurado"
+
+#: includes/extensions/turnstile/class-relaypress-turnstile-extension.php:72
+msgid "Not configured"
+msgstr "Sin configurar"
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:79
+msgid "Turnstile settings updated."
+msgstr "Configuración de Turnstile actualizada."
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:144
+msgid "Turnstile test successful."
+msgstr "Prueba de Turnstile realizada con éxito."
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:148
+msgid "Turnstile test failed. Please check your keys and try again."
+msgstr "La prueba de Turnstile ha fallado. Revisa tus claves e inténtalo de nuevo."
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:88
+msgid "Cloudflare Turnstile"
+msgstr "Cloudflare Turnstile"
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:111
+msgid "Load Turnstile script"
+msgstr "Cargar script de Turnstile"
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:114
+msgid "Load the Turnstile JavaScript on the frontend"
+msgstr "Cargar el JavaScript de Turnstile en el frontend"
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:116
+msgid "Disable this if another plugin or theme already loads the Turnstile script."
+msgstr "Desactiva esto si otro plugin o tema ya carga el script de Turnstile."
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:127
+msgid "Get your API keys"
+msgstr "Obtén tus claves de API"
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:131
+msgid "Create a Turnstile site in your Cloudflare dashboard to get the site and secret keys."
+msgstr "Crea un sitio de Turnstile en tu panel de Cloudflare para obtener las claves de sitio y secretas."
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:136
+msgid "Open Turnstile dashboard"
+msgstr "Abrir panel de Turnstile"
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:145
+msgid "Script loading"
+msgstr "Carga del script"
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:147
+msgid "RelayPress can enqueue the Turnstile JavaScript automatically."
+msgstr "RelayPress puede cargar automáticamente el JavaScript de Turnstile."
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:148
+msgid "Disable it when your theme or another plugin already includes Turnstile."
+msgstr "Desactívalo cuando tu tema u otro plugin ya incluya Turnstile."
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:148
+msgid "Use the same Turnstile site key and secret pair as the other plugin to prevent validation errors."
+msgstr "Usa el mismo par de clave de sitio y secreta de Turnstile que el otro plugin para evitar errores de validación."
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:225
+msgid "Test configuration"
+msgstr "Probar configuración"
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:227
+msgid "Add your Turnstile keys above to run the test."
+msgstr "Añade tus claves de Turnstile arriba para ejecutar la prueba."
+
+#: includes/admin/extensions/turnstile/class-relaypress-turnstile-admin.php:233
+msgid "Run Turnstile test"
+msgstr "Ejecutar prueba de Turnstile"
+
+#: includes/class-relaypress-admin.php:143
+msgid "Turnstile is enabled but not configured. <a href=\"%s\">Add your site and secret keys</a> to avoid validation errors."
+msgstr "Turnstile está activado pero no está configurado. <a href=\"%s\">Añade las claves de sitio y secretas</a> para evitar errores de validación."
